@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block script %}
+<script type="text/javascript" src="/static/util.js"></script>
+<script type="text/javascript" src="/static/stopwatch.js"></script>
+<script type="text/javascript" src="/static/tw.js"></script>
+<script type="text/javascript" src="/static/event.js"></script>
+<script type="text/javascript" src="/static/store.js"></script>
+<script type="text/javascript" src="/static/list.js"></script>
+<script type="text/javascript" src="/static/serverlist.js"></script>
+
+<script type="text/javascript" src="/static/statusinput.js"></script>
+<script type="text/javascript" src="/static/sidebar.js"></script>
+<script type="text/javascript" src="/static/profileview.js"></script>
+<script type="text/javascript" src="/static/listview.js"></script>
+<script type="text/javascript" src="/static/main.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="header">
+  <a href="">設定</a>
+  <a href="{% url client.views.logout %}">ログアウト</a>
+</div>
+
+
+<div class="top">
+  <div class="status_input">
+    <textarea></textarea>
+    <span class="count"></span>
+    <a href="" class="update">ツイート</a>
+  </div>
+  
+  <div class="list_actions">
+    <a class="refresh" href="">更新</a>
+    <a class="read" href="">既読</a>
+  </div>
+</div>
+
+
+<div class="sidebar">
+  <div class="tabs">
+    <a class="tab home">ホーム<span class="count">10</span></a>
+    <a class="tab mentions">あなた宛<span class="count">10</span></a>
+    <a class="tab dm">DM<span class="count">10</span></a>
+    <a class="tab favorites">お気に入り</a>
+  </div>
+
+  <div class="profile">
+    <img src="http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png">
+
+    <a class="user_timeline" href="">
+      <span class="dd screen_name">rinunu</span>
+      <span class="dd name">りぬぬ</span>
+      <div>
+	<span class="dd statuses_count" href="">123</span>
+	ツイート
+      </div>
+    </a>
+
+    <a class="friends_count" href="">
+      <span class="dd">123</span>
+      <span class="dt">フォローしている</span>
+    </a>
+
+    <a class="followers_count" href="">
+      <span class="dd">123</span>
+      <span class="dt">フォローされている</span>
+    </a>
+    
+    <a class=" favourites_count" href="">
+      <span class="dd">123</span>
+      <span class="dt">お気に入り</span>
+    </a>
+
+    <div class="location">
+      <span class="dt">現在地</span>
+      <span class="dd">神奈川県マビノギ市ルエリ区</span>
+    </div>
+
+    <div class="url">
+      <span class="dt">Web</span>
+      <a class="dd" target="_blank"></a>
+    </div>
+
+    <div class="description">
+      <span class="dt">自己紹介</span>
+      <span class="dd">
+	映画と Web 開発とワンピースがマイブームです〜 jQuery とチョッパーかわゆすぅぅ 今年こそアプリ公開するぞぉ
+      </span>
+    </div>
+    
+  </div>
+</div>
+
+<div class="list_container">
+  <div class="main_list">
+    <div tabindex='0' class='status'>
+      <div class="status_actions">
+	<a class="favorite">お気に入り</a>
+	<a class="reply">返信</a>
+	<a class="rt">RT</a>
+      </div>
+      <img class='profile_image' src='http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png'>
+      <span class="name">name</span>
+      <div class="text">
+	関東地方、変わりやすい天気は今日まで http://bit.ly/93Ut1f 関東地方はきょうも大気の状態が不安定になっています。昨日より範囲は狭いものの、赤色(激しい雨を降らせるような)の所もあります。夕方には熊谷や東京、横浜に竜巻注意情報も発表!...
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
