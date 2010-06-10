@@ -13,10 +13,14 @@
 <script type="text/javascript" src="/static/sidebar.js"></script>
 <script type="text/javascript" src="/static/profileview.js"></script>
 <script type="text/javascript" src="/static/listview.js"></script>
+<script type="text/javascript" src="/static/background.js"></script>
 <script type="text/javascript" src="/static/main.js"></script>
 {% endblock %}
 
 {% block body %}
+<div class="bg0 bg current"></div>
+<div class="bg1 bg"></div>
+
 <div class="header">
   <a href="">設定</a>
   <a href="{% url client.views.logout %}">ログアウト</a>
@@ -49,13 +53,16 @@
     <img src="http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png">
 
     <a class="user_timeline" href="">
-      <span class="dd screen_name">rinunu</span>
-      <span class="dd name">りぬぬ</span>
       <div>
+	<span class="dd screen_name">rinunu</span>
+	<span class="dd name">りぬぬ</span>
+      </div>
+      <span>
 	<span class="dd statuses_count" href="">123</span>
 	ツイート
-      </div>
+      </span>
     </a>
+    <a class="twitter" href="" target="_blank">t</a>
 
     <a class="friends_count" href="">
       <span class="dd">123</span>

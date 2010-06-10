@@ -7,12 +7,16 @@ tw.ListView = function(element){
     this.element_ = element;
 };
 
-tw.ListView.URL_RE = /(https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)/;
+tw.ListView.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
+tw.ListView.USER_RE = /@(\w+)/g;
+tw.ListView.HASH_RE = /#(\w+)/g;
 
 tw.ListView.prototype.initialize = function(){
     $(".status").live("focus", util.bind(this, this.onFocus));
     $(".status").live("blur", util.bind(this, this.onBlur));
     $("a.reply").live("click", util.bind(this, this.onReply));
+    $("a.user").live("click", util.bind(this, this.onShowUser));
+    $("a.hash").live("click", util.bind(this, this.onShowHash));
 };
 
 /**
@@ -95,6 +99,7 @@ tw.ListView.prototype.getElement = function(status){
  */
 tw.ListView.prototype.addStatus = function(status){
     var elem = tw.templates.status.clone();
+    
     elem.find("img").attr("src", status.user.profile_image_url);
     elem.find(".name").text(status.user.screen_name);
     elem.data("status", status);
@@ -133,7 +138,11 @@ tw.ListView.prototype.refreshView = function(){
  * テキスト内の URL などを リンクにする
  */
 tw.ListView.prototype.formatText = function(text){
-    return text.replace(tw.ListView.URL_RE, "<a href='$&' target='_blank'>$&</a>");
+    text = text.replace("\n", "<br>");
+    text = text.replace(tw.ListView.USER_RE, "<a class='user'>$&</a>");
+    text = text.replace(tw.ListView.HASH_RE, "<a class='hash'>$&</a>");
+    text = text.replace(tw.ListView.URL_RE, "<a href='$&' class='url' target='_blank'>$&</a>");
+    return text;
 };
 
 
@@ -158,6 +167,18 @@ tw.ListView.prototype.onBlur = function(){
 tw.ListView.prototype.onReply = function(event){
     var status = this.getStatus($(event.target));
     tw.components.statusInput.reply(status);
+};
+
+tw.ListView.prototype.onShowUser = function(event){
+    
+    console.log();
+    tw.showUserTimeline($(event.target).text().slice(1));
+    event.preventDefault();
+};
+
+tw.ListView.prototype.onShowHash = function(event){
+    alert("TODO 未実装です");
+    event.preventDefault();
 };
 
 /**

@@ -28,11 +28,16 @@ tw.showMentions = function(){
 
 /**
  * 指定されたユーザの TL を表示する
+ * user は User もしくは screen_name
  */
-tw.showUserTimeline = function(userId){
-    var list = tw.store.createUserTimeline(userId);
+tw.showUserTimeline = function(user){
+    console.log("show", user);
+    var list = tw.store.createUserTimeline(user);
     tw.components.mainListView.setList(list);
     list.refresh();
+    if(user.id){
+	tw.components.background.setBackground(user);
+    }
 };
 
 /**
@@ -76,6 +81,9 @@ tw.setCommand = function(elem, func){
 // ----------------------------------------------------------------------
 // 初期化
 
+/**
+ * 通常時・デザイン時共通の初期化処理
+ */
 tw.initialize = function(){
     $("html").ajaxError(function(){
 			    console.error("ajax error");
@@ -95,6 +103,7 @@ tw.initialize = function(){
     tw.components.mainListView = new tw.ListView($(".main_list"));
     tw.components.statusInput = new tw.StatusInput();
     tw.components.profileView = new tw.ProfileView();
+    tw.components.background = new tw.Background();
     tw.components.sidebar = new tw.Sidebar();
     
     // コンポーネント初期化
@@ -104,6 +113,18 @@ tw.initialize = function(){
     }
 
     tw.setCommand($(".list_actions .refresh"), util.bind(this, this.refreshList));
+};
+
+/**
+ * 自分の情報を取得する
+ */
+tw.loadUser = function(){
+    $.getJSON("/user.json", {}, util.bind(this, this.onLoadUser));
+};
+
+tw.onLoadUser = function(user){
+    tw.components.profileView.setUser(user);
+    tw.components.background.setBackground(user);
 };
 
 /**
@@ -119,7 +140,8 @@ tw.initializeDesign = function(){
 $(function(){
       tw.initialize();
       // tw.initializeDesign();
-      
+    
+      tw.loadUser();
       tw.showHomeTimeline();
       tw.refresh();
 });

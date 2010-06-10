@@ -67,6 +67,22 @@ def authenticated(request):
 
     return HttpResponseRedirect(reverse(main))
 
+# Twitter オブジェクトを生成する
+def create_twitter():
+    return twitter.Twitter(settings.TWITTER_CONSUMER_KEY,
+                           settings.TWITTER_CONSUMER_SECRET,
+                           session['access_token']['oauth_token'],
+                           session['access_token']['oauth_token_secret']
+                           )
+
+# 自身の情報を取得する
+def user(request):
+    t = create_twitter()
+    a = t.get("http://api.twitter.com/1/users/show/" +
+              session['access_token']['user_id'] + 
+              ".json", {})
+    return HttpResponse(a)
+
 # twitter_api を実行し、結果を返す
 # url は http://api.twitter.com/1/ 以降
 def twitter_api(request, url):
@@ -80,11 +96,7 @@ def twitter_api(request, url):
     for key, value in src_params.iteritems():
         params[key] = value.encode('utf-8')
 
-    t = twitter.Twitter(settings.TWITTER_CONSUMER_KEY,
-                        settings.TWITTER_CONSUMER_SECRET,
-                        session['access_token']['oauth_token'],
-                        session['access_token']['oauth_token_secret']
-                        )
+    t = create_twitter()
 
     url = 'http://api.twitter.com/1/' + url;
 
