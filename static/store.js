@@ -42,10 +42,13 @@ tw.Store.prototype.createMentions = function(){
 
 /**
  * 指定されたユーザの Timeline を作成する
- * userId が指定されなかった場合は、自分のものを作成する
  */
-tw.Store.prototype.createUserTimeline = function(userId){
-    url = "/statuses/user_timeline/" + userId + ".json";
+tw.Store.prototype.createUserTimeline = function(user){
+    var userId = user;
+    if(user.id){
+	userId = user.id;
+    }
+    var url = "/statuses/user_timeline/" + userId + ".json";
     return new tw.ServerList(url);
 };
 

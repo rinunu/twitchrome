@@ -2,7 +2,7 @@
 // プロフィール表示欄
 tw.ProfileView = function(){
     this.element_ = $(".profile");
-    this.userId_ = null;
+    this.user_ = null;
 };
 
 tw.ProfileView.prototype.initialize = function(){
@@ -12,13 +12,13 @@ tw.ProfileView.prototype.initialize = function(){
     this.element_.find("a.user_timeline").click(
 	function(event){
 	    event.preventDefault();
-	    tw.showUserTimeline(this_.userId_);
+	    tw.showUserTimeline(this_.user_);
 	});
 };
 
 // ユーザのプロフィールを表示する
 tw.ProfileView.prototype.setUser = function(user){
-    this.userId_ = user.id;
+    this.user_ = user;
     
     this.element_.find(".name.dd").text(user.name);
     this.element_.find(".screen_name.dd").text(user.screen_name);
@@ -33,6 +33,8 @@ tw.ProfileView.prototype.setUser = function(user){
     this.element_.find(".url .dd").attr("href", user.url).text(user.url);
 
     this.element_.find("img").attr("src", user.profile_image_url);
+
+    this.element_.find("a.twitter").attr("href", "http://twitter.com/" + user.screen_name);
 };
 
 /**

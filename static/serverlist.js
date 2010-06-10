@@ -24,7 +24,7 @@ tw.ServerList.prototype.refresh = function(count){
     if(this.statuses_.length >=1){
 	params.since_id = this.statuses_[0].id;
     }
-    params.count = count || 20;
+    params.count = count || 100;
 
     console.log("refresh", this.url_);
     $.getJSON("/twitter_api" + this.url_, params, util.bind(this, this.onRefresh));
