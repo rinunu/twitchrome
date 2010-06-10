@@ -163,6 +163,7 @@ a.hash:hover, a.url:hover, a.user:hover{
 
 .status{
     padding: 3px;
+    padding-bottom: 0;
     border-color: #ccc;
     border-bottom: solid 1px #999;
     min-height: 50px;
@@ -206,6 +207,12 @@ a.hash:hover, a.url:hover, a.user:hover{
     border-radius: 3px;
     background-color: #eee;
     border: 1px solid #ccc;
+}
+
+.status .footer{
+    font-size: 10px;
+    color: #ccc;
+    text-align: right;
 }
 
 /* ---------------------------------------------------------------------- */

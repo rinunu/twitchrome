@@ -55,6 +55,7 @@ tw.ListView.prototype.focus = function(){
  */
 tw.ListView.prototype.setFocus = function(focus){
     console.assert(focus);
+
     if(tw.Store.isStatus(focus)){
 	var focusStatus = focus;
 	var focusElement = this.getElement(focusStatus);
@@ -62,6 +63,7 @@ tw.ListView.prototype.setFocus = function(focus){
 	var focusElement = focus;
 	var focusStatus = focusElement.data("status");
     }
+    console.log(focusStatus);
     
     // 旧フォーカスの後始末
     if(this.list_.focus()){
@@ -72,7 +74,7 @@ tw.ListView.prototype.setFocus = function(focus){
     // 新フォーカスの設定
     focusElement.addClass("focus");
     this.list_.setFocus(focusStatus);
-    
+
     util.Event.trigger(this, "focus");
 };
 
@@ -103,10 +105,14 @@ tw.ListView.prototype.addStatus = function(status){
     elem.find("img").attr("src", status.user.profile_image_url);
     elem.find(".name").text(status.user.screen_name);
     elem.data("status", status);
-	
+
     var textElem = elem.find(".text");
     textElem.empty();
     textElem.html(this.formatText(status.text));
+
+    elem.find(".source").html(status.source);
+    
+    elem.find(".created_at").html(this.formatDate(status.created_at));
 
     this.element_.prepend(elem);
 };
@@ -145,6 +151,17 @@ tw.ListView.prototype.formatText = function(text){
     return text;
 };
 
+/**
+ * 
+ */
+tw.ListView.prototype.formatDate = function(date){
+    var t = new Date(date);
+    date = [t.getHours(), t.getMinutes(), t.getSeconds()];
+    for(var i = 0; i < date.length; i++){
+	date[i] = (date[i] >= 10) ? date[i] : "0" + date[i];
+    }
+    return date.join(":");
+};
 
 tw.ListView.prototype.onRefresh = function(){
     this.refreshView();
