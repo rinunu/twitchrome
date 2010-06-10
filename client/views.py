@@ -25,16 +25,21 @@ access_token_url = 'http://twitter.com/oauth/access_token'
 
 
 session = Session()
-                    
+
 def login(request):
     resp, content = client.request(request_token_url, "GET")
     if resp['status'] != '200':
         raise Exception("Invalid response from Twitter.")
 
-    d = dict(cgi.parse_qsl(content))
     session['request_token'] = dict(cgi.parse_qsl(content))
-    url = "%s?oauth_token=%s" % (authenticate_url,
-                                 session['request_token']['oauth_token'])
+
+    
+    url = "%s?%s" % (
+        authenticate_url,
+        urllib.urlencode({
+                "oauth_token": session['request_token']['oauth_token'],
+                "oauth_callback": request.build_absolute_uri("authenticated")
+                }))
     return HttpResponseRedirect(url)
 
 def logout(request):
