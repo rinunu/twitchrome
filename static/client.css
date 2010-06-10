@@ -7,15 +7,58 @@ html{
     margin: 0;
     word-break: break-all;
 }
+
+/* ---------------------------------------------------------------------- */
+/* 全体構成 */
+
 body{
     margin: 0;
-    padding: 0;
     height: 100%;
 }
+
+.header{
+    position: absolute;
+    height: 130px;
+    top: 0px;
+    width: 100%;
+}
+
+.sidebar{
+    position: absolute;
+    top: 100px;
+    right: 10px;
+    width: 250px;
+}
+
+.list_container{
+    position: absolute;
+    top: 130px;
+    bottom: 10px;
+    left: 10px;
+    right: 280px;
+}
+
+.main_list{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.list_actions{
+    margin-left: 10px;
+    margin-top: 10px;
+    height: 30px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* common */
 
 a{
     color: inherit;
     text-decoration: none;
+    cursor: pointer;
 }
 
 /* a:hover{ */
@@ -25,9 +68,6 @@ a{
 .clear{
     clear: both;
 }
-
-/* ---------------------------------------------------------------------- */
-/* common */
 
 a.hash, a.user, a.url{
     color: #005;
@@ -41,29 +81,54 @@ a.hash:hover, a.url:hover, a.user:hover{
     color: #999;
 }
 
+/**
+ * ボタンっぽい見た目
+ * ボタンには必ずしもこの class を指定しなくてよい
+ */
+.button{
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #eee;
+    font-size: 15px;
+    padding: 3px 5px;
+}
+
+.button:hover{
+    background-color: #fff;
+}
+
 /* ---------------------------------------------------------------------- */
-/* 全体構成 */
+/* .header */
 
-.status_input{
+.header .menu{
+    text-align: right;
+    position: absolute;
+    top: 0;
+    right: 280px;
 }
 
-.sidebar{
-    float: right;
-    width: 250px;
+.status_input textarea{
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    right: 280px;
+    height: 50px;    
+    font-size: 13px;
 }
 
-.main_list{
-    height: 400px;
-    margin: 0 10px;
+.status_input .update{
+    position: absolute;
+    right: 280px;
+    bottom: 20px;
 }
 
 .list_actions{
-    margin-left: 10px;
-    margin-top: 10px;
-    height: 30px;
+    position: absolute;
+    bottom: 0;
 }
 
 /* ---------------------------------------------------------------------- */
+/* bg */
 
 .bg0, .bg1{
     position: absolute;
@@ -98,24 +163,6 @@ a.hash:hover, a.url:hover, a.user:hover{
 }
 
 /* ---------------------------------------------------------------------- */
-/* .list_actions */
-
-.list_actions{
-}
-
-.list_actions a{
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background-color: #eee;
-    font-size: 15px;
-    padding: 3px;
-}
-
-.list_actions a:hover{
-    background-color: #fff;
-}
-
-/* ---------------------------------------------------------------------- */
 /* .sidebar */
 
 .sidebar{
@@ -147,15 +194,6 @@ a.hash:hover, a.url:hover, a.user:hover{
     border: 1px solid #999;
     padding: 1px 5px;
     margin: 0px 5px;
-}
-
-/* ---------------------------------------------------------------------- */
-/* 入力 */
-
-.status_input textarea{
-    font-size: 13px;
-    width: 800px;
-    height: 50px;
 }
 
 /* ---------------------------------------------------------------------- */

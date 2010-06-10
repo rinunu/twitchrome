@@ -24,32 +24,31 @@
 <div class="bg1 bg"></div>
 
 <div class="header">
-  <a href="">設定</a>
-  <a href="{% url client.views.logout %}">ログアウト</a>
-</div>
-
-
-<div class="top">
+  <div class="menu">
+    <a href="">設定</a>
+    <a href="{% url client.views.logout %}">ログアウト</a>
+  </div>
+  
   <div class="status_input">
     <textarea></textarea>
     <span class="count"></span>
-    <a href="" class="update">ツイート</a>
+    <div>
+      <a href="" class="update button">ツイート</a>
+    </div>
   </div>
   
   <div class="list_actions">
-    <a class="refresh" href="">更新</a>
-    <a class="read" href="">既読</a>
+    <a class="refresh button">更新</a>
+    <a class="read button">既読</a>
   </div>
 </div>
 
 
 <div class="sidebar">
-  <div class="tabs">
-    <a class="tab home">ホーム<span class="count">10</span></a>
-    <a class="tab mentions">あなた宛<span class="count">10</span></a>
-    <a class="tab dm">DM<span class="count">10</span></a>
-    <a class="tab favorites">お気に入り</a>
-  </div>
+  <a class="home button">ホーム<span class="count"></span></a>
+  <a class="mentions button">あなた宛<span class="count"></span></a>
+  <a class="dm button">DM<span class="count"></span></a>
+  <a class="favorites button">お気に入り</a>
 
   <div class="profile">
     <img src="http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png">

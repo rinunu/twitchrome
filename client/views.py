@@ -24,12 +24,10 @@ authenticate_url = 'http://twitter.com/oauth/authorize'
 access_token_url = 'http://twitter.com/oauth/access_token'
 
 
-session = Session()
-
 def login(request):
     # "oauth_callback": request.build_absolute_uri("authenticated")
-
-
+    session = Session()
+    
     resp, content = client.request(request_token_url, "GET")
     if resp['status'] != '200':
         raise Exception("Invalid response from Twitter.")
@@ -44,11 +42,15 @@ def login(request):
     return HttpResponseRedirect(url)
 
 def logout(request):
+    session = Session()
+
     session.delete()
     return HttpResponseRedirect('/')
 
 # リクエストトークンを認可された
 def authenticated(request):
+    session = Session()
+
     # リクエストトークン
     token = oauth.Token(session['request_token']['oauth_token'],
                         session['request_token']['oauth_token_secret'])
@@ -75,6 +77,8 @@ def authenticated(request):
 
 # Twitter オブジェクトを生成する
 def create_twitter():
+    session = Session()
+
     return twitter.Twitter(settings.TWITTER_CONSUMER_KEY,
                            settings.TWITTER_CONSUMER_SECRET,
                            session['access_token']['oauth_token'],
@@ -83,6 +87,8 @@ def create_twitter():
 
 # 自身の情報を取得する
 def user(request):
+    session = Session()
+
     t = create_twitter()
     a = t.get("http://api.twitter.com/1/users/show/" +
               session['access_token']['user_id'] + 
@@ -92,6 +98,8 @@ def user(request):
 # twitter_api を実行し、結果を返す
 # url は http://api.twitter.com/1/ 以降
 def twitter_api(request, url):
+    session = Session()
+    
     # return HttpResponse(url + " - " + str(len(request.GET)))
 
     src_params = request.GET
@@ -118,6 +126,8 @@ def index(request):
     return render_to_response("index.html", {})
 
 def main(request):
+    session = Session()
+
     if 'access_token' not in session:
         raise Exception('ろぐいんしてください')
     

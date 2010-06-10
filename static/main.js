@@ -139,7 +139,7 @@ tw.initializeDesign = function(){
 
 $(function(){
       tw.initialize();
-//      tw.initializeDesign();
+      // tw.initializeDesign();
     
       tw.loadUser();
       tw.showHomeTimeline();
