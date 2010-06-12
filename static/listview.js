@@ -63,7 +63,7 @@ tw.ListView.prototype.setFocus = function(focus){
 	var focusElement = focus;
 	var focusStatus = focusElement.data("status");
     }
-    console.log(focusStatus);
+    console.log("focus", focusStatus);
     
     // 旧フォーカスの後始末
     if(this.list_.focus()){
@@ -108,7 +108,7 @@ tw.ListView.prototype.addStatus = function(status){
 
     var textElem = elem.find(".text");
     textElem.empty();
-    textElem.html(this.formatText(status.text));
+    textElem.html(this.formatText(status.text, status));
 
     elem.find(".source").html(status.source);
     
@@ -143,9 +143,14 @@ tw.ListView.prototype.refreshView = function(){
 /**
  * テキスト内の URL などを リンクにする
  */
-tw.ListView.prototype.formatText = function(text){
+tw.ListView.prototype.formatText = function(text, status){
     text = text.replace(/\n/g, "<br>");
-    text = text.replace(tw.ListView.USER_RE, "<a class='user'>$&</a>");
+    if(status.in_reply_to_status_id){
+	var userClass = "user in_reply_to";
+    }else{
+	var userClass = "user";
+    }
+    text = text.replace(tw.ListView.USER_RE, "<a class='" + userClass + "'>$&</a>");
     text = text.replace(tw.ListView.HASH_RE, "<a class='hash'>$&</a>");
     text = text.replace(tw.ListView.URL_RE, "<a href='$&' class='url' target='_blank'>$&</a>");
     return text;

@@ -227,6 +227,10 @@ a.hash:hover, a.url:hover, a.user:hover{
     text-align: right;
 }
 
+.status .in_reply_to:after{
+    content: url(conversation.png);
+}
+
 /* ---------------------------------------------------------------------- */
 /* .sidebar */
 
