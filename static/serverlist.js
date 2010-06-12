@@ -7,13 +7,27 @@ tw.ServerList = function(url){
     this.statuses_ = [];
 
     // 最終更新時間
-    this.updatedAt_ = null;
+    this.updatedAt_ = new Date("1999/01/01");
 
+    // 更新間隔(ms)
+    this.interval_ = 30 * 1000;
+    
     // 最後の refresh 時に追加になった件数
     this.newCount_ = 0;
 };
 
 util.extend(tw.ServerList, tw.List);
+
+/**
+ * 更新間隔を取得する(ミリ秒)
+ */
+tw.ServerList.prototype.interval = function(){
+    return this.interval_;
+};
+
+tw.ServerList.prototype.updatedAt = function(){
+    return this.updatedAt_;
+};
 
 /**
  * サーバと通信し、リストの内容を最新にする

@@ -10,7 +10,7 @@ tw.Store = function(){
     this.timelines.mentions = new tw.ServerList("/statuses/mentions.json");
     this.timelines.sent = new tw.ServerList("/statuses/user_timeline.json");
 
-    setInterval(util.bind(this, this.refresh), 60 * 1000);
+    setInterval(util.bind(this, this.refresh), 5 * 1000);
 };
 
 /**
@@ -83,6 +83,10 @@ tw.Store.prototype.refresh = function(){
     console.log("auto refresh");
     for(var a in this.timelines){
         var list = this.timelines[a];
-        list.refresh();
-    }    
+	var nextRefresh = new Date(list.interval() + list.updatedAt().getTime());
+	if(new Date() >= nextRefresh){
+	    list.refresh();
+	    break; // 1度に更新するのはひとつだけ
+	}
+    }
 };
