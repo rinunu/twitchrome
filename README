@@ -1,2 +1,5 @@
+
+** 使用しているライブラリ
 http://code.google.com/p/httplib2/
 http://github.com/simplegeo/python-oauth2
+http://stanlemon.net/projects/jgrowl.html

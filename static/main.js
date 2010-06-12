@@ -59,8 +59,9 @@ tw.setCommand = function(elem, func){
  * 通常時・デザイン時共通の初期化処理
  */
 tw.initialize = function(){
-    $("html").ajaxError(function(){
-			    console.error("ajax error");
+    $("html").ajaxError(function(event, xhr){
+			    console.error("ajax error", xhr);
+			    $.jGrowl("通信に失敗しました: " + xhr.statusText);
 			});
     
     tw.saveTemplates();
@@ -94,8 +95,9 @@ tw.loadUser = function(){
 };
 
 tw.onLoadUser = function(user){
-    tw.components.profileView.setUser(user);
-    tw.components.background.setBackground(user);
+    tw.user = user;
+    tw.components.profileView.setUser(tw.user);
+    tw.components.background.setBackground(tw.user);
 };
 
 /**

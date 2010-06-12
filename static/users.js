@@ -13,8 +13,10 @@ tw.Users.prototype.toStatuses = function(json){
     for(var i = 0; i < json.length; i++){
 	var user = json[i];
 	var status = user.status;
-	status.user = user;
-	result.push(status);
+	if(status){
+	    status.user = user;
+	    result.push(status);
+	}
     }
     return result;
 };
