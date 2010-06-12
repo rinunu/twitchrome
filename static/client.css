@@ -181,9 +181,9 @@ a.hash:hover, a.url:hover, a.user:hover{
 .status .body{
     padding: 3px;
     padding-bottom: 0;
-    border: solid 1px #999;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
+    border: solid 1px #222;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
     min-height: 50px;
     cursor: pointer;
     background-color: #fff;
