@@ -5,6 +5,8 @@
  * また、各種タイムラインを生成する
  */
 tw.Store = function(){
+    this.statuses_ = {};
+
     this.timelines = {};
     this.timelines.homeTimeline = new tw.ServerList("/statuses/home_timeline.json");
     this.timelines.mentions = new tw.ServerList("/statuses/mentions.json");
@@ -30,6 +32,13 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
 	params.in_reply_to_status_id = inReplyTo.id;
     }
     jQuery.post(url, params, util.bind(this, this.onUpdate, callback), "json");
+};
+
+/**
+ * ローカルの DB へ Status を追加する
+ */
+tw.Store.addStatus = function(status){
+    this.statuses_[status.id] = status;
 };
 
 /**

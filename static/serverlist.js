@@ -90,7 +90,13 @@ tw.ServerList.prototype.toStatuses = function(json){
 
 tw.ServerList.prototype.onRefresh = function(json){
     console.log("on refresh");
-    this.statuses_ = this.toStatuses(json).concat(this.statuses_);
+    var newStatuses = this.toStatuses(json);
+    this.statuses_ = newStatuses.concat(this.statuses_);
     this.updatedAt_ = new Date;
+    
+    for(var i = 0; i < newStatuses.length; i++){
+	tw.store.addStatus(newStatuses[i]);
+    }
+
     util.Event.trigger(this, "refresh");
 };
