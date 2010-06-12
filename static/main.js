@@ -26,13 +26,6 @@ tw.showUserTimeline = function(user){
 };
 
 /**
- * 指定されたユーザの favorites を表示する
- * userId が指定されなかった場合は、自分のものを表示する
- */
-tw.showFavorites = function(userId){
-};
-
-/**
  * 指定された TL を表示する
  * また、表示後 Refresh を実行する
  */

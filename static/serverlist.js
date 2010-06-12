@@ -10,8 +10,7 @@ tw.ServerList = function(url){
     this.updatedAt_ = new Date("1999/01/01");
 
     // 更新間隔(ms)
-    this.interval_ = 30 * 1000;
-    
+    this.interval_ = 60 * 1000;
 };
 
 util.extend(tw.ServerList, tw.List);

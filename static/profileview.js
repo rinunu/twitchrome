@@ -19,12 +19,21 @@ tw.ProfileView.prototype.initialize = function(){
 	function(event){
 	    event.preventDefault();
 	    tw.showTimeline(tw.store.getFriends(this_.user_));
+	    tw.components.background.setBackground(this_.user_);
 	});
     
     this.element_.find("a.followers").click(
 	function(event){
 	    event.preventDefault();
 	    tw.showTimeline(tw.store.getFollowers(this_.user_));
+	    tw.components.background.setBackground(this_.user_);
+	});
+    
+    this.element_.find("a.favorites").click(
+	function(event){
+	    event.preventDefault();
+	    tw.showTimeline(tw.store.getFavorites(this_.user_));
+	    tw.components.background.setBackground(this_.user_);
 	});
 };
 
