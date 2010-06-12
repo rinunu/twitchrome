@@ -28,12 +28,14 @@ tw.ServerList.prototype.updatedAt = function(){
 
 /**
  * サーバと通信し、リストの内容を最新にする
- * 取得する件数は count で指定する
+ * 取得する件数は options.count で指定する
  * 
  * 前回の呼出から時間を開けずに呼び出した場合、何も行わない
  */
-tw.ServerList.prototype.refresh = function(count){
-    if(new Date - this.updatedAt_ < 30 * 1000){
+tw.ServerList.prototype.refresh = function(options){
+    options = $.extend({count: 100, force: false}, options);
+    
+    if(!options.force && new Date - this.updatedAt_ < 30 * 1000){
 	console.log("頻繁な refresh を無視しました");
 	return;
     }
@@ -42,7 +44,7 @@ tw.ServerList.prototype.refresh = function(count){
     if(this.statuses_.length >=1){
 	params.since_id = this.statuses_[0].id;
     }
-    params.count = count || 100;
+    params.count = options.count;
     tw.store.get(this.url_, params, util.bind(this, this.onRefresh));
 };
 

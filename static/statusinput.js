@@ -37,7 +37,7 @@ tw.StatusInput.prototype.reply = function(status){
 
 tw.StatusInput.prototype.onUpdate = function(){
     console.log("on update(statusinput)");
-    tw.lists.homeTimeline.refresh();
+    tw.lists.homeTimeline.refresh({force: true});
     this.textarea_.val("");
     this.inReplyTo_ = null;
 };

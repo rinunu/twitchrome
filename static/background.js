@@ -14,11 +14,20 @@ tw.Background.prototype.initialize = function(){
 tw.Background.prototype.setBackground = function(user){
     var old = $(".bg.current");
     var new_ = $(".bg:not(.current)");
+
+    var bgImage = user.profile_background_image_url;
+    var bgColor = user.profile_background_color;
+
+    // Twitter の不具合?
+    if(/\/theme1\/bg.png$/.test(bgImage) && bgColor == "9ae4e8"){
+	bgColor = "c0deed";
+    }
+    
     new_.css(
 	{
-	    backgroundImage: "url(" + user.profile_background_image_url + ")",
+	    backgroundImage: "url(" + bgImage + ")",
 	    backgroundRepeat: user.profile_background_tile ? "repeat" : "no-repeat",
-	    backgroundColor: "#" + user.profile_background_color
+	    backgroundColor: "#" + bgColor
 	});
     
     old.removeClass("current");
