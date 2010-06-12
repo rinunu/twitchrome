@@ -159,7 +159,69 @@ a.hash:hover, a.url:hover, a.user:hover{
 
 .main_list{
     overflow-y: auto;
+}
+
+/* ---------------------------------------------------------------------- */
+/* つぶやき */
+
+.status{
+}
+
+.status .profile_image{
+    clear: both;
+    float: left;
+    width: 48px;
+    height: 48px;
+    margin-right: 5px;
+    /* border-radius: 5px; */
+    border: 1px solid #777;
+}
+
+.status .body{
+    padding: 3px;
+    padding-bottom: 0;
+    border: solid 1px #999;
+    border-radius: 5px;
+    min-height: 50px;
+    cursor: pointer;
+    background-color: #fff;
+    margin: 3px;
+    margin-left: 60px;
+}
+
+.status .body:nth-child(even){
+    background-color: #f9f9f9;
+}
+
+.status:focus{
+    outline: none;
+}
+
+.status.focus .body{
+    background-color: #888;
+    color: #fff;
+}
+
+.status .name{
+    font-weight: bold;
+}
+
+.status_actions{
+    float: right;
+    font-size: 8px;
+}
+
+.status_actions a{
+    color: #000;
+    border-radius: 3px;
+    background-color: #eee;
     border: 1px solid #ccc;
+}
+
+.status .footer{
+    font-size: 10px;
+    color: #ccc;
+    text-align: right;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -196,62 +258,6 @@ a.hash:hover, a.url:hover, a.user:hover{
     margin: 0px 5px;
 }
 
-/* ---------------------------------------------------------------------- */
-/* つぶやき */
-
-.status{
-    padding: 3px;
-    padding-bottom: 0;
-    border-color: #ccc;
-    border-bottom: solid 1px #999;
-    min-height: 50px;
-    cursor: pointer;
-    background-color: #fff;
-}
-
-.status:nth-child(even){
-    background-color: #f9f9f9;
-}
-
-.status:focus{
-    outline: none;
-}
-
-.status.focus{
-    background-color: #888;
-    color: #fff;
-}
-
-.status .profile_image{
-    float: left;
-    width: 48px;
-    height: 48px;
-    margin-right: 5px;
-    border-radius: 3px;
-    border: 1px solid #ccc;
-}
-
-.status .name{
-    font-weight: bold;
-}
-
-.status_actions{
-    float: right;
-    font-size: 8px;
-}
-
-.status_actions a{
-    color: #000;
-    border-radius: 3px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-}
-
-.status .footer{
-    font-size: 10px;
-    color: #ccc;
-    text-align: right;
-}
 
 /* ---------------------------------------------------------------------- */
 /* .profile */

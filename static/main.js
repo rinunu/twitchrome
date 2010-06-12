@@ -75,10 +75,7 @@ tw.initialize = function(){
     // デザイン要素削除
     $(".main_list").empty();
     
-    // リスト生成
     tw.store = new tw.Store();
-    tw.lists.homeTimeline = tw.store.createHomeTimeline();
-    tw.lists.mentions = tw.store.createMentions();
 
     // 使用するコンポーネント登録
     tw.components.mainListView = new tw.ListView($(".main_list"));
@@ -123,5 +120,7 @@ $(function(){
       // tw.initializeDesign();
     
       tw.loadUser();
+      tw.lists.homeTimeline = tw.store.createHomeTimeline();
+      tw.lists.mentions = tw.store.createMentions();
       tw.showTimeline(tw.lists.homeTimeline);
 });
