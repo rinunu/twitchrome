@@ -88,6 +88,7 @@ a.hash:hover, a.url:hover, a.user:hover{
 .button{
     border: 1px solid #ccc;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
     background-color: #eee;
     font-size: 15px;
     padding: 3px 5px;
@@ -182,6 +183,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     padding-bottom: 0;
     border: solid 1px #999;
     border-radius: 5px;
+    -webkit-border-radius: 5px;
     min-height: 50px;
     cursor: pointer;
     background-color: #fff;
@@ -214,6 +216,7 @@ a.hash:hover, a.url:hover, a.user:hover{
 .status_actions a{
     color: #000;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
     background-color: #eee;
     border: 1px solid #ccc;
 }
@@ -239,6 +242,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     width: auto;
     font-size: 14px;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
     background-color: #eee;
     border: 1px solid #ccc;
     padding: 3px;
@@ -252,6 +256,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     color: #fff;
     font-size: 10px;
     border-radius: 7px;
+    -webkit-border-radius: 7px;
     background-color: #aaa;
     border: 1px solid #999;
     padding: 1px 5px;
@@ -265,6 +270,7 @@ a.hash:hover, a.url:hover, a.user:hover{
 .profile{
     font-size: 11px;
     border-radius: 7px;
+    -webkit-border-radius: 7px;
     background-color: #eee;
     border: 1px solid #999;
     padding: 5px;
@@ -274,6 +280,7 @@ a.hash:hover, a.url:hover, a.user:hover{
 .profile img{
     float: left;
     border-radius: 5px;
+    -webkit-border-radius: 5px;
     margin-right: 5px;
     width: 48px;
     height: 48px;
@@ -291,6 +298,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     margin-left: 5px;
 
     border-radius: 3px;
+    -webkit-border-radius: 3px;
     color: #fff;
     font-weight: bold;
     padding: 2px;
