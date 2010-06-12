@@ -37,7 +37,7 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
 /**
  * ローカルの DB へ Status を追加する
  */
-tw.Store.addStatus = function(status){
+tw.Store.prototype.addStatus = function(status){
     this.statuses_[status.id] = status;
 };
 
