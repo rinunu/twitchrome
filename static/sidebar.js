@@ -8,16 +8,16 @@ tw.Sidebar = function(){
 tw.Sidebar.prototype.initialize = function(){
     this.element_.find("a.home").click(
 	function(){
-	    tw.showHomeTimeline();
+	    tw.showTimeline(tw.lists.homeTimeline);
 	});
 
     this.element_.find("a.mentions").click(
 	function(){
-	    tw.showMentions();
+	    tw.showTimeline(tw.lists.mentions);
 	});
 
     this.element_.find("a.favorites").click(
 	function(){
-	    tw.showFavorites();
+	    tw.showTimeline(tw.store.getFavorites());
 	});
 };

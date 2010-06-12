@@ -10,7 +10,7 @@ tw.Store = function(){
     this.timelines.mentions = new tw.ServerList("/statuses/mentions.json");
     this.timelines.sent = new tw.ServerList("/statuses/user_timeline.json");
 
-    setInterval(util.bind(this, this.refresh), 5 * 1000);
+    setInterval(util.bind(this, this.refreshAll), 5 * 1000);
 };
 
 /**
@@ -32,6 +32,13 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
     jQuery.post(url, params, util.bind(this, this.onUpdate, callback), "json");
 };
 
+/**
+ */
+tw.Store.prototype.get = function(url, params, callback){
+    console.log("refresh", url);
+    $.getJSON("/twitter_api" + url, params, callback);
+};
+
 tw.Store.prototype.createHomeTimeline = function(){
     return this.timelines.homeTimeline;
 };
@@ -41,9 +48,9 @@ tw.Store.prototype.createMentions = function(){
 };
 
 /**
- * 指定されたユーザの Timeline を作成する
+ * 指定されたユーザの Timeline を取得する
  */
-tw.Store.prototype.createUserTimeline = function(user){
+tw.Store.prototype.getUserTimeline = function(user){
     var userId = user;
     if(user.id){
 	userId = user.id;
@@ -52,11 +59,21 @@ tw.Store.prototype.createUserTimeline = function(user){
     return new tw.ServerList(url);
 };
 
+tw.Store.prototype.getFriends = function(user){
+    var url = "/statuses/friends/" + user.id + ".json";
+    return new tw.Users(url);
+};
+
+tw.Store.prototype.getFollowers = function(user){
+    var url = "/statuses/followers/" + user.id + ".json";
+    return new tw.Users(url);
+};
+
 /**
  * 指定されたユーザの favorites を作成する
  * userId が指定されなかった場合は、自分のものを作成する
  */
-tw.Store.prototype.createFavorites = function(userId){
+tw.Store.prototype.getFavorites = function(userId){
     var url = "/favorites.json";
     if(userId){
 	url = "/favorites/" + userId + ".json";
@@ -79,7 +96,7 @@ tw.Store.prototype.onUpdate = function(callback, json){
     callback();
 };
 
-tw.Store.prototype.refresh = function(){
+tw.Store.prototype.refreshAll = function(){
     console.log("auto refresh");
     for(var a in this.timelines){
         var list = this.timelines[a];

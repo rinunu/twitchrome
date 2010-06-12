@@ -13,28 +13,13 @@ tw.refreshList = function(){
 };
 
 /**
- * Home TL を表示する
- */
-tw.showHomeTimeline = function(){
-    tw.components.mainListView.setList(tw.lists.homeTimeline);
-};
-
-/**
- * Mentions TL を表示する
- */
-tw.showMentions = function(){
-    tw.components.mainListView.setList(tw.lists.mentions);
-};
-
-/**
  * 指定されたユーザの TL を表示する
  * user は User もしくは screen_name
  */
 tw.showUserTimeline = function(user){
     console.log("show", user);
-    var list = tw.store.createUserTimeline(user);
-    tw.components.mainListView.setList(list);
-    list.refresh();
+    var list = tw.store.getUserTimeline(user);
+    tw.showTimeline(list);
     if(user.id){
 	tw.components.background.setBackground(user);
     }
@@ -45,9 +30,15 @@ tw.showUserTimeline = function(user){
  * userId が指定されなかった場合は、自分のものを表示する
  */
 tw.showFavorites = function(userId){
-    var list = tw.store.createFavorites(userId);
-    tw.components.mainListView.setList(list);
-    list.refresh();
+};
+
+/**
+ * 指定された TL を表示する
+ * また、表示後 Refresh を実行する
+ */
+tw.showTimeline = function(timeline){
+    tw.components.mainListView.setList(timeline);
+    timeline.refresh();
 };
 
 // ----------------------------------------------------------------------
@@ -55,16 +46,6 @@ tw.showFavorites = function(userId){
 
 tw.saveTemplates = function(){
     tw.templates.status = $(".main_list .status").first().clone();
-};
-
-/**
- * 一時
- */
-tw.refresh = function(){
-    for(var a in tw.lists){
-        var list = tw.lists[a];
-        list.refresh();
-    }
 };
 
 /**
@@ -142,6 +123,5 @@ $(function(){
       // tw.initializeDesign();
     
       tw.loadUser();
-      tw.showHomeTimeline();
-      tw.refresh();
+      tw.showTimeline(tw.lists.homeTimeline);
 });

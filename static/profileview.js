@@ -14,6 +14,18 @@ tw.ProfileView.prototype.initialize = function(){
 	    event.preventDefault();
 	    tw.showUserTimeline(this_.user_);
 	});
+    
+    this.element_.find("a.friends").click(
+	function(event){
+	    event.preventDefault();
+	    tw.showTimeline(tw.store.getFriends(this_.user_));
+	});
+    
+    this.element_.find("a.followers").click(
+	function(event){
+	    event.preventDefault();
+	    tw.showTimeline(tw.store.getFollowers(this_.user_));
+	});
 };
 
 // ユーザのプロフィールを表示する
