@@ -161,15 +161,58 @@ tw.ListView.prototype.insert = function(statuses){
 };
 
 /**
+ * スクロール状態を保存する
+ */
+tw.ListView.prototype.scrollState = function(){
+    var children = this.element_.children(".status");
+
+    // console.log("parent scroll", this.element_.scrollTop());
+    // console.log("parent offset", this.element_.offset().top);
+    // console.log("parent position", this.element_.position().top);
+    // console.log("parent offset top", this.element_[0].offsetTop);
+    // console.log("child offset parent", children[0].offsetParent);
+    // console.log("child offsetParent()", $(children[0]).offsetParent()[0]);
+    // console.log("child scroll", $(children[0]).scrollTop());
+    // console.log("child offset", $(children[0]).offset().top);
+    // console.log("child position", $(children[0]).position().top);
+    // console.log("child offset top", children[0].offsetTop);
+
+
+    // child.offsetTop は element_ 内での相対位置
+    var scrollTop = this.element_.scrollTop();
+    for(var i = 0; i < children.length; i++){
+	var child = children[i];
+	if(child.offsetTop >= scrollTop){
+	    break;
+	}
+    }
+    
+    // offset はビューポート上端から element までの offset
+    return {element: child, offset: child.offsetTop - scrollTop};
+};
+
+/**
+ * スクロール状態を復元する
+ */
+tw.ListView.prototype.setScrollState = function(scrollState){
+    this.element_.scrollTop(scrollState.element.offsetTop - scrollState.offset);
+};
+
+
+/**
  * List の内容に合わせて表示を更新する
  */
 tw.ListView.prototype.refreshView = function(newStatuses){
+    // 画面最上部に表示している Status をもとめる
+
     if(this.element_[0].childNodes.length == 0){
 	console.log("prepend all");
 	this.prepend(newStatuses);
     }else{
+	var scrollState = this.scrollState();
 	console.log("insert partial", newStatuses.length);
 	this.insert(newStatuses);
+	this.setScrollState(scrollState);
     }
 
     this.updatedAt_ = this.list_.updatedAt();
