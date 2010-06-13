@@ -145,16 +145,18 @@ tw.ListView.prototype.insert = function(statuses){
     
     for(var i = statuses.length - 1; i >= 0; i--){
 	var status = statuses[i];
+	var after = null;
 	// 先頭に追加されるパターンが多いため、2分探索ではなく、普通の検索を行う
 	for(var j = 0; j < children.length; j++){
 	    var child = $(children[j]);
 	    var childStatus = child.data("status");
-	    if(status.id < childStatus.id){
-		var elem = this.createElement(statuses[i]);
-		parent.insertBefore(elem[0], child);
+	    if(status.id > childStatus.id){
+		after = child[0];
 		break;
 	    }
 	}
+	var elem = this.createElement(statuses[i]);
+	parent.insertBefore(elem[0], after); // after == null の時は末尾
     }
 };
 
