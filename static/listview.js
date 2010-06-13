@@ -19,10 +19,13 @@ tw.ListView.HASH_RE = /#(\w+)/g;
 tw.ListView.prototype.initialize = function(){
     $(".status").live("focus", util.bind(this, this.onFocus));
     $(".status").live("blur", util.bind(this, this.onBlur));
-    $("a.reply").live("click", util.bind(this, this.onReply));
+    
     $("a.user:not(.in_reply_to)").live("click", util.bind(this, this.onShowUser));
     $("a.user.in_reply_to").live("click", util.bind(this, this.onShowConversation));
     $("a.hash").live("click", util.bind(this, this.onShowHash));
+
+    $("a.reply").live("click", util.bind(this, this.onReply));
+    $("a.rt").live("click", util.bind(this, this.onRt));
 };
 
 /**
@@ -225,6 +228,12 @@ tw.ListView.prototype.onReply = function(event){
     event.preventDefault();
     var status = this.getStatus($(event.target));
     tw.components.statusInput.reply(status);
+};
+
+tw.ListView.prototype.onRt = function(event){
+    event.preventDefault();
+    var status = this.getStatus($(event.target));
+    tw.components.statusInput.rt(status);
 };
 
 tw.ListView.prototype.onShowUser = function(event){

@@ -32,6 +32,17 @@ tw.StatusInput.prototype.reply = function(status){
     util.setCaretPosition(textarea, textarea.val().length);
 };
 
+/**
+ * 非公式 RT する
+ */
+tw.StatusInput.prototype.rt = function(status){
+    this.inReplyTo_ = null;
+    var textarea = $(".status_input textarea");
+    textarea.val("RT @" + status.user.screen_name + ": " + status.text);
+    textarea.focus();
+    util.setCaretPosition(textarea, 0);
+};
+
 // ----------------------------------------------------------------------
 // private
 
