@@ -49,6 +49,8 @@ util.Event.unbind = function(object){
 
 /**
  * source の eventType イベントをハンドラーに通知する
+ * 
+ * このメソッドに渡された引数は、すべてハンドラーに渡される。
  */
 util.Event.trigger = function(source, eventType){
     var handlers = this.handlerMap[this.getId(source)];
@@ -60,7 +62,7 @@ util.Event.trigger = function(source, eventType){
         var handler = handlers[i];
 	var method = handler.methods[eventType];
 	if(method){
-	    method.call(handler.object);
+	    method.apply(handler.object, arguments);
 	}
     }
 };
