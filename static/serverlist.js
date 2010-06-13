@@ -7,9 +7,6 @@ tw.ServerList = function(url){
     
     this.url_ = url;
 
-    // 最終更新時間
-    this.updatedAt_ = new Date("1999/01/01");
-
     // 更新間隔(ms)
     this.interval_ = 60 * 1000;
 };
@@ -21,10 +18,6 @@ util.extend(tw.ServerList, tw.List);
  */
 tw.ServerList.prototype.interval = function(){
     return this.interval_;
-};
-
-tw.ServerList.prototype.updatedAt = function(){
-    return this.updatedAt_;
 };
 
 /**
@@ -49,10 +42,6 @@ tw.ServerList.prototype.refresh = function(options){
     tw.store.get(this.url_, params, util.bind(this, this.onRefresh));
 };
 
-tw.ServerList.prototype.statuses = function(){
-    return this.statuses_;
-};
-
 tw.ServerList.prototype.newCount = function(){
     // TODO
 };
@@ -73,12 +62,7 @@ tw.ServerList.prototype.toStatuses = function(json){
 tw.ServerList.prototype.onRefresh = function(json){
     console.log("on refresh");
     var newStatuses = this.toStatuses(json);
-    this.statuses_ = newStatuses.concat(this.statuses_);
-    this.updatedAt_ = new Date;
-    
-    for(var i = 0; i < newStatuses.length; i++){
-	tw.store.addStatus(newStatuses[i]);
-    }
 
-    util.Event.trigger(this, "refresh");
+    this.statuses_ = newStatuses.concat(this.statuses_);
+    this.addNew(newStatuses);
 };

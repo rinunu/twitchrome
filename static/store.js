@@ -12,7 +12,7 @@ tw.Store = function(){
     this.timelines.mentions = new tw.ServerList("/statuses/mentions.json");
     this.timelines.sent = new tw.ServerList("/statuses/user_timeline.json");
 
-    setInterval(util.bind(this, this.refreshAll), 5 * 1000);
+    setInterval(util.bind(this, this.refreshAll), 10 * 1000);
 };
 
 /**
@@ -42,11 +42,30 @@ tw.Store.prototype.addStatus = function(status){
 };
 
 /**
+ * Status を取得する
+ * ローカルに保持している場合は、それを取得する
+ */
+tw.Store.prototype.getStatus = function(id, callback){
+    console.log("getStatus");
+
+    var status = this.statuses_[id];
+    if(status){
+	console.log("use cache");
+	setTimeout(function(){callback(status);}, 100);
+    }else{
+	this.get("/statuses/show/" + id + ".json", {},
+		 util.bind(this, this.onGetStatus, callback));
+    }
+};
+
+/**
  */
 tw.Store.prototype.get = function(url, params, callback){
     console.log("refresh", url);
     $.getJSON("/twitter_api" + url, params, callback);
 };
+
+// ----------------------------------------------------------------------
 
 tw.Store.prototype.createHomeTimeline = function(){
     return this.timelines.homeTimeline;
@@ -90,6 +109,10 @@ tw.Store.prototype.getFavorites = function(userId){
     return new tw.ServerList(url);
 };
 
+tw.Store.prototype.getConversation = function(status){
+    return new tw.ConversationTimeline(status);
+};
+
 // ----------------------------------------------------------------------
 
 tw.Store.isStatus = function(object){
@@ -106,7 +129,6 @@ tw.Store.prototype.onUpdate = function(callback, json){
 };
 
 tw.Store.prototype.refreshAll = function(){
-    console.log("auto refresh");
     for(var a in this.timelines){
         var list = this.timelines[a];
 	var nextRefresh = new Date(list.interval() + list.updatedAt().getTime());
@@ -115,4 +137,10 @@ tw.Store.prototype.refreshAll = function(){
 	    break; // 1度に更新するのはひとつだけ
 	}
     }
+};
+
+tw.Store.prototype.onGetStatus = function(callback, json){
+    console.log("onGetStatus", json);
+    this.addStatus(json);
+    callback(json);
 };

@@ -5,6 +5,11 @@
 tw.ListView = function(element){
     this.list_ = null;
     this.element_ = element;
+    this.updatedAt_ = new Date("1999/01/01");
+
+    // 表示している Status 要素の情報
+    // {"statusId": element}, ...}
+    this.elements_ = [];
 };
 
 tw.ListView.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
@@ -15,7 +20,8 @@ tw.ListView.prototype.initialize = function(){
     $(".status").live("focus", util.bind(this, this.onFocus));
     $(".status").live("blur", util.bind(this, this.onBlur));
     $("a.reply").live("click", util.bind(this, this.onReply));
-    $("a.user").live("click", util.bind(this, this.onShowUser));
+    $("a.user:not(.in_reply_to)").live("click", util.bind(this, this.onShowUser));
+    $("a.user.in_reply_to").live("click", util.bind(this, this.onShowConversation));
     $("a.hash").live("click", util.bind(this, this.onShowHash));
 };
 
@@ -33,13 +39,14 @@ tw.ListView.prototype.setList = function(list){
     if(this.list_){
 	util.Event.unbind(this);
 	this.element_.empty();
+	this.updatedAt_ = new Date("1999/01/01");
     }
     
     this.list_ = list;
     
     util.Event.bind(this.list_, this, {refresh: this.onRefresh});
     
-    this.refreshView();
+    this.refreshView(list.statuses());
 };
 
 /**
@@ -97,9 +104,9 @@ tw.ListView.prototype.getElement = function(status){
 };
 
 /**
- * リストの先頭に Status を追加する
+ * Status 表示用の Element を生成する
  */
-tw.ListView.prototype.addStatus = function(status){
+tw.ListView.prototype.createElement = function(status){
     var elem = tw.templates.status.clone();
     
     elem.find("img").attr("src", status.user.profile_image_url);
@@ -111,28 +118,56 @@ tw.ListView.prototype.addStatus = function(status){
     textElem.html(this.formatText(status.text, status));
 
     elem.find(".source").html(status.source);
-    
     elem.find(".created_at").html(this.formatDate(status.created_at));
+    
+    return elem;
+};
 
-    this.element_.prepend(elem);
+/**
+ * statuses をリストの先頭に追加する
+ */
+tw.ListView.prototype.prepend = function(statuses){
+    for(var i = statuses.length - 1; i >= 0; i--){
+	var elem = this.createElement(statuses[i]);
+	this.element_.prepend(elem);
+    }
+};
+
+/**
+ * statuses を適切な位置へ追加する
+ */
+tw.ListView.prototype.insert = function(statuses){
+    var children = this.element_.children(".status");
+    var parent = this.element_[0];
+    
+    for(var i = statuses.length - 1; i >= 0; i--){
+	var status = statuses[i];
+	// 先頭に追加されるパターンが多いため、2分探索ではなく、普通の検索を行う
+	for(var j = 0; j < children.length; j++){
+	    var child = $(children[j]);
+	    var childStatus = child.data("status");
+	    if(status.id < childStatus.id){
+		var elem = this.createElement(statuses[i]);
+		parent.insertBefore(elem[0], child);
+		break;
+	    }
+	}
+    }
 };
 
 /**
  * List の内容に合わせて表示を更新する
  */
-tw.ListView.prototype.refreshView = function(){
-    var origin = null;
-    if(this.element_.length >= 1){
-	origin = this.element_.children().first().data("status");
+tw.ListView.prototype.refreshView = function(newStatuses){
+    if(this.element_[0].childNodes.length == 0){
+	console.log("prepend all");
+	this.prepend(newStatuses);
+    }else{
+	console.log("insert partial", newStatuses.length);
+	this.insert(newStatuses);
     }
 
-    var statuses = this.list_.statuses();
-    var this_ = this;
-
-    this.list_.eachNew(
-    	function(status){
-    	    this_.addStatus(status);
-    	}, origin);
+    this.updatedAt_ = this.list_.updatedAt();
 
     var focus = this.list_.focus();
     if(focus){
@@ -168,8 +203,8 @@ tw.ListView.prototype.formatDate = function(date){
     return date.join(":");
 };
 
-tw.ListView.prototype.onRefresh = function(){
-    this.refreshView();
+tw.ListView.prototype.onRefresh = function(s, e, newStatuses){
+    this.refreshView(newStatuses);
 };
 
 /**
@@ -187,20 +222,27 @@ tw.ListView.prototype.onBlur = function(){
 };
 
 tw.ListView.prototype.onReply = function(event){
+    event.preventDefault();
     var status = this.getStatus($(event.target));
     tw.components.statusInput.reply(status);
 };
 
 tw.ListView.prototype.onShowUser = function(event){
-    
-    console.log();
-    tw.showUserTimeline($(event.target).text().slice(1));
     event.preventDefault();
+    tw.showUserTimeline($(event.target).text().slice(1));
 };
 
 tw.ListView.prototype.onShowHash = function(event){
-    alert("TODO 未実装です");
     event.preventDefault();
+    alert("TODO ハッシュを検索した結果を表示する予定");
+};
+
+tw.ListView.prototype.onShowConversation = function(event){
+    event.preventDefault();
+    console.log(event.target);
+    var status = this.getStatus($(event.target));
+    console.assert(status);
+    tw.showTimeline(tw.store.getConversation(status));
 };
 
 /**
