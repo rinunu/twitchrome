@@ -110,6 +110,11 @@ tw.initializeDesign = function(){
     }
 };
 
+$(function() {
+      $("a.lightbox").fancybox({
+      });
+});
+
 $(function(){
       tw.initialize();
       // tw.initializeDesign();

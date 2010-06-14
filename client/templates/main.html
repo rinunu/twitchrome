@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
 {% block head %}
+<script type="text/javascript" src="/static/jquery.jgrowl_compressed.js"></script>
 <link href="static/jquery.jgrowl.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="/static/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
+<link href="/static/fancybox/jquery.fancybox-1.3.1.css" rel="stylesheet" type="text/css">
+
 <link href="static/client.css" rel="stylesheet" type="text/css">
 
-<script type="text/javascript" src="/static/jquery.jgrowl_compressed.js"></script>
 <script type="text/javascript" src="/static/console.js"></script>
 <script type="text/javascript" src="/static/util.js"></script>
 <script type="text/javascript" src="/static/stopwatch.js"></script>
@@ -58,7 +62,9 @@
   </div>
 
   <div class="profile">
-    <img src="http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png">
+    <a href="" class="profile_image lightbox">
+      <img src="http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png">
+    </a>
 
     <a class="user_timeline" href="">
       <div>

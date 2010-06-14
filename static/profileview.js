@@ -54,6 +54,7 @@ tw.ProfileView.prototype.setUser = function(user){
     this.element_.find(".url .dd").attr("href", user.url).text(user.url);
 
     this.element_.find("img").attr("src", user.profile_image_url);
+    this.element_.find("a.profile_image").attr("href", user.profile_image_url.replace(/_normal/, ""));
 
     this.element_.find("a.twitter").attr("href", "http://twitter.com/" + user.screen_name);
 };
