@@ -138,12 +138,13 @@ tw.ListView.prototype.prepend = function(statuses){
 
 /**
  * statuses を適切な位置へ追加する
+ * statuses は作成日の降順になっていること
  */
 tw.ListView.prototype.insert = function(statuses){
     var children = this.element_.children(".status");
     var parent = this.element_[0];
     
-    for(var i = statuses.length - 1; i >= 0; i--){
+    for(var i = 0; i < statuses.length; i++){
 	var status = statuses[i];
 	var after = null;
 	// 先頭に追加されるパターンが多いため、2分探索ではなく、普通の検索を行う
