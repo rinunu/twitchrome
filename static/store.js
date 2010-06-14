@@ -99,12 +99,12 @@ tw.Store.prototype.getFollowers = function(user){
 
 /**
  * 指定されたユーザの favorites を作成する
- * userId が指定されなかった場合は、自分のものを作成する
+ * user が指定されなかった場合は、自分のものを作成する
  */
-tw.Store.prototype.getFavorites = function(userId){
+tw.Store.prototype.getFavorites = function(user){
     var url = "/favorites.json";
-    if(userId){
-	url = "/favorites/" + userId + ".json";
+    if(user){
+	url = "/favorites/" + user.id + ".json";
     }
     return new tw.ServerList(url);
 };

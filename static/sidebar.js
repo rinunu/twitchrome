@@ -6,19 +6,19 @@ tw.Sidebar = function(){
 };
 
 tw.Sidebar.prototype.initialize = function(){
-    this.element_.find("a.home").click(
+    this.element_.find(".menu a.home").click(
 	function(){
 	    tw.showTimeline(tw.lists.homeTimeline);
 	    tw.components.background.setBackground(tw.user);
 	});
 
-    this.element_.find("a.mentions").click(
+    this.element_.find(".menu a.mentions").click(
 	function(){
 	    tw.showTimeline(tw.lists.mentions);
 	    tw.components.background.setBackground(tw.user);
 	});
 
-    this.element_.find("a.favorites").click(
+    this.element_.find(".menu a.favorites").click(
 	function(){
 	    tw.showTimeline(tw.store.getFavorites());
 	    tw.components.background.setBackground(tw.user);
