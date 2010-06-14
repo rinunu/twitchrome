@@ -236,7 +236,8 @@ tw.ListView.prototype.formatText = function(text, status){
     }
     text = text.replace(tw.ListView.USER_RE, "<a class='" + userClass + "'>$&</a>");
     text = text.replace(tw.ListView.HASH_RE, "<a class='hash'>$&</a>");
-    text = text.replace(tw.ListView.URL_RE, "<a href='$&' class='url' target='_blank'>$&</a>");
+    
+    text = text.replace(tw.ListView.URL_RE, tw.Inline.inline);
     return text;
 };
 

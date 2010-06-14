@@ -267,6 +267,11 @@ a.hash:hover, a.url:hover, a.user:hover{
 .status .unfavorite{
 }
 
+.status .text img{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
 /* ---------------------------------------------------------------------- */
 /* .sidebar */
 
