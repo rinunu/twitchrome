@@ -191,7 +191,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     margin-left: 60px;
 }
 
-.status .body:nth-child(even){
+.status:nth-child(even) .body{
     background-color: #f9f9f9;
 }
 
@@ -213,7 +213,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     font-size: 8px;
 }
 
-.status_actions a{
+.status_actions .rt, .status_actions .reply{
     color: #000;
     border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -229,6 +229,24 @@ a.hash:hover, a.url:hover, a.user:hover{
 
 .status .in_reply_to:after{
     content: url(conversation.png);
+}
+
+.status .favorite, .status .unfavorite{
+}
+
+.status .favorite:hover, .status .unfavorite:hover{
+}
+
+/**
+ * まだお気に入りじゃない(のでお気に入りにする)
+ */
+.status .favorite{
+}
+
+/**
+ * お気に入り(のでお気に入りじゃなくする)
+ */
+.status .unfavorite{
 }
 
 /* ---------------------------------------------------------------------- */
