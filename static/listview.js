@@ -10,6 +10,8 @@ tw.ListView = function(element){
     // 表示している Status 要素の情報
     // {"statusId": element}, ...}
     this.elements_ = [];
+
+    util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
 };
 
 tw.ListView.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
@@ -26,6 +28,8 @@ tw.ListView.prototype.initialize = function(){
 
     $("a.reply").live("click", util.bind(this, this.onReply));
     $("a.rt").live("click", util.bind(this, this.onRt));
+    $("a.favorite.off").live("click", util.bind(this, this.onFavorite, true));
+    $("a.favorite.on").live("click", util.bind(this, this.onFavorite, false));
 };
 
 /**
@@ -40,7 +44,7 @@ tw.ListView.prototype.list = function(){
  */
 tw.ListView.prototype.setList = function(list){
     if(this.list_){
-	util.Event.unbind(this);
+	util.Event.unbind(this, this.list_);
 	this.element_.empty();
 	this.updatedAt_ = new Date("1999/01/01");
     }
@@ -93,6 +97,7 @@ tw.ListView.prototype.setFocus = function(focus){
 
 /**
  * Status から、それを表示している HTML 要素を取得する
+ * 現在線形検索が発生するので注意
  */
 tw.ListView.prototype.getElement = function(status){
     var element = null;
@@ -107,23 +112,41 @@ tw.ListView.prototype.getElement = function(status){
 };
 
 /**
- * Status 表示用の Element を生成する
+ * Status 表示用の Element を更新する
  */
-tw.ListView.prototype.createElement = function(status){
-    var elem = tw.templates.status.clone();
+tw.ListView.prototype.refreshElement = function(element){
+    console.assert(element);
+    var status = element.data("status");
     
-    elem.find("img").attr("src", status.user.profile_image_url);
-    elem.find(".name").text(status.user.screen_name);
-    elem.data("status", status);
+    element.find("img").attr("src", status.user.profile_image_url);
+    element.find(".name").text(status.user.screen_name);
 
-    var textElem = elem.find(".text");
+    var textElem = element.find(".text");
     textElem.empty();
     textElem.html(this.formatText(status.text, status));
 
-    elem.find(".source").html(status.source);
-    elem.find(".created_at").html(this.formatDate(status.created_at));
-    
-    return elem;
+    element.find(".source").html(status.source);
+    element.find(".created_at").html(this.formatDate(status.created_at));
+
+    var favorite = element.find(".favorite");
+    favorite.removeClass("wait");
+    favorite.removeClass("on");
+    favorite.removeClass("off");
+    if(status.favorited){
+	favorite.addClass("on");
+    }else{
+	favorite.addClass("off");
+    }
+};
+
+/**
+ * Status 表示用の Element を生成する
+ */
+tw.ListView.prototype.createElement = function(status){
+    var element = tw.templates.status.clone();
+    element.data("status", status);
+    this.refreshElement(element, status);
+    return element;
 };
 
 /**
@@ -253,9 +276,21 @@ tw.ListView.prototype.formatDate = function(date){
     return date.join(":");
 };
 
+// ----------------------------------------------------------------------
+// 状態変化
+
 tw.ListView.prototype.onRefresh = function(s, e, newStatuses){
     this.refreshView(newStatuses);
 };
+
+tw.ListView.prototype.onStatusRefresh = function(source, eventType, status){
+    console.log('on status refresh', status);
+    this.refreshElement(this.getElement(status));
+};
+
+// ----------------------------------------------------------------------
+// 操作
+
 
 /**
  * ブラウザのフォーカスが変わった際に、内部フォーカスを更新する
@@ -275,6 +310,20 @@ tw.ListView.prototype.onReply = function(event){
     event.preventDefault();
     var status = this.getStatus($(event.target));
     tw.components.statusInput.reply(status);
+};
+
+tw.ListView.prototype.onFavorite = function(add, event){
+    event.preventDefault();
+    var element = $(event.target);
+    var status = this.getStatus(element);
+    element.addClass("wait");
+    element.removeClass("on");
+    element.removeClass("off");
+    if(add){
+	tw.store.favorite(status);
+    }else{
+	tw.store.unfavorite(status);
+    }
 };
 
 tw.ListView.prototype.onRt = function(event){
@@ -300,6 +349,9 @@ tw.ListView.prototype.onShowConversation = function(event){
     console.assert(status);
     tw.showTimeline(tw.store.getConversation(status));
 };
+
+// ----------------------------------------------------------------------
+// 
 
 /**
  * 指定された要素を含む .status 要素を取得する

@@ -3,6 +3,14 @@
  * Status を保存する
  *
  * また、各種タイムラインを生成する
+ * 
+ * Status について
+ * Status は Twitter API の Status をそのまま使用する。
+ * ただし、以下のプロパティを追加で保持する。
+ * - 処理中かどうか
+ * 
+ * Status の変更について
+ * 変更が正常に完了すると statusRefresh イベントを発生させる
  */
 tw.Store = function(){
     this.statuses_ = {};
@@ -32,17 +40,61 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
 	console.log("in_reply_to", inReplyTo);
 	params.in_reply_to_status_id = inReplyTo.id;
     }
-    tw.Ajax.post("ツイート", url, params, util.bind(this, this.onUpdate, callback));
+    tw.Ajax.ajax(
+	{
+	    type: "POST",
+	    name: "ツイート", 
+	    url: url, 
+	    params: params, 
+	    callback: util.bind(this, this.onUpdate, callback),
+	    target: status
+	});
+};
+
+/**
+ * お気に入りにする
+ * 
+ */
+tw.Store.prototype.favorite = function(status){
+    tw.Ajax.ajax(
+	{
+	    type: "POST",
+	    name: "お気に入りに追加する",
+	    url: "/twitter_api/favorites/create/" + status.id + ".json",
+	    callback: util.bind(this, this.onStatusRefresh),
+	    target: status
+	});
+};
+
+/**
+ * お気に入りを解除する
+ */
+tw.Store.prototype.unfavorite = function(status){
+    tw.Ajax.ajax(
+	{
+	    type: "POST",
+	    name: "お気に入りから削除する",
+	    url: "/twitter_api/favorites/destroy/" + status.id + ".json",
+	    callback: util.bind(this, this.onStatusRefresh),
+	    target: status
+	});
+};
+
+/**
+ * Status を削除する
+ */
+tw.Store.prototype.destroy = function(status){
 };
 
 /**
  * ローカルの DB へ Status を追加する
  * 
- * すでに DB に存在する場合は、それを return する
+ * すでに DB に存在する場合は、それを更新し、 return する
  */
 tw.Store.prototype.addStatus = function(status){
     var old = this.statuses_[status.id];
     if(old){
+	$.extend(old, status); // overwrite
 	return old;
     }
     this.statusesCount_++;
@@ -72,7 +124,14 @@ tw.Store.prototype.getStatus = function(id, callback){
  */
 tw.Store.prototype.get = function(url, params, callback){
     console.log("refresh", url);
-    tw.Ajax.get("取得", "/twitter_api" + url, params, callback);
+    tw.Ajax.ajax(
+	{
+	    type: "GET",
+	    name: "取得", 
+	    url: "/twitter_api" + url,
+	    params: params, 
+	    callback: callback
+	});
 };
 
 // ----------------------------------------------------------------------
@@ -153,4 +212,14 @@ tw.Store.prototype.onGetStatus = function(callback, json){
     console.log("onGetStatus", json);
     json = this.addStatus(json);
     callback(json);
+};
+
+/**
+ * Status の変更が完了した際に呼び出される
+ */
+tw.Store.prototype.onStatusRefresh = function(json){
+    console.log("store on status refresh");
+    json = this.addStatus(json);
+
+    util.Event.trigger(this, "statusRefresh", json);
 };

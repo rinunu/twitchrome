@@ -11,37 +11,28 @@ tw.Ajax = {
 
 /**
  * name には処理の名称を渡す(エラー表示に使用する)
+ * 
+ * command: {type, name, url, params, callback, target: 操作対象}
  */
-tw.Ajax.get = function(name, url, params, callback){
-    console.log("get", name);
+tw.Ajax.ajax = function(command){
+    console.log("get", command.name);
     $.ajax(
 	{
-	    type: "GET",
-	    url: url,
-	    data: params,
+	    type: command.type,
+	    url: command.url,
+	    data: command.params || {},
 	    dataType: "json",
-	    success: callback,
-	    error: util.bind(this, this.onError)
+	    success: util.bind(this, this.onSuccess, command),
+	    error: util.bind(this, this.onError, command)
 	});
 };
 
-/**
- * name には処理の名称を渡す(エラー表示に使用する)
- */
-tw.Ajax.post = function(name, url, params, callback){
-    console.log("post", name);
-    $.ajax(
-	{
-	    type: "POST",
-	    url: url,
-	    data: params,
-	    dataType: "json",
-	    success: callback,
-	    error: util.bind(this, this.onError)
-	});
+tw.Ajax.onSuccess = function(command, result){
+    console.log("ajax success", command);
+    command.callback(result);
 };
 
-tw.Ajax.onError = function(xhr){
+tw.Ajax.onError = function(command, xhr){
     console.error("ajax error", xhr);
-    $.jGrowl("通信に失敗しました: " + xhr.statusText);
+    $.jGrowl("「" + command.name + "」に失敗しました");
 };

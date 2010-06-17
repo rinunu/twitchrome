@@ -244,7 +244,6 @@ a.hash:hover, a.url:hover, a.user:hover{
 }
 
 .status_actions .favorite{
-    background-image: url(images/star_off.png);
     display: block;
     float: left;
     width: 16px;
@@ -252,13 +251,23 @@ a.hash:hover, a.url:hover, a.user:hover{
 }
 
 .status_actions .favorite:hover, .status .unfavorite:hover{
-    background-image: url(images/star.png);
+    /* background-image: url(images/star.png); */
 }
 
 /**
  */
-.status_actions a.favorite.favorited{
+.status_actions a.favorite.off{
+    background-image: url(images/star_off.png);
+}
+
+.status_actions a.favorite.on{
     background-image: url(images/star.png);
+    visibility: visible;
+    opacity: 1;
+}
+
+.status_actions a.favorite.wait{
+    background-image: url(images/wait.gif);
     visibility: visible;
     opacity: 1;
 }

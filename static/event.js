@@ -10,7 +10,7 @@ util.Event = {};
 util.Event.nextId = 1;
 
 /**
- * {eventId : [{object, methods}]}
+ * {sourceのid : [{object, methods}]}
  */
 util.Event.handlerMap = {};
 
@@ -31,20 +31,28 @@ util.Event.bind = function(source, object, methods){
 };
 
 /**
- * 対象 object をハンドラーリストから削除する
+ * 対象 object を source のハンドラーリストから削除する
+ * source を指定しなかった場合、すべてのハンドラーリストから削除する
  */
-util.Event.unbind = function(object){
+util.Event.unbind = function(object, source){
+    var sourceId = source ? this.getId(source) : null;
     console.assert(object);
+    var unbound = 0;
     for(var i in this.handlerMap){
+	if(sourceId && sourceId != i){
+	    continue;
+	}
 	var handlers = this.handlerMap[i];
 	for(var j = 0; j < handlers.length; ++j){
 	    var handler = handlers[j];
 	    if(handler.object == object){
 		handlers.splice(j, 1);
+		unbound++;
 		break;
 	    }
 	}
     }
+    console.log("unbind", unbound);
 };
 
 /**
