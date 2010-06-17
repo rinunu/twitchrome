@@ -180,7 +180,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     height: 48px;
     margin-right: 5px;
     /* border-radius: 5px; */
-    border: 1px solid #777;
+    border: 2px solid #fff;
 }
 
 .status .body{
