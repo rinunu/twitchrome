@@ -106,7 +106,9 @@ tw.ListView.prototype.getElement = function(status){
 	    var child = $(this);
 	    if(child.data("status") == status){
 		element = child;
+		return false;
 	    }
+	    return true;
 	});
     return element;
 };
@@ -285,7 +287,10 @@ tw.ListView.prototype.onRefresh = function(s, e, newStatuses){
 
 tw.ListView.prototype.onStatusRefresh = function(source, eventType, status){
     console.log('on status refresh', status);
-    this.refreshElement(this.getElement(status));
+    var element = this.getElement(status);
+    if(element){
+	this.refreshElement(element);
+    }
 };
 
 // ----------------------------------------------------------------------
