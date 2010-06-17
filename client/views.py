@@ -2,6 +2,7 @@
 
 import time
 import cgi
+import logging
 
 from django.shortcuts import render_to_response
 from django.conf import settings
@@ -23,6 +24,7 @@ request_token_url = 'http://twitter.com/oauth/request_token'
 authenticate_url = 'http://twitter.com/oauth/authorize'
 access_token_url = 'http://twitter.com/oauth/access_token'
 
+logger = logging.getLogger("views")
 
 def login(request):
     # "oauth_callback": request.build_absolute_uri("authenticated")
@@ -103,7 +105,7 @@ def twitter_api(request, url):
     # return HttpResponse(url + " - " + str(len(request.GET)))
 
     src_params = request.GET
-    if len(request.POST) >= 1:
+    if request.method == "POST":
         src_params = request.POST
 
     params = {}
@@ -114,7 +116,7 @@ def twitter_api(request, url):
 
     url = 'http://api.twitter.com/1/' + url;
 
-    if len(request.POST) >= 1:
+    if request.method == "POST":
         a = t.post(url, params)
     else:
         # a = t.post(url, params)
