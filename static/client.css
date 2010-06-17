@@ -243,7 +243,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     opacity: 1;
 }
 
-.status .favorite, .status .unfavorite{
+.status_actions .favorite{
     background-image: url(images/star_off.png);
     display: block;
     float: left;
@@ -251,23 +251,19 @@ a.hash:hover, a.url:hover, a.user:hover{
     height: 16px;
 }
 
-.status .favorite:hover, .status .unfavorite:hover{
+.status_actions .favorite:hover, .status .unfavorite:hover{
     background-image: url(images/star.png);
 }
 
 /**
- * まだお気に入りじゃない(のでお気に入りにする)
  */
-.status .favorite{
+.status_actions a.favorite.favorited{
+    background-image: url(images/star.png);
+    visibility: visible;
+    opacity: 1;
 }
 
-/**
- * お気に入り(のでお気に入りじゃなくする)
- */
-.status .unfavorite{
-}
-
-.status .text img{
+.status_actions .text img{
     border-radius: 10px;
     -webkit-border-radius: 10px;
 }
@@ -385,7 +381,7 @@ a.hash:hover, a.url:hover, a.user:hover{
 
 .profile .friends_count .dt,
 .profile .followers_count .dt,
-.profile .favourites_count .dt{
+.profile .favorites_count .dt{
     display: block;
     margin-bottom: 10px;
     margin-right: 10px;
@@ -393,13 +389,13 @@ a.hash:hover, a.url:hover, a.user:hover{
 
 .profile .friends_count,
 .profile .followers_count,
-.profile .favourites_count{
+.profile .favorites_count{
     display: block;
 }
 
 .profile .friends_count .dd,
 .profile .followers_count .dd,
-.profile .favourites_count .dd{
+.profile .favorites_count .dd{
     display: block;
     font-size: 15px;
     text-decoration: underline;
@@ -416,7 +412,7 @@ a.hash:hover, a.url:hover, a.user:hover{
     float: left;
 }
 
-.profile .favourites_count{
+.profile .favorites_count{
     width: 70px;
     float: left;
 }
