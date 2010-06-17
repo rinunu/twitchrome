@@ -25,7 +25,8 @@ tw.ConversationTimeline.prototype.onGet = function(status){
 	tw.store.getStatus(status.in_reply_to_status_id,
 			   util.bind(this, this.onGet));
     }
-    
+
     this.statuses_.unshift(status);
+    
     this.addNew([status]);
 };

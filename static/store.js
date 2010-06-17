@@ -6,6 +6,7 @@
  */
 tw.Store = function(){
     this.statuses_ = {};
+    this.statusesCount_ = 0;
 
     this.timelines = {};
     this.timelines.homeTimeline = new tw.ServerList("/statuses/home_timeline.json");
@@ -31,14 +32,23 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
 	console.log("in_reply_to", inReplyTo);
 	params.in_reply_to_status_id = inReplyTo.id;
     }
-    jQuery.post(url, params, util.bind(this, this.onUpdate, callback), "json");
+    tw.Ajax.post("ツイート", url, params, util.bind(this, this.onUpdate, callback));
 };
 
 /**
  * ローカルの DB へ Status を追加する
+ * 
+ * すでに DB に存在する場合は、それを return する
  */
 tw.Store.prototype.addStatus = function(status){
+    var old = this.statuses_[status.id];
+    if(old){
+	return old;
+    }
+    this.statusesCount_++;
     this.statuses_[status.id] = status;
+    console.log("addStatus", this.statusesCount_);
+    return status;
 };
 
 /**
@@ -62,7 +72,7 @@ tw.Store.prototype.getStatus = function(id, callback){
  */
 tw.Store.prototype.get = function(url, params, callback){
     console.log("refresh", url);
-    $.getJSON("/twitter_api" + url, params, callback);
+    tw.Ajax.get("取得", "/twitter_api" + url, params, callback);
 };
 
 // ----------------------------------------------------------------------
@@ -141,6 +151,6 @@ tw.Store.prototype.refreshAll = function(){
 
 tw.Store.prototype.onGetStatus = function(callback, json){
     console.log("onGetStatus", json);
-    this.addStatus(json);
+    json = this.addStatus(json);
     callback(json);
 };

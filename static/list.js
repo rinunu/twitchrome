@@ -59,10 +59,6 @@ tw.List.prototype.indexOf = function(status){
  * 更新通知を行う
  */
 tw.List.prototype.addNew = function(statuses){
-    for(var i = 0; i < statuses.length; i++){
-	tw.store.addStatus(statuses[i]);
-    }
-    
     this.updatedAt_ = new Date;
     util.Event.trigger(this, "refresh", statuses);
 };

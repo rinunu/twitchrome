@@ -59,10 +59,6 @@ tw.setCommand = function(elem, func){
  * 通常時・デザイン時共通の初期化処理
  */
 tw.initialize = function(){
-    $("html").ajaxError(function(event, xhr){
-			    console.error("ajax error", xhr);
-			    $.jGrowl("通信に失敗しました: " + xhr.statusText);
-			});
     
     tw.saveTemplates();
     
