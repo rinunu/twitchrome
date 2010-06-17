@@ -46,10 +46,11 @@ tw.ProfileView.prototype.setUser = function(user){
     this.element_.find(".statuses_count.dd").text(user.statuses_count);
     
     this.element_.find(".location .dd").text(user.location);
-    this.element_.find(".description .dd").text(user.description);
     this.element_.find(".followers_count .dd").text(user.followers_count);
     this.element_.find(".friends_count .dd").text(user.friends_count);
     this.element_.find(".favorites_count .dd").text(user.favourites_count);
+
+    this.element_.find(".description .dd").html(user.description.replace(/\n/g, "<br>"));
 
     this.element_.find(".url .dd").attr("href", user.url).text(user.url);
 

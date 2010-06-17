@@ -1,15 +1,11 @@
-html{
-    font-size: 13px;
-    font-family: sans-serif;
+/* ---------------------------------------------------------------------- */
+/* 全体構成 */
 
+html{
     height: 100%;
     padding: 0;
     margin: 0;
-    word-break: break-all;
 }
-
-/* ---------------------------------------------------------------------- */
-/* 全体構成 */
 
 body{
     margin: 0;
@@ -95,6 +91,15 @@ a.hash:hover, a.url:hover, a.user:hover{
 .button:hover{
     background-color: #fff;
 }
+
+/* ---------------------------------------------------------------------- */
+
+body{
+    font-size: 13px;
+    font-family: sans-serif;
+    line-height: 1.5;
+    word-break: break-all;
+};
 
 /* ---------------------------------------------------------------------- */
 /* .header */
