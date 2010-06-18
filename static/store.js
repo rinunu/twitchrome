@@ -14,8 +14,9 @@
  */
 tw.Store = function(){
     this.statuses_ = {};
+    this.users_ = {};
     this.statusesCount_ = 0;
-    this.timelines = [];
+    this.timelines_ = [];
 };
 
 /**
@@ -203,8 +204,8 @@ tw.Store.prototype.addStatus = function(status){
  * 存在しない場合は null を返す
  */
 tw.Store.prototype.timeline = function(uri){
-    for(var i = 0; i < this.timelines.length; i++){
-	var timeline = this.timelines[i];
+    for(var i = 0; i < this.timelines_.length; i++){
+	var timeline = this.timelines_[i];
 	if(timeline.uri() == uri){
 	    return timeline;
 	}
@@ -217,7 +218,7 @@ tw.Store.prototype.timeline = function(uri){
  */
 tw.Store.prototype.addTimeline = function(timeline){
     console.assert(!this.timeline(timeline));
-    this.timelines.push(timeline);
+    this.timelines_.push(timeline);
 };
 
 /**
