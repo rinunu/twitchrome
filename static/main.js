@@ -12,18 +12,6 @@ tw.refreshList = function(){
 };
 
 /**
- * 指定されたユーザの TL を表示する
- * user は User もしくは screen_name
- */
-tw.showUserTimeline = function(user){
-    var list = tw.store.userTimeline(user);
-    tw.showTimeline(list);
-    if(user.id){
-	tw.components.background.setBackground(user);
-    }
-};
-
-/**
  * 指定された TL を表示する
  * また、表示後 Refresh を実行する
  */

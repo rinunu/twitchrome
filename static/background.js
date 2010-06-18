@@ -6,7 +6,7 @@ tw.Background = function(){
 };
 
 tw.Background.prototype.initialize = function(){
-    // util.Event.bind(tw.components.mainListView, this, {timelineChange: this.onRefresh});
+    util.Event.bind(tw.components.mainListView, this, {setTimeline: this.onSetTimeline});
 };
 
 /**
@@ -38,4 +38,26 @@ tw.Background.prototype.setBackground = function(user){
 // ----------------------------------------------------------------------
 // private
 
-// tw.Background.prototype.timelineChange
+tw.Background.prototype.onSetTimeline = function(source, event, timeline){
+    if(!timeline){
+	return;
+    }
+
+    var uri = timeline.uri();
+    console.log("backgroud", uri);
+
+    if(uri.indexOf("/user_timeline/") != -1 ||
+       uri.indexOf("/favorites/") != -1 ||
+       uri.indexOf("/friends/") != -1 ||
+       uri.indexOf("/followers/") != -1)
+    {
+	var statuses = timeline.statuses();
+	if(statuses.length >= 1){
+	    this.setBackground(statuses[0].user);
+	}
+    }else{
+	if(tw.user){
+	    this.setBackground(tw.user);
+	}
+    }
+};

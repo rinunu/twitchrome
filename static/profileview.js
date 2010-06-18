@@ -12,28 +12,25 @@ tw.ProfileView.prototype.initialize = function(){
     this.element_.find("a.user_timeline").click(
 	function(event){
 	    event.preventDefault();
-	    tw.showUserTimeline(this_.user_);
+	    tw.showTimeline(tw.store.userTimeline(this_.user_));
 	});
     
     this.element_.find("a.friends").click(
 	function(event){
 	    event.preventDefault();
 	    tw.showTimeline(tw.store.friends(this_.user_));
-	    tw.components.background.setBackground(this_.user_);
 	});
     
     this.element_.find("a.followers").click(
 	function(event){
 	    event.preventDefault();
 	    tw.showTimeline(tw.store.followers(this_.user_));
-	    tw.components.background.setBackground(this_.user_);
 	});
     
     this.element_.find("a.favorites").click(
 	function(event){
 	    event.preventDefault();
 	    tw.showTimeline(tw.store.favorites(this_.user_));
-	    tw.components.background.setBackground(this_.user_);
 	});
 };
 

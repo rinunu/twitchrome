@@ -54,6 +54,8 @@ tw.ListView.prototype.setList = function(list){
     util.Event.bind(this.list_, this, {refresh: this.onRefresh});
     
     this.refreshView(list.statuses());
+
+    util.Event.trigger(this, "setTimeline", list);
 };
 
 /**
@@ -339,7 +341,8 @@ tw.ListView.prototype.onRt = function(event){
 
 tw.ListView.prototype.onShowUser = function(event){
     event.preventDefault();
-    tw.showUserTimeline($(event.target).text().slice(1));
+    var screenName = $(event.target).text().slice(1);
+    tw.showTimeline(tw.store.userTimeline(screenName));
 };
 
 tw.ListView.prototype.onShowHash = function(event){
