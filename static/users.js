@@ -1,8 +1,8 @@
 /**
  * user のリストを表す Timeline 
  */
-tw.Users = function(url){
-    tw.ServerTimeline.call(this, url);
+tw.Users = function(store, uri, options){
+    tw.ServerTimeline.call(this, store, uri, options);
 };
 
 util.extend(tw.Users, tw.ServerTimeline);
