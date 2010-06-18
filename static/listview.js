@@ -327,7 +327,7 @@ tw.ListView.prototype.onFocus = function(event){
     this.setFocus(focus);
 };
 
-tw.ListView.prototype.onBlur = function(){
+tw.ListView.prototype.onBlur = function(event){
     // var target = $(event.target);
     // this.getStatusElement(target).removeClass("focus");
 };
@@ -400,5 +400,5 @@ tw.ListView.prototype.getStatusElement = function(child){
  * 指定された要素を含む Status を取得する
  */
 tw.ListView.prototype.getStatus = function(child){
-    return this.getStatusElement($(event.target)).data("status");
+    return this.getStatusElement(child).data("status");
 };
