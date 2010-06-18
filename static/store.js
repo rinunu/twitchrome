@@ -14,8 +14,12 @@
  */
 tw.Store = function(){
     this.statuses_ = {};
-    this.users_ = {};
     this.statusesCount_ = 0;
+
+    // {screen_name : User}
+    this.users_ = {};
+    this.usersCount_ = 0;
+    
     this.timelines_ = [];
 };
 
@@ -104,6 +108,22 @@ tw.Store.prototype.getStatus = function(id, callback){
 };
 
 /**
+ * User を取得する
+ * ローカル DB にある場合は、それを取得する
+ * 
+ * TODO 現在ローカルに存在する場合にのみ正常に動く
+ */
+tw.Store.prototype.user = function(screenName, callback){
+    var user = this.users_[screenName];
+    if(user){
+	console.log("use cache");
+	setTimeout(function(){callback(user);}, 10);
+    }else{
+	// TODO
+    }
+};
+
+/**
  * ローカルの DB へ statuses を追加する
  * 
  * すでに DB に存在する場合は、それを更新する。
@@ -138,7 +158,7 @@ tw.Store.prototype.mentions = function(){
  * 指定されたユーザの TL を取得する
  */
 tw.Store.prototype.userTimeline = function(user){
-    var uri = "/statuses/user_timeline/" + (user.id ? user.id : user);
+    var uri = "/statuses/user_timeline/" + (user.screen_name ? user.screen_name : user);
     return this.getOrCreateTimeline(uri, tw.ServerList, uri);
 };
 
@@ -149,7 +169,7 @@ tw.Store.prototype.userTimeline = function(user){
 tw.Store.prototype.favorites = function(user){
     var uri = "/favorites";
     if(user){
-	uri = "/favorites/" + user.id;
+	uri = "/favorites/" + user.screen_name;
     }
     return this.getOrCreateTimeline(uri, tw.ServerList, uri);
 };
@@ -158,12 +178,12 @@ tw.Store.prototype.favorites = function(user){
  * 指定されたユーザの friends TL を取得する
  */
 tw.Store.prototype.friends = function(user){
-    var uri = "/statuses/friends/" + user.id;
+    var uri = "/statuses/friends/" + user.screen_name;
     return this.getOrCreateTimeline(uri, tw.Users, uri);
 };
 
 tw.Store.prototype.followers = function(user){
-    var uri = "/statuses/followers/" + user.id;
+    var uri = "/statuses/followers/" + user.screen_name;
     return this.getOrCreateTimeline(uri, tw.Users, uri);
 };
 
@@ -183,6 +203,24 @@ tw.Store.isStatus = function(object){
 // private
 
 /**
+ * ローカルの DB へ User を追加する
+ * 
+ * すでに DB に存在する場合は、それを更新し、 return する
+ */
+tw.Store.prototype.addUser = function(user){
+    var old = this.users_[user.screen_name];
+    if(old){
+	$.extend(old, user); // overwrite
+	user = old;
+    }else{
+	this.usersCount_++;
+	this.users_[user.screen_name] = user;
+	console.log("addUser", this.usersCount_);
+    }
+    return user;
+};
+
+/**
  * ローカルの DB へ Status を追加する
  * 
  * すでに DB に存在する場合は、それを更新し、 return する
@@ -191,11 +229,13 @@ tw.Store.prototype.addStatus = function(status){
     var old = this.statuses_[status.id];
     if(old){
 	$.extend(old, status); // overwrite
-	return old;
+	status = old;
+    }else{
+	this.statusesCount_++;
+	this.statuses_[status.id] = status;
+	console.log("addStatus", this.statusesCount_);
     }
-    this.statusesCount_++;
-    this.statuses_[status.id] = status;
-    console.log("addStatus", this.statusesCount_);
+    status.user = this.addUser(status.user);
     return status;
 };
 
