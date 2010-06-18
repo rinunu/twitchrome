@@ -166,6 +166,8 @@ tw.ListView.prototype.prepend = function(statuses){
 /**
  * statuses を適切な位置へ追加する
  * statuses は作成日の降順になっていること
+ *
+ * 大量の statuses を追加すると遅くなるので注意。
  */
 tw.ListView.prototype.insert = function(statuses){
     var children = this.element_.children(".status");
@@ -184,6 +186,7 @@ tw.ListView.prototype.insert = function(statuses){
 	    }
 	}
 	var elem = this.createElement(statuses[i]);
+	elem.fadeIn();
 	parent.insertBefore(elem[0], after); // after == null の時は末尾
     }
 };
@@ -297,7 +300,6 @@ tw.ListView.prototype.onStatusRefresh = function(source, eventType, status){
 
 // ----------------------------------------------------------------------
 // 操作
-
 
 /**
  * ブラウザのフォーカスが変わった際に、内部フォーカスを更新する
