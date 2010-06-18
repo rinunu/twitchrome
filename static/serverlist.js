@@ -2,10 +2,8 @@
 /**
  * 含まれる Status をサーバが管理する List
  */
-tw.ServerList = function(url){
-    tw.List.call(this);
-    
-    this.url_ = url;
+tw.ServerList = function(uri){
+    tw.List.call(this, uri);
 
     // 更新間隔(ms)
     this.interval_ = 60 * 1000;
@@ -39,7 +37,7 @@ tw.ServerList.prototype.refresh = function(options){
 	params.since_id = this.statuses_[0].id;
     }
     params.count = options.count;
-    tw.store.get(this.url_, params, util.bind(this, this.onRefresh));
+    tw.store.get(this.uri_, params, util.bind(this, this.onRefresh));
 };
 
 tw.ServerList.prototype.newCount = function(){

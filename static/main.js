@@ -1,5 +1,4 @@
 tw.templates = {};
-tw.lists = {};
 tw.components = {};
 
 // ----------------------------------------------------------------------
@@ -17,8 +16,7 @@ tw.refreshList = function(){
  * user は User もしくは screen_name
  */
 tw.showUserTimeline = function(user){
-    console.log("show", user);
-    var list = tw.store.getUserTimeline(user);
+    var list = tw.store.userTimeline(user);
     tw.showTimeline(list);
     if(user.id){
 	tw.components.background.setBackground(user);
@@ -117,7 +115,10 @@ $(function(){
       // tw.initializeDesign();
     
       tw.loadUser();
-      tw.lists.homeTimeline = tw.store.createHomeTimeline();
-      tw.lists.mentions = tw.store.createMentions();
-      tw.showTimeline(tw.lists.homeTimeline);
+      var homeTimeline = tw.store.homeTimeline();
+      var mentions = tw.store.mentions();
+      tw.ajax.addAutoRefresh(homeTimeline);
+      tw.ajax.addAutoRefresh(mentions);
+      // this.timelines.sent = new tw.ServerList("/statuses/user_timeline.json");
+      tw.showTimeline(homeTimeline);
 });

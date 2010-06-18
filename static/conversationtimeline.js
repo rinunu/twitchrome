@@ -2,9 +2,8 @@
  * in-reply-to のチェーンを表す
  */
 tw.ConversationTimeline = function(status){
-    tw.List.call(this);
+    tw.List.call(this, "/conversations/" + status.id);
     this.status_ = status;
-
     this.onGet(status);
 };
 

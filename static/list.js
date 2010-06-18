@@ -4,19 +4,25 @@
  *
  * 以下の情報を持つ
  * - リストに含まれる Status
- * - リストを取得した条件
  * - ユーザのリスト内での選択位置
+ * - リストを識別する URI
  * 
  * イベント
  * refresh(newStatuses):
- * 更新された際に通知する。newStatuses は作成日の降順に並んでいる
+ *   更新された際に通知する。newStatuses は作成日の降順に並んでいる
  */
-tw.List = function(){
+tw.List = function(uri){
+    console.assert(uri);
     this.focus_ = null;
     this.statuses_ = [];
+    this.uri_ = uri;
 
     // 最終更新時間
     this.updatedAt_ = new Date("1999/01/01");
+};
+
+tw.List.prototype.uri = function(){
+    return this.uri_;
 };
 
 tw.List.prototype.updatedAt = function(){

@@ -15,14 +15,7 @@
 tw.Store = function(){
     this.statuses_ = {};
     this.statusesCount_ = 0;
-
-    this.timelines = {};
-    this.timelines.homeTimeline = new tw.ServerList("/statuses/home_timeline.json");
-    this.timelines.mentions = new tw.ServerList("/statuses/mentions.json");
-    this.timelines.sent = new tw.ServerList("/statuses/user_timeline.json");
-
-    tw.ajax.addAutoRefresh(this.timelines.homeTimeline);
-    tw.ajax.addAutoRefresh(this.timelines.mentions);
+    this.timelines = [];
 };
 
 /**
@@ -129,58 +122,61 @@ tw.Store.prototype.get = function(url, params, callback){
 	{
 	    type: "GET",
 	    name: "取得", 
-	    url: "/twitter_api" + url,
+	    url: "/twitter_api" + url + ".json",
 	    params: params, 
 	    callback: callback
 	});
 };
 
 // ----------------------------------------------------------------------
+// Timeline の取得
 
-tw.Store.prototype.createHomeTimeline = function(){
-    return this.timelines.homeTimeline;
+tw.Store.prototype.homeTimeline = function(){
+    var uri = "/statuses/home_timeline";
+    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
 };
 
-tw.Store.prototype.createMentions = function(){
-    return this.timelines.mentions;
+tw.Store.prototype.mentions = function(){
+    var uri = "/statuses/mentions";
+    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
 };
 
 /**
- * 指定されたユーザの Timeline を取得する
+ * 指定されたユーザの TL を取得する
  */
-tw.Store.prototype.getUserTimeline = function(user){
-    var userId = user;
-    if(user.id){
-	userId = user.id;
-    }
-    var url = "/statuses/user_timeline/" + userId + ".json";
-    return new tw.ServerList(url);
-};
-
-tw.Store.prototype.getFriends = function(user){
-    var url = "/statuses/friends/" + user.id + ".json";
-    return new tw.Users(url);
-};
-
-tw.Store.prototype.getFollowers = function(user){
-    var url = "/statuses/followers/" + user.id + ".json";
-    return new tw.Users(url);
+tw.Store.prototype.userTimeline = function(user){
+    var uri = "/statuses/user_timeline/" + (user.id ? user.id : user);
+    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
 };
 
 /**
  * 指定されたユーザの favorites を作成する
  * user が指定されなかった場合は、自分のものを作成する
  */
-tw.Store.prototype.getFavorites = function(user){
-    var url = "/favorites.json";
+tw.Store.prototype.favorites = function(user){
+    var uri = "/favorites";
     if(user){
-	url = "/favorites/" + user.id + ".json";
+	uri = "/favorites/" + user.id;
     }
-    return new tw.ServerList(url);
+    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
+};
+
+/**
+ * 指定されたユーザの friends TL を取得する
+ */
+tw.Store.prototype.friends = function(user){
+    var uri = "/statuses/friends/" + user.id;
+    return this.getOrCreateTimeline(uri, tw.Users, uri);
+};
+
+tw.Store.prototype.followers = function(user){
+    var uri = "/statuses/followers/" + user.id;
+    return this.getOrCreateTimeline(uri, tw.Users, uri);
 };
 
 tw.Store.prototype.getConversation = function(status){
-    return new tw.ConversationTimeline(status);
+    var uri = "/conversations/" + status.id;
+    return this.getOrCreateTimeline(uri, tw.ConversationTimeline, status);
 };
 
 // ----------------------------------------------------------------------
@@ -192,6 +188,42 @@ tw.Store.isStatus = function(object){
 
 // ----------------------------------------------------------------------
 // private
+
+/**
+ * Timeline を取得する
+ * 存在しない場合は null を返す
+ */
+tw.Store.prototype.timeline = function(uri){
+    for(var i = 0; i < this.timelines.length; i++){
+	var timeline = this.timelines[i];
+	if(timeline.uri() == uri){
+	    return timeline;
+	}
+    }
+    return null;
+};
+
+/**
+ * Timeline をキャッシュへ追加する
+ */
+tw.Store.prototype.addTimeline = function(timeline){
+    console.assert(!this.timeline(timeline));
+    this.timelines.push(timeline);
+};
+
+/**
+ * Timeline を取得する
+ * 存在しない場合は作成する
+ */
+tw.Store.prototype.getOrCreateTimeline = function(uri, constructor, param){
+    var timeline = this.timeline(uri);
+    if(timeline){
+	return timeline;
+    }
+    timeline = new constructor(param);
+    this.addTimeline(timeline);
+    return timeline;
+};
 
 tw.Store.prototype.onUpdate = function(callback, json){
     console.log("on update");
