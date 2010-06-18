@@ -1,11 +1,11 @@
 /**
- * user のリストを表す List 
+ * user のリストを表す Timeline 
  */
 tw.Users = function(url){
-    tw.ServerList.call(this, url);
+    tw.ServerTimeline.call(this, url);
 };
 
-util.extend(tw.Users, tw.ServerList);
+util.extend(tw.Users, tw.ServerTimeline);
 
 // override
 tw.Users.prototype.toStatuses = function(json){

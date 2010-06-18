@@ -146,12 +146,12 @@ tw.Store.prototype.addStatuses = function(timeline, statuses){
 
 tw.Store.prototype.homeTimeline = function(){
     var uri = "/statuses/home_timeline";
-    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
 };
 
 tw.Store.prototype.mentions = function(){
     var uri = "/statuses/mentions";
-    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
 };
 
 /**
@@ -159,7 +159,7 @@ tw.Store.prototype.mentions = function(){
  */
 tw.Store.prototype.userTimeline = function(user){
     var uri = "/statuses/user_timeline/" + (user.screen_name ? user.screen_name : user);
-    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
 };
 
 /**
@@ -171,7 +171,7 @@ tw.Store.prototype.favorites = function(user){
     if(user){
 	uri = "/favorites/" + user.screen_name;
     }
-    return this.getOrCreateTimeline(uri, tw.ServerList, uri);
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
 };
 
 /**

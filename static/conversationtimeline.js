@@ -2,12 +2,12 @@
  * in-reply-to のチェーンを表す
  */
 tw.ConversationTimeline = function(store, status){
-    tw.List.call(this, store, "/conversations/" + status.id);
+    tw.Timeline.call(this, store, "/conversations/" + status.id);
     this.status_ = status;
     this.onGet(status);
 };
 
-util.extend(tw.ConversationTimeline, tw.List);
+util.extend(tw.ConversationTimeline, tw.Timeline);
 
 // override
 tw.ConversationTimeline.prototype.refresh = function(){

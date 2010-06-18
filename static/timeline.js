@@ -11,7 +11,7 @@
  * refresh(newStatuses):
  *   更新された際に通知する。newStatuses は作成日の降順に並んでいる
  */
-tw.List = function(store, uri){
+tw.Timeline = function(store, uri){
     console.assert(uri);
     this.focus_ = null;
     this.statuses_ = [];
@@ -22,37 +22,37 @@ tw.List = function(store, uri){
     this.updatedAt_ = new Date("1999/01/01");
 };
 
-tw.List.prototype.uri = function(){
+tw.Timeline.prototype.uri = function(){
     return this.uri_;
 };
 
-tw.List.prototype.updatedAt = function(){
+tw.Timeline.prototype.updatedAt = function(){
     return this.updatedAt_;
 };
 
 /**
  * フォーカスされている Status を取得する
  */
-tw.List.prototype.focus = function(){
+tw.Timeline.prototype.focus = function(){
     return this.focus_;
 };
 
 /**
  * フォーカスされている Status を取得する
  */
-tw.List.prototype.setFocus = function(focus){
+tw.Timeline.prototype.setFocus = function(focus){
     this.focus_ = focus;
 };
 
-tw.List.prototype.statuses = function(){
+tw.Timeline.prototype.statuses = function(){
     return this.statuses_;
 };
 
 /**
- * status の List 内での位置を取得する
+ * status の Timeline 内での位置を取得する
  * 存在しない場合は -1
  */
-tw.List.prototype.indexOf = function(status){
+tw.Timeline.prototype.indexOf = function(status){
     return $.inArray(status, this.statuses_);
 };
 
@@ -65,7 +65,7 @@ tw.List.prototype.indexOf = function(status){
  * 
  * 更新通知を行う
  */
-tw.List.prototype.addNew = function(statuses){
+tw.Timeline.prototype.addNew = function(statuses){
     this.updatedAt_ = new Date;
     util.Event.trigger(this, "refresh", statuses);
 };
