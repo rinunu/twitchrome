@@ -1,32 +1,41 @@
 
 /**
  * Timeline を画面に表示するビュー
+ * 
+ * element は Status を追加するコンテナ
+ * (スクロールバーは element.parent() が表示する)
+ * 
+ * 発生するイベント
+ * - focus
  */
-tw.TimelineView = function(element){
-    this.timeline_ = null;
+tw.TimelineView = function(element, timeline){
+    this.timeline_ = timeline;
     this.element_ = element;
-    this.updatedAt_ = new Date("1999/01/01");
+    this.focusElement_ = null;
 
+    util.Event.bind(this.timeline_, this, {refresh: this.onRefresh});
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
+
+    element.delegate(".status", "focus", util.bind(this, this.onFocus));
+    element.delegate(".status", "blur", util.bind(this, this.onBlur));
+    
+    element.delegate("a.user:not(.in_reply_to)", "click",
+		     util.bind(this, this.onShowUser));
+    element.delegate("a.user.in_reply_to", "click",
+		     util.bind(this, this.onShowConversation));
+    element.delegate("a.hash", "click", util.bind(this, this.onShowHash));
+
+    element.delegate("a.reply", "click", util.bind(this, this.onReply));
+    element.delegate("a.rt", "click", util.bind(this, this.onRt));
+    element.delegate("a.favorite.off", "click", util.bind(this, this.onFavorite, true));
+    element.delegate("a.favorite.on", "click", util.bind(this, this.onFavorite, false));
+
+    this.refreshView(timeline.statuses());
 };
 
 tw.TimelineView.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
 tw.TimelineView.USER_RE = /@(\w+)/g;
 tw.TimelineView.HASH_RE = /#(\w+)/g;
-
-tw.TimelineView.prototype.initialize = function(){
-    $(".status").live("focus", util.bind(this, this.onFocus));
-    $(".status").live("blur", util.bind(this, this.onBlur));
-    
-    $("a.user:not(.in_reply_to)").live("click", util.bind(this, this.onShowUser));
-    $("a.user.in_reply_to").live("click", util.bind(this, this.onShowConversation));
-    $("a.hash").live("click", util.bind(this, this.onShowHash));
-
-    $("a.reply").live("click", util.bind(this, this.onReply));
-    $("a.rt").live("click", util.bind(this, this.onRt));
-    $("a.favorite.off").live("click", util.bind(this, this.onFavorite, true));
-    $("a.favorite.on").live("click", util.bind(this, this.onFavorite, false));
-};
 
 /**
  * 表示中のリストを取得する
@@ -35,31 +44,19 @@ tw.TimelineView.prototype.timeline = function(){
     return this.timeline_;
 };
 
-/**
- * 表示する TL を設定する
- */
-tw.TimelineView.prototype.setTimeline = function(timeline){
-    if(this.timeline_){
-	util.Event.unbind(this, this.timeline_);
-	this.element_.empty();
-	this.updatedAt_ = new Date("1999/01/01");
-    }
-    
-    this.timeline_ = timeline;
-    
-    util.Event.bind(this.timeline_, this, {refresh: this.onRefresh});
-    
-    this.refreshView(timeline.statuses());
-
-    util.Event.trigger(this, "setTimeline", timeline);
+tw.TimelineView.prototype.element = function(){
+    return this.element_;
 };
 
 /**
  * フォーカスの当たっている Status を取得する
  */
 tw.TimelineView.prototype.focus = function(){
-    return this.timeline_.focus();
+    return this.focusElement_ ? this.focusElement_.data("status") : null;
 };
+
+// ----------------------------------------------------------------------
+// private
 
 /**
  * フォーカスを設定する
@@ -78,20 +75,16 @@ tw.TimelineView.prototype.setFocus = function(focus){
     console.log("focus", focusStatus);
     
     // 旧フォーカスの後始末
-    if(this.timeline_.focus()){
-	var old = this.getElement(this.timeline_.focus());
-	old.removeClass("focus");
+    if(this.focusElement_){
+	this.focusElement_.removeClass("focus");
     }
     
     // 新フォーカスの設定
     focusElement.addClass("focus");
-    this.timeline_.setFocus(focusStatus);
+    this.focusElement_ = focusElement;
 
     util.Event.trigger(this, "focus");
 };
-
-// ----------------------------------------------------------------------
-// private
 
 /**
  * Status から、それを表示している HTML 要素を取得する
@@ -151,6 +144,8 @@ tw.TimelineView.prototype.createElement = function(status){
 
 /**
  * statuses をリストの先頭に追加する
+ * 
+ * 速度的には insert() より早いと思うが、現在はそこまで遅くないので未使用。
  */
 tw.TimelineView.prototype.prepend = function(statuses){
     for(var i = statuses.length - 1; i >= 0; i--){
@@ -221,25 +216,31 @@ tw.TimelineView.prototype.scrollState = function(){
     // console.log("child position", $(children[0]).position().top);
     // console.log("child offset top", children[0].offsetTop);
 
-
     // child.offsetTop は element_ 内での相対位置
     var scrollTop = this.element_.scrollTop();
+    var child = null;
     for(var i = 0; i < children.length; i++){
-	var child = children[i];
+	child = children[i];
 	if(child.offsetTop >= scrollTop){
 	    break;
 	}
     }
-    
-    // offset はビューポート上端から element までの offset
-    return {element: child, offset: child.offsetTop - scrollTop};
+
+    if(child){
+	// offset はビューポート上端から element までの offset
+	return {element: child, offset: child.offsetTop - scrollTop};
+    }else{
+	return null;
+    }
 };
 
 /**
  * スクロール状態を復元する
  */
 tw.TimelineView.prototype.setScrollState = function(scrollState){
-    this.element_.scrollTop(scrollState.element.offsetTop - scrollState.offset);
+    if(scrollState){
+	this.element_.scrollTop(scrollState.element.offsetTop - scrollState.offset);
+    }
 };
 
 
@@ -249,22 +250,20 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
 tw.TimelineView.prototype.refreshView = function(newStatuses){
     // 画面最上部に表示している Status をもとめる
 
-    if(this.element_[0].childNodes.length == 0){
-	console.log("prepend all");
-	this.prepend(newStatuses);
-    }else{
+    // if(this.element_[0].childNodes.length == 0){
+    // 	console.log("prepend all");
+    // 	this.prepend(newStatuses);
+    // }else{
 	var scrollState = this.scrollState();
 	console.log("insert partial", newStatuses.length);
 	this.insert(newStatuses);
 	this.setScrollState(scrollState);
-    }
+    // }
 
-    this.updatedAt_ = this.timeline_.updatedAt();
-
-    var focus = this.timeline_.focus();
-    if(focus){
-	this.setFocus(focus);
-    }
+    // var focus = this.timeline_.focus();
+    // if(focus){
+    // 	this.setFocus(focus);
+    // }
 };
 
 /**
@@ -319,8 +318,8 @@ tw.TimelineView.prototype.onStatusRefresh = function(source, eventType, status){
  */
 tw.TimelineView.prototype.onFocus = function(event){
     var target = $(event.target);
-    var focus = this.getStatusElement(target);
-    this.setFocus(focus);
+    var focusElement = this.getStatusElement(target);
+    this.setFocus(focusElement);
 };
 
 tw.TimelineView.prototype.onBlur = function(event){

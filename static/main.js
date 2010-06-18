@@ -9,7 +9,7 @@ tw.components = {};
  * また、表示後 Refresh を実行する
  */
 tw.showTimeline = function(timeline){
-    tw.components.mainTimelineView.setTimeline(timeline);
+    tw.components.timelineView.setTimeline(timeline);
     timeline.refresh();
 };
 
@@ -17,7 +17,7 @@ tw.showTimeline = function(timeline){
 // private
 
 tw.saveTemplates = function(){
-    tw.templates.status = $(".main_timeline .status").first().clone();
+    tw.templates.status = $(".timeline .status").first().clone();
 };
 
 /**
@@ -38,17 +38,16 @@ tw.setCommand = function(elem, func){
  * 通常時・デザイン時共通の初期化処理
  */
 tw.initialize = function(){
-    
     tw.saveTemplates();
     
     // デザイン要素削除
-    $(".main_timeline").empty();
+    $(".timeline_container").empty();
     
     tw.ajax = new tw.Ajax();
     tw.store = new tw.Store();
 
     // 使用するコンポーネント登録
-    tw.components.mainTimelineView = new tw.TimelineView($(".main_timeline"));
+    tw.components.timelineView = new tw.MultiTimelineView($(".timeline_container"));
     tw.components.statusInput = new tw.StatusInput();
     tw.components.profileView = new tw.ProfileView();
     tw.components.background = new tw.Background();
@@ -78,9 +77,9 @@ tw.onLoadUser = function(user){
  * デザイン時の初期化処理
  */
 tw.initializeDesign = function(){
-    var mainTimeline = $(".main_timeline");
+    var timelineView = $(".timeline");
     for(var i = 0; i < 20; i++){
-	mainTimeline.append(this.templates.status.clone());
+	timelineView.append(this.templates.status.clone());
     }
 };
 

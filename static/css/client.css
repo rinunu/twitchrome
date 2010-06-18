@@ -28,23 +28,13 @@ body{
     margin: 0 10px;
 }
 
-.list_container{
+.timeline_container{
     position: absolute;
     top: 130px;
     bottom: 35px;
     left: 30px;
     right: 280px;
     padding: 5px;
-}
-
-.main_timeline{
-    height: 100%;
-    width: 100%;
-    /* position: absolute; */
-    /* top: 0px; */
-    /* bottom: 0px; */
-    /* left: 5px; */
-    /* right: 0px; */
 }
 
 .list_actions{
@@ -64,7 +54,7 @@ body > .footer{
 /* ---------------------------------------------------------------------- */
 /* 全体的な配色 */
 
-.list_container,
+.timeline_container,
 .header
 {
     background-color: rgba(0,0,0,0.2);
@@ -229,10 +219,13 @@ body{
 }
 
 /* ---------------------------------------------------------------------- */
-/* .main_timeline */
+/* .timeline */
 
-.main_timeline{
+.timeline_container{
     overflow-y: scroll;
+}
+
+.timeline{
 }
 
 /* ---------------------------------------------------------------------- */

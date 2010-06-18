@@ -4,7 +4,6 @@
  *
  * 以下の情報を持つ
  * - リストに含まれる Status
- * - ユーザのリスト内での選択位置
  * - リストを識別する URI
  * 
  * イベント
@@ -16,7 +15,6 @@
 tw.Timeline = function(store, uri, options){
     options = $.extend({}, options);
     console.assert(uri);
-    this.focus_ = null;
     this.statuses_ = [];
     this.store_ = store;
     this.uri_ = uri;
@@ -51,20 +49,6 @@ tw.Timeline.prototype.addStatuses = function(statuses){
 	    this.statuses_.push(status);
 	}
     }
-};
-
-/**
- * フォーカスされている Status を取得する
- */
-tw.Timeline.prototype.focus = function(){
-    return this.focus_;
-};
-
-/**
- * フォーカスされている Status を取得する
- */
-tw.Timeline.prototype.setFocus = function(focus){
-    this.focus_ = focus;
 };
 
 tw.Timeline.prototype.statuses = function(){

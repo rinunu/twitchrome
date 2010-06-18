@@ -6,7 +6,7 @@ tw.Background = function(){
 };
 
 tw.Background.prototype.initialize = function(){
-    util.Event.bind(tw.components.mainTimelineView, this, {setTimeline: this.onSetTimeline});
+    util.Event.bind(tw.components.timelineView, this, {setTimeline: this.onSetTimeline});
 };
 
 /**
