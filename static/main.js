@@ -65,6 +65,7 @@ tw.initialize = function(){
     // デザイン要素削除
     $(".main_list").empty();
     
+    tw.ajax = new tw.Ajax();
     tw.store = new tw.Store();
 
     // 使用するコンポーネント登録

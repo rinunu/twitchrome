@@ -2,7 +2,6 @@
 /**
  * - すべての Status を保存する
  * - タイムラインを管理する
- * - 定期更新を行う
  * - サーバとの通信を行う
  * 
  * Status について
@@ -22,7 +21,8 @@ tw.Store = function(){
     this.timelines.mentions = new tw.ServerList("/statuses/mentions.json");
     this.timelines.sent = new tw.ServerList("/statuses/user_timeline.json");
 
-    setInterval(util.bind(this, this.refreshAll), 10 * 1000);
+    tw.ajax.addAutoRefresh(this.timelines.homeTimeline);
+    tw.ajax.addAutoRefresh(this.timelines.mentions);
 };
 
 /**
@@ -41,7 +41,7 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
 	console.log("in_reply_to", inReplyTo);
 	params.in_reply_to_status_id = inReplyTo.id;
     }
-    tw.Ajax.ajax(
+    tw.ajax.ajax(
 	{
 	    type: "POST",
 	    name: "ツイート", 
@@ -57,7 +57,7 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
  * 
  */
 tw.Store.prototype.favorite = function(status){
-    tw.Ajax.ajax(
+    tw.ajax.ajax(
 	{
 	    type: "POST",
 	    name: "お気に入りに追加する",
@@ -71,7 +71,7 @@ tw.Store.prototype.favorite = function(status){
  * お気に入りを解除する
  */
 tw.Store.prototype.unfavorite = function(status){
-    tw.Ajax.ajax(
+    tw.ajax.ajax(
 	{
 	    type: "POST",
 	    name: "お気に入りから削除する",
@@ -125,7 +125,7 @@ tw.Store.prototype.getStatus = function(id, callback){
  */
 tw.Store.prototype.get = function(url, params, callback){
     console.log("refresh", url);
-    tw.Ajax.ajax(
+    tw.ajax.ajax(
 	{
 	    type: "GET",
 	    name: "取得", 
@@ -196,17 +196,6 @@ tw.Store.isStatus = function(object){
 tw.Store.prototype.onUpdate = function(callback, json){
     console.log("on update");
     callback();
-};
-
-tw.Store.prototype.refreshAll = function(){
-    for(var a in this.timelines){
-        var list = this.timelines[a];
-	var nextRefresh = new Date(list.interval() + list.updatedAt().getTime());
-	if(new Date() >= nextRefresh){
-	    list.refresh();
-	    break; // 1度に更新するのはひとつだけ
-	}
-    }
 };
 
 tw.Store.prototype.onGetStatus = function(callback, json){
