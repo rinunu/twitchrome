@@ -270,7 +270,7 @@ tw.Store.prototype.getOrCreateTimeline = function(uri, constructor, param){
     if(timeline){
 	return timeline;
     }
-    timeline = new constructor(param);
+    timeline = new constructor(this, param);
     this.addTimeline(timeline);
     return timeline;
 };

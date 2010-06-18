@@ -11,10 +11,11 @@
  * refresh(newStatuses):
  *   更新された際に通知する。newStatuses は作成日の降順に並んでいる
  */
-tw.List = function(uri){
+tw.List = function(store, uri){
     console.assert(uri);
     this.focus_ = null;
     this.statuses_ = [];
+    this.store_ = store;
     this.uri_ = uri;
 
     // 最終更新時間

@@ -2,8 +2,8 @@
 /**
  * 含まれる Status をサーバが管理する List
  */
-tw.ServerList = function(uri){
-    tw.List.call(this, uri);
+tw.ServerList = function(store, uri){
+    tw.List.call(this, store, uri);
 
     // 更新間隔(ms)
     this.interval_ = 60 * 1000;
@@ -67,7 +67,7 @@ tw.ServerList.prototype.toStatuses = function(json){
 tw.ServerList.prototype.onRefresh = function(json){
     console.log("on refresh");
     var newStatuses = this.toStatuses(json);
-    tw.store.addStatuses(this, newStatuses);
+    this.store_.addStatuses(this, newStatuses);
 
     this.statuses_ = newStatuses.concat(this.statuses_);
     this.addNew(newStatuses);
