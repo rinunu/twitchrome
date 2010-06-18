@@ -115,12 +115,19 @@ body{
     right: 280px;
 }
 
-.status_input textarea{
+.status_input{
+}
+
+.status_input .text{
     position: absolute;
     top: 20px;
     left: 10px;
     right: 280px;
     height: 50px;
+}
+
+.status_input textarea{
+    width: 100%;
     font-size: 13px;
 }
 
@@ -172,6 +179,10 @@ body{
 /* ---------------------------------------------------------------------- */
 /* .main_list */
 
+.list_container{
+    
+}
+
 .main_list{
     overflow-y: auto;
 }
@@ -180,7 +191,7 @@ body{
 /* つぶやき */
 
 .status{
-    -webkit-transition: opacity 1s ease-in;
+    -webkit-transition: opacity 0.5s ease-in;
     opacity: 1;
 }
 
