@@ -163,37 +163,44 @@ tw.TimelineView.prototype.insert = function(statuses){
 
 /**
  * スクロール状態を保存する
+ * 
+ * スクロール状態を保存し、復元した場合、ビューポートの最上部に表示されている要素の位置を維持する。
+ * 
+ * スクロール状態は 
+ * {
+ *   child: ビューポートの最上部に表示されている要素,
+ *   offset: child.offsetTop - viewport.scrollTop
+ * }
+ * 
+ * 本処理は速度を優先する。
  */
 tw.TimelineView.prototype.scrollState = function(){
     var children = this.element_.children(".status");
+    var parent = this.element_;
+    var viewport = this.element_.parent();
 
-    // console.log("parent scroll", this.element_.scrollTop());
-    // console.log("parent offset", this.element_.offset().top);
-    // console.log("parent position", this.element_.position().top);
-    // console.log("parent offset top", this.element_[0].offsetTop);
-    // console.log("child offset parent", children[0].offsetParent);
-    // console.log("child offsetParent()", $(children[0]).offsetParent()[0]);
-    // console.log("child scroll", $(children[0]).scrollTop());
-    // console.log("child offset", $(children[0]).offset().top);
-    // console.log("child position", $(children[0]).position().top);
-    // console.log("child offset top", children[0].offsetTop);
+    if(children.length == 0){
+	return null;
+    }
 
+    console.log("viewport scroll top", viewport.scrollTop());
+    console.log("parent offset top", parent[0].offsetTop);
+    console.log("child offset top", children[0].offsetTop); // viewport からの位置
+
+    // ビューポートの最上部の要素を探す
     // child.offsetTop は element_ 内での相対位置
-    var scrollTop = this.element_.scrollTop();
+    var scrollTop = viewport.scrollTop();
     var child = null;
-    for(var i = 0; i < children.length; i++){
+    for(var i = 0, length = children.length; i < length; i++){
 	child = children[i];
 	if(child.offsetTop >= scrollTop){
 	    break;
 	}
     }
 
-    if(child){
-	// offset はビューポート上端から element までの offset
-	return {element: child, offset: child.offsetTop - scrollTop};
-    }else{
-	return null;
-    }
+    var scrollState = {child: $(child), offset: child.offsetTop - scrollTop};
+    console.log("scrollState", scrollState.child[0], scrollState.offset);
+    return scrollState;
 };
 
 /**
@@ -201,7 +208,8 @@ tw.TimelineView.prototype.scrollState = function(){
  */
 tw.TimelineView.prototype.setScrollState = function(scrollState){
     if(scrollState){
-	this.element_.scrollTop(scrollState.element.offsetTop - scrollState.offset);
+	var viewport = this.element_.parent();
+	viewport.scrollTop(scrollState.child[0].offsetTop - scrollState.offset);
     }
 };
 
