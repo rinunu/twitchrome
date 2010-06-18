@@ -33,10 +33,6 @@ tw.TimelineView = function(element, timeline){
     this.refreshView(timeline.statuses());
 };
 
-tw.TimelineView.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
-tw.TimelineView.USER_RE = /@(\w+)/g;
-tw.TimelineView.HASH_RE = /#(\w+)/g;
-
 /**
  * 表示中のリストを取得する
  */
@@ -57,6 +53,8 @@ tw.TimelineView.prototype.focus = function(){
 
 // ----------------------------------------------------------------------
 // private
+
+tw.TimelineView.renderer = new tw.Renderer;
 
 /**
  * フォーカスを設定する
@@ -105,51 +103,14 @@ tw.TimelineView.prototype.getElement = function(status){
 };
 
 /**
- * Status 表示用の Element を更新する
- */
-tw.TimelineView.prototype.refreshElement = function(element){
-    console.assert(element);
-    var status = element.data("status");
-    
-    element.find("img").attr("src", status.user.profile_image_url);
-    element.find(".name").text(status.user.screen_name);
-
-    var textElem = element.find(".text");
-    textElem.empty();
-    textElem.html(this.formatText(status.text, status));
-
-    element.find(".source").html(status.source);
-    element.find(".created_at").html(this.formatDate(status.created_at));
-
-    var favorite = element.find(".favorite");
-    favorite.removeClass("wait");
-    favorite.removeClass("on");
-    favorite.removeClass("off");
-    if(status.favorited){
-	favorite.addClass("on");
-    }else{
-	favorite.addClass("off");
-    }
-};
-
-/**
- * Status 表示用の Element を生成する
- */
-tw.TimelineView.prototype.createElement = function(status){
-    var element = tw.templates.status.clone();
-    element.data("status", status);
-    this.refreshElement(element, status);
-    return element;
-};
-
-/**
  * statuses をリストの先頭に追加する
  * 
  * 速度的には insert() より早いと思うが、現在はそこまで遅くないので未使用。
  */
 tw.TimelineView.prototype.prepend = function(statuses){
     for(var i = statuses.length - 1; i >= 0; i--){
-	var elem = this.createElement(statuses[i]);
+	var elem = tw.TimelineView.renderer.render(statuses[i]);
+	elem.data("status", statuses[i]);
 	this.element_.prepend(elem);
     }
 };
@@ -183,7 +144,8 @@ tw.TimelineView.prototype.insert = function(statuses){
 	    }
 	}
 	if(!skip){
-	    var elem = this.createElement(statuses[i]);
+	    var elem = tw.TimelineView.renderer.render(statuses[i]);
+	    elem.data("status", statuses[i]);
 	    elem.addClass("new");
 	    newElements.push(elem);
 	    parent.insertBefore(elem[0], after); // after == null の時は末尾
@@ -266,35 +228,6 @@ tw.TimelineView.prototype.refreshView = function(newStatuses){
     // }
 };
 
-/**
- * テキスト内の URL などを リンクにする
- */
-tw.TimelineView.prototype.formatText = function(text, status){
-    text = text.replace(/\n/g, "<br>");
-    if(status.in_reply_to_status_id){
-	var userClass = "user in_reply_to";
-    }else{
-	var userClass = "user";
-    }
-    text = text.replace(tw.TimelineView.USER_RE, "<a class='" + userClass + "'>$&</a>");
-    text = text.replace(tw.TimelineView.HASH_RE, "<a class='hash'>$&</a>");
-    
-    text = text.replace(tw.TimelineView.URL_RE, tw.Inline.inline);
-    return text;
-};
-
-/**
- * 
- */
-tw.TimelineView.prototype.formatDate = function(date){
-    var t = new Date(date);
-    date = [t.getHours(), t.getMinutes(), t.getSeconds()];
-    for(var i = 0; i < date.length; i++){
-	date[i] = (date[i] >= 10) ? date[i] : "0" + date[i];
-    }
-    return date.join(":");
-};
-
 // ----------------------------------------------------------------------
 // 状態変化イベント
 
@@ -306,7 +239,7 @@ tw.TimelineView.prototype.onStatusRefresh = function(source, eventType, status){
     console.log('on status refresh', status);
     var element = this.getElement(status);
     if(element){
-	this.refreshElement(element);
+	tw.TimelineView.renderer.render(element.data("status"), element);
     }
 };
 
