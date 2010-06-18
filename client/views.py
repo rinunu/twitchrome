@@ -131,6 +131,6 @@ def main(request):
     session = Session()
 
     if 'access_token' not in session:
-        raise Exception('ろぐいんしてください')
+        return HttpResponseRedirect(reverse(index))
     
     return render_to_response("main.html", {})
