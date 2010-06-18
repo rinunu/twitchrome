@@ -92,6 +92,10 @@ a.hash:hover, a.url:hover, a.user:hover{
     background-color: #fff;
 }
 
+.hidden{
+    display: none;
+}
+
 /* ---------------------------------------------------------------------- */
 
 body{
