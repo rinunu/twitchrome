@@ -46,8 +46,9 @@ tw.Ajax.prototype.addAutoRefresh = function(object){
 tw.Ajax.prototype.refresh = function(){
     for(var i = 0; i < this.autoRefreshList.length; i++){
         var o = this.autoRefreshList[i];
-	var nextRefresh = new Date(o.interval() + o.updatedAt().getTime());
-	if(new Date() >= nextRefresh){
+	
+	if(!o.updatedAt() || 
+	   new Date() >= new Date(o.interval() + o.updatedAt().getTime())){
 	    o.refresh();
 	    break; // 1度に更新するのはひとつだけ
 	}

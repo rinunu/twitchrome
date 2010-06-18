@@ -10,16 +10,20 @@
  * イベント
  * refresh(newStatuses):
  *   更新された際に通知する。newStatuses は作成日の降順に並んでいる
+ * 
+ * options: {filter: Status をこの Timeline に含めるか判断する関数}
  */
-tw.Timeline = function(store, uri){
+tw.Timeline = function(store, uri, options){
+    options = $.extend({}, options);
     console.assert(uri);
     this.focus_ = null;
     this.statuses_ = [];
     this.store_ = store;
     this.uri_ = uri;
+    this.filter_ = options.filter;
 
     // 最終更新時間
-    this.updatedAt_ = new Date("1999/01/01");
+    this.updatedAt_ = null;
 };
 
 tw.Timeline.prototype.uri = function(){
@@ -28,6 +32,25 @@ tw.Timeline.prototype.uri = function(){
 
 tw.Timeline.prototype.updatedAt = function(){
     return this.updatedAt_;
+};
+
+/**
+ * statuses(object) を本 Timeline に追加する
+ * 
+ * 追加するのは opitons.filter が true を返すもの。
+ */
+tw.Timeline.prototype.addStatuses = function(statuses){
+    if(!this.filter_){
+	console.log("no filter");
+	return;
+    }
+    
+    for(var i in statuses){
+	var status = statuses[i];
+	if(this.filter_(status)){
+	    this.statuses_.push(status);
+	}
+    }
 };
 
 /**

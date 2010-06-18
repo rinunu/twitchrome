@@ -158,8 +158,12 @@ tw.Store.prototype.mentions = function(){
  * 指定されたユーザの TL を取得する
  */
 tw.Store.prototype.userTimeline = function(user){
-    var uri = "/statuses/user_timeline/" + (user.screen_name ? user.screen_name : user);
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
+    var screenName = user.screen_name ? user.screen_name : user;
+    var uri = "/statuses/user_timeline/" + screenName;
+    var options = {filter: function(status){
+		       return status.user.screen_name == screenName;
+		   }};
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**
@@ -168,10 +172,15 @@ tw.Store.prototype.userTimeline = function(user){
  */
 tw.Store.prototype.favorites = function(user){
     var uri = "/favorites";
+    var options = {};
     if(user){
 	uri = "/favorites/" + user.screen_name;
+    }else{
+	options.filter = function(status){
+	    return status.favorited;
+	};
     }
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**
@@ -215,7 +224,6 @@ tw.Store.prototype.addUser = function(user){
     }else{
 	this.usersCount_++;
 	this.users_[user.screen_name] = user;
-	console.log("addUser", this.usersCount_);
     }
     return user;
 };
@@ -233,7 +241,6 @@ tw.Store.prototype.addStatus = function(status){
     }else{
 	this.statusesCount_++;
 	this.statuses_[status.id] = status;
-	console.log("addStatus", this.statusesCount_);
     }
     status.user = this.addUser(status.user);
     return status;
@@ -265,12 +272,13 @@ tw.Store.prototype.addTimeline = function(timeline){
  * Timeline を取得する
  * 存在しない場合は作成する
  */
-tw.Store.prototype.getOrCreateTimeline = function(uri, constructor, param){
+tw.Store.prototype.getOrCreateTimeline = function(uri, constructor, param, options){
     var timeline = this.timeline(uri);
     if(timeline){
 	return timeline;
     }
-    timeline = new constructor(this, param);
+    timeline = new constructor(this, param, options);
+    timeline.addStatuses(this.statuses_);
     this.addTimeline(timeline);
     return timeline;
 };

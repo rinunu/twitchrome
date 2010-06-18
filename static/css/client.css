@@ -180,6 +180,12 @@ body{
 /* つぶやき */
 
 .status{
+    -webkit-transition: opacity 1s ease-in;
+    opacity: 1;
+}
+
+.status.new{
+    opacity: 0.1;
 }
 
 .status .profile_image{

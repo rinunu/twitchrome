@@ -172,23 +172,40 @@ tw.ListView.prototype.prepend = function(statuses){
 tw.ListView.prototype.insert = function(statuses){
     var children = this.element_.children(".status");
     var parent = this.element_[0];
+    var newElements = [];
     
     for(var i = 0; i < statuses.length; i++){
 	var status = statuses[i];
 	var after = null;
+	var skip = false;
 	// 先頭に追加されるパターンが多いため、2分探索ではなく、普通の検索を行う
 	for(var j = 0; j < children.length; j++){
 	    var child = $(children[j]);
-	    var childStatus = child.data("status");
-	    if(status.id > childStatus.id){
+	    var oldStatus = child.data("status");
+	    if(status.id == oldStatus.id){
+		skip = true;
+		break;
+	    }
+	    else if(status.id > oldStatus.id){
 		after = child[0];
 		break;
 	    }
 	}
-	var elem = this.createElement(statuses[i]);
-	elem.fadeIn();
-	parent.insertBefore(elem[0], after); // after == null の時は末尾
+	if(!skip){
+	    var elem = this.createElement(statuses[i]);
+	    elem.addClass("new");
+	    newElements.push(elem);
+	    parent.insertBefore(elem[0], after); // after == null の時は末尾
+	}
     }
+
+    // 強調表示
+    setTimeout(
+	function(){
+	    for(var i = 0; i < newElements.length; i++){
+		newElements[i].removeClass("new");
+	    }
+	}, 500);
 };
 
 /**

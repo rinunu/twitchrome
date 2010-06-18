@@ -2,8 +2,8 @@
 /**
  * 含まれる Status をサーバが管理する Timeline
  */
-tw.ServerTimeline = function(store, uri){
-    tw.Timeline.call(this, store, uri);
+tw.ServerTimeline = function(store, uri, options){
+    tw.Timeline.call(this, store, uri, options);
 
     // 更新間隔(ms)
     this.interval_ = 60 * 1000;
@@ -27,13 +27,14 @@ tw.ServerTimeline.prototype.interval = function(){
 tw.ServerTimeline.prototype.refresh = function(options){
     options = $.extend({count: 100, force: false}, options);
     
-    if(!options.force && new Date - this.updatedAt_ < 30 * 1000){
+    if(this.updatedAt_ && !options.force && new Date - this.updatedAt_ < 30 * 1000){
 	console.log("頻繁な refresh を無視しました");
 	return;
     }
     
     var params = {};
-    if(this.statuses_.length >=1){
+    if(this.updatedAt_ && this.statuses_.length >=1){
+	// updatedAt_ も見るのは、一度も refresh されていないときは強制的に行うため
 	params.since_id = this.statuses_[0].id;
     }
     params.count = options.count;
@@ -65,10 +66,9 @@ tw.ServerTimeline.prototype.toStatuses = function(json){
 // private
 
 tw.ServerTimeline.prototype.onRefresh = function(json){
-    console.log("on refresh");
     var newStatuses = this.toStatuses(json);
     this.store_.addStatuses(this, newStatuses);
-
     this.statuses_ = newStatuses.concat(this.statuses_);
+    this.statuses_.sort(function(a, b){return b.id - a.id;});
     this.addNew(newStatuses);
 };
