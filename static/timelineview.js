@@ -7,10 +7,6 @@ tw.TimelineView = function(element){
     this.element_ = element;
     this.updatedAt_ = new Date("1999/01/01");
 
-    // 表示している Status 要素の情報
-    // {"statusId": element}, ...}
-    this.elements_ = [];
-
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
 };
 
@@ -301,7 +297,7 @@ tw.TimelineView.prototype.formatDate = function(date){
 };
 
 // ----------------------------------------------------------------------
-// 状態変化
+// 状態変化イベント
 
 tw.TimelineView.prototype.onRefresh = function(s, e, newStatuses){
     this.refreshView(newStatuses);
@@ -316,7 +312,7 @@ tw.TimelineView.prototype.onStatusRefresh = function(source, eventType, status){
 };
 
 // ----------------------------------------------------------------------
-// 操作
+// 操作イベント
 
 /**
  * ブラウザのフォーカスが変わった際に、内部フォーカスを更新する
@@ -397,7 +393,7 @@ tw.TimelineView.prototype.getStatusElement = function(child){
 };
 
 /**
- * 指定された要素を含む Status を取得する
+ * 指定された HTML 要素を含む .status 要素に関連づいた Status を取得する
  */
 tw.TimelineView.prototype.getStatus = function(child){
     return this.getStatusElement(child).data("status");
