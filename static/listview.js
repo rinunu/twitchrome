@@ -40,7 +40,7 @@ tw.ListView.prototype.list = function(){
 };
 
 /**
- * 表示するリストを設定する
+ * 表示する TL を設定する
  */
 tw.ListView.prototype.setList = function(list){
     if(this.list_){
