@@ -5,18 +5,11 @@ tw.components = {};
 // commands
 
 /**
- * 表示しているリストを更新する
- */
-tw.refreshList = function(){
-    tw.components.mainListView.list().refresh();
-};
-
-/**
  * 指定された TL を表示する
  * また、表示後 Refresh を実行する
  */
 tw.showTimeline = function(timeline){
-    tw.components.mainListView.setList(timeline);
+    tw.components.mainTimelineView.setTimeline(timeline);
     timeline.refresh();
 };
 
@@ -24,7 +17,7 @@ tw.showTimeline = function(timeline){
 // private
 
 tw.saveTemplates = function(){
-    tw.templates.status = $(".main_list .status").first().clone();
+    tw.templates.status = $(".main_timeline .status").first().clone();
 };
 
 /**
@@ -49,13 +42,13 @@ tw.initialize = function(){
     tw.saveTemplates();
     
     // デザイン要素削除
-    $(".main_list").empty();
+    $(".main_timeline").empty();
     
     tw.ajax = new tw.Ajax();
     tw.store = new tw.Store();
 
     // 使用するコンポーネント登録
-    tw.components.mainListView = new tw.ListView($(".main_list"));
+    tw.components.mainTimelineView = new tw.TimelineView($(".main_timeline"));
     tw.components.statusInput = new tw.StatusInput();
     tw.components.profileView = new tw.ProfileView();
     tw.components.background = new tw.Background();
@@ -66,8 +59,6 @@ tw.initialize = function(){
         var component = tw.components[a];
         component.initialize();
     }
-
-    tw.setCommand($(".list_actions .refresh"), util.bind(this, this.refreshList));
 };
 
 /**
@@ -87,9 +78,9 @@ tw.onLoadUser = function(user){
  * デザイン時の初期化処理
  */
 tw.initializeDesign = function(){
-    var mainList = $(".main_list");
+    var mainTimeline = $(".main_timeline");
     for(var i = 0; i < 20; i++){
-	mainList.append(this.templates.status.clone());
+	mainTimeline.append(this.templates.status.clone());
     }
 };
 
@@ -107,6 +98,6 @@ $(function(){
       var mentions = tw.store.mentions();
       tw.ajax.addAutoRefresh(homeTimeline);
       tw.ajax.addAutoRefresh(mentions);
-      // this.timelines.sent = new tw.ServerList("/statuses/user_timeline.json");
+      // this.timelines.sent = new tw.ServerTimeline("/statuses/user_timeline.json");
       tw.showTimeline(homeTimeline);
 });

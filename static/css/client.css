@@ -37,7 +37,7 @@ body{
     padding: 5px;
 }
 
-.main_list{
+.main_timeline{
     height: 100%;
     width: 100%;
     /* position: absolute; */
@@ -176,6 +176,13 @@ body{
     font-size: 13px;
 }
 
+.status_input .count{
+    display: block;
+    position: absolute;
+    right: 100px;
+    bottom: 5px;
+}
+
 .status_input .update{
     position: absolute;
     right: 5px;
@@ -222,9 +229,9 @@ body{
 }
 
 /* ---------------------------------------------------------------------- */
-/* .main_list */
+/* .main_timeline */
 
-.main_list{
+.main_timeline{
     overflow-y: scroll;
 }
 

@@ -1,9 +1,9 @@
 
 /**
- * List を画面に表示するビュー
+ * Timeline を画面に表示するビュー
  */
-tw.ListView = function(element){
-    this.list_ = null;
+tw.TimelineView = function(element){
+    this.timeline_ = null;
     this.element_ = element;
     this.updatedAt_ = new Date("1999/01/01");
 
@@ -14,11 +14,11 @@ tw.ListView = function(element){
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
 };
 
-tw.ListView.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
-tw.ListView.USER_RE = /@(\w+)/g;
-tw.ListView.HASH_RE = /#(\w+)/g;
+tw.TimelineView.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
+tw.TimelineView.USER_RE = /@(\w+)/g;
+tw.TimelineView.HASH_RE = /#(\w+)/g;
 
-tw.ListView.prototype.initialize = function(){
+tw.TimelineView.prototype.initialize = function(){
     $(".status").live("focus", util.bind(this, this.onFocus));
     $(".status").live("blur", util.bind(this, this.onBlur));
     
@@ -35,41 +35,41 @@ tw.ListView.prototype.initialize = function(){
 /**
  * 表示中のリストを取得する
  */
-tw.ListView.prototype.list = function(){
-    return this.list_;
+tw.TimelineView.prototype.timeline = function(){
+    return this.timeline_;
 };
 
 /**
  * 表示する TL を設定する
  */
-tw.ListView.prototype.setList = function(list){
-    if(this.list_){
-	util.Event.unbind(this, this.list_);
+tw.TimelineView.prototype.setTimeline = function(timeline){
+    if(this.timeline_){
+	util.Event.unbind(this, this.timeline_);
 	this.element_.empty();
 	this.updatedAt_ = new Date("1999/01/01");
     }
     
-    this.list_ = list;
+    this.timeline_ = timeline;
     
-    util.Event.bind(this.list_, this, {refresh: this.onRefresh});
+    util.Event.bind(this.timeline_, this, {refresh: this.onRefresh});
     
-    this.refreshView(list.statuses());
+    this.refreshView(timeline.statuses());
 
-    util.Event.trigger(this, "setTimeline", list);
+    util.Event.trigger(this, "setTimeline", timeline);
 };
 
 /**
  * フォーカスの当たっている Status を取得する
  */
-tw.ListView.prototype.focus = function(){
-    return this.list_.focus();
+tw.TimelineView.prototype.focus = function(){
+    return this.timeline_.focus();
 };
 
 /**
  * フォーカスを設定する
  * focus は Status もしくは Status を表示している HTML 要素
  */
-tw.ListView.prototype.setFocus = function(focus){
+tw.TimelineView.prototype.setFocus = function(focus){
     console.assert(focus);
 
     if(tw.Store.isStatus(focus)){
@@ -82,14 +82,14 @@ tw.ListView.prototype.setFocus = function(focus){
     console.log("focus", focusStatus);
     
     // 旧フォーカスの後始末
-    if(this.list_.focus()){
-	var old = this.getElement(this.list_.focus());
+    if(this.timeline_.focus()){
+	var old = this.getElement(this.timeline_.focus());
 	old.removeClass("focus");
     }
     
     // 新フォーカスの設定
     focusElement.addClass("focus");
-    this.list_.setFocus(focusStatus);
+    this.timeline_.setFocus(focusStatus);
 
     util.Event.trigger(this, "focus");
 };
@@ -101,7 +101,7 @@ tw.ListView.prototype.setFocus = function(focus){
  * Status から、それを表示している HTML 要素を取得する
  * 現在線形検索が発生するので注意
  */
-tw.ListView.prototype.getElement = function(status){
+tw.TimelineView.prototype.getElement = function(status){
     var element = null;
     this.element_.find(".status").each(
 	function(){
@@ -118,7 +118,7 @@ tw.ListView.prototype.getElement = function(status){
 /**
  * Status 表示用の Element を更新する
  */
-tw.ListView.prototype.refreshElement = function(element){
+tw.TimelineView.prototype.refreshElement = function(element){
     console.assert(element);
     var status = element.data("status");
     
@@ -146,7 +146,7 @@ tw.ListView.prototype.refreshElement = function(element){
 /**
  * Status 表示用の Element を生成する
  */
-tw.ListView.prototype.createElement = function(status){
+tw.TimelineView.prototype.createElement = function(status){
     var element = tw.templates.status.clone();
     element.data("status", status);
     this.refreshElement(element, status);
@@ -156,7 +156,7 @@ tw.ListView.prototype.createElement = function(status){
 /**
  * statuses をリストの先頭に追加する
  */
-tw.ListView.prototype.prepend = function(statuses){
+tw.TimelineView.prototype.prepend = function(statuses){
     for(var i = statuses.length - 1; i >= 0; i--){
 	var elem = this.createElement(statuses[i]);
 	this.element_.prepend(elem);
@@ -169,7 +169,7 @@ tw.ListView.prototype.prepend = function(statuses){
  *
  * 大量の statuses を追加すると遅くなるので注意。
  */
-tw.ListView.prototype.insert = function(statuses){
+tw.TimelineView.prototype.insert = function(statuses){
     var children = this.element_.children(".status");
     var parent = this.element_[0];
     var newElements = [];
@@ -211,7 +211,7 @@ tw.ListView.prototype.insert = function(statuses){
 /**
  * スクロール状態を保存する
  */
-tw.ListView.prototype.scrollState = function(){
+tw.TimelineView.prototype.scrollState = function(){
     var children = this.element_.children(".status");
 
     // console.log("parent scroll", this.element_.scrollTop());
@@ -242,15 +242,15 @@ tw.ListView.prototype.scrollState = function(){
 /**
  * スクロール状態を復元する
  */
-tw.ListView.prototype.setScrollState = function(scrollState){
+tw.TimelineView.prototype.setScrollState = function(scrollState){
     this.element_.scrollTop(scrollState.element.offsetTop - scrollState.offset);
 };
 
 
 /**
- * List の内容に合わせて表示を更新する
+ * Timeline の内容に合わせて表示を更新する
  */
-tw.ListView.prototype.refreshView = function(newStatuses){
+tw.TimelineView.prototype.refreshView = function(newStatuses){
     // 画面最上部に表示している Status をもとめる
 
     if(this.element_[0].childNodes.length == 0){
@@ -263,9 +263,9 @@ tw.ListView.prototype.refreshView = function(newStatuses){
 	this.setScrollState(scrollState);
     }
 
-    this.updatedAt_ = this.list_.updatedAt();
+    this.updatedAt_ = this.timeline_.updatedAt();
 
-    var focus = this.list_.focus();
+    var focus = this.timeline_.focus();
     if(focus){
 	this.setFocus(focus);
     }
@@ -274,24 +274,24 @@ tw.ListView.prototype.refreshView = function(newStatuses){
 /**
  * テキスト内の URL などを リンクにする
  */
-tw.ListView.prototype.formatText = function(text, status){
+tw.TimelineView.prototype.formatText = function(text, status){
     text = text.replace(/\n/g, "<br>");
     if(status.in_reply_to_status_id){
 	var userClass = "user in_reply_to";
     }else{
 	var userClass = "user";
     }
-    text = text.replace(tw.ListView.USER_RE, "<a class='" + userClass + "'>$&</a>");
-    text = text.replace(tw.ListView.HASH_RE, "<a class='hash'>$&</a>");
+    text = text.replace(tw.TimelineView.USER_RE, "<a class='" + userClass + "'>$&</a>");
+    text = text.replace(tw.TimelineView.HASH_RE, "<a class='hash'>$&</a>");
     
-    text = text.replace(tw.ListView.URL_RE, tw.Inline.inline);
+    text = text.replace(tw.TimelineView.URL_RE, tw.Inline.inline);
     return text;
 };
 
 /**
  * 
  */
-tw.ListView.prototype.formatDate = function(date){
+tw.TimelineView.prototype.formatDate = function(date){
     var t = new Date(date);
     date = [t.getHours(), t.getMinutes(), t.getSeconds()];
     for(var i = 0; i < date.length; i++){
@@ -303,11 +303,11 @@ tw.ListView.prototype.formatDate = function(date){
 // ----------------------------------------------------------------------
 // 状態変化
 
-tw.ListView.prototype.onRefresh = function(s, e, newStatuses){
+tw.TimelineView.prototype.onRefresh = function(s, e, newStatuses){
     this.refreshView(newStatuses);
 };
 
-tw.ListView.prototype.onStatusRefresh = function(source, eventType, status){
+tw.TimelineView.prototype.onStatusRefresh = function(source, eventType, status){
     console.log('on status refresh', status);
     var element = this.getElement(status);
     if(element){
@@ -321,24 +321,24 @@ tw.ListView.prototype.onStatusRefresh = function(source, eventType, status){
 /**
  * ブラウザのフォーカスが変わった際に、内部フォーカスを更新する
  */
-tw.ListView.prototype.onFocus = function(event){
+tw.TimelineView.prototype.onFocus = function(event){
     var target = $(event.target);
     var focus = this.getStatusElement(target);
     this.setFocus(focus);
 };
 
-tw.ListView.prototype.onBlur = function(event){
+tw.TimelineView.prototype.onBlur = function(event){
     // var target = $(event.target);
     // this.getStatusElement(target).removeClass("focus");
 };
 
-tw.ListView.prototype.onReply = function(event){
+tw.TimelineView.prototype.onReply = function(event){
     event.preventDefault();
     var status = this.getStatus($(event.target));
     tw.components.statusInput.reply(status);
 };
 
-tw.ListView.prototype.onFavorite = function(add, event){
+tw.TimelineView.prototype.onFavorite = function(add, event){
     event.preventDefault();
     var element = $(event.target);
     var status = this.getStatus(element);
@@ -352,24 +352,24 @@ tw.ListView.prototype.onFavorite = function(add, event){
     }
 };
 
-tw.ListView.prototype.onRt = function(event){
+tw.TimelineView.prototype.onRt = function(event){
     event.preventDefault();
     var status = this.getStatus($(event.target));
     tw.components.statusInput.rt(status);
 };
 
-tw.ListView.prototype.onShowUser = function(event){
+tw.TimelineView.prototype.onShowUser = function(event){
     event.preventDefault();
     var screenName = $(event.target).text().slice(1);
     tw.showTimeline(tw.store.userTimeline(screenName));
 };
 
-tw.ListView.prototype.onShowHash = function(event){
+tw.TimelineView.prototype.onShowHash = function(event){
     event.preventDefault();
     alert("TODO ハッシュを検索した結果を表示する予定");
 };
 
-tw.ListView.prototype.onShowConversation = function(event){
+tw.TimelineView.prototype.onShowConversation = function(event){
     event.preventDefault();
     console.log(event.target);
     var status = this.getStatus($(event.target));
@@ -383,7 +383,7 @@ tw.ListView.prototype.onShowConversation = function(event){
 /**
  * 指定された要素を含む .status 要素を取得する
  */
-tw.ListView.prototype.getStatusElement = function(child){
+tw.TimelineView.prototype.getStatusElement = function(child){
     var status = null;
     if(child.hasClass("status")){
         status = child;
@@ -399,6 +399,6 @@ tw.ListView.prototype.getStatusElement = function(child){
 /**
  * 指定された要素を含む Status を取得する
  */
-tw.ListView.prototype.getStatus = function(child){
+tw.TimelineView.prototype.getStatus = function(child){
     return this.getStatusElement(child).data("status");
 };

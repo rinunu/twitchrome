@@ -6,7 +6,7 @@ tw.ProfileView = function(){
 };
 
 tw.ProfileView.prototype.initialize = function(){
-    util.Event.bind(tw.components.mainListView, this, {focus: this.onFocus});
+    util.Event.bind(tw.components.mainTimelineView, this, {focus: this.onFocus});
 
     var this_ = this;
     this.element_.find("a.user_timeline").click(
@@ -70,6 +70,6 @@ tw.ProfileView.prototype.setUser = function(user){
  * フォーカスが変更された際の処理
  */
 tw.ProfileView.prototype.onFocus = function(){
-    var focus = tw.components.mainListView.focus();
+    var focus = tw.components.mainTimelineView.focus();
     this.setUser(focus.user);
 };
