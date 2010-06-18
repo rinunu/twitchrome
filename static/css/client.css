@@ -225,7 +225,7 @@ body{
 }
 
 .status .in_reply_to:after{
-    content: url(conversation.png);
+    content: url(images/conversation.png);
 }
 
 .status_actions{
