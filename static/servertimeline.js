@@ -41,7 +41,7 @@ tw.ServerTimeline.prototype.refresh = function(options){
     tw.ajax.ajax(
 	{
 	    type: "GET",
-	    name: "TL の更新", 
+	    name: "TL の取得",
 	    url: "/twitter_api" + this.uri_ + ".json",
 	    params: params, 
 	    callback: util.bind(this, this.onRefresh)
