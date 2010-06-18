@@ -37,7 +37,14 @@ tw.ServerList.prototype.refresh = function(options){
 	params.since_id = this.statuses_[0].id;
     }
     params.count = options.count;
-    tw.store.get(this.uri_, params, util.bind(this, this.onRefresh));
+    tw.ajax.ajax(
+	{
+	    type: "GET",
+	    name: "TL の更新", 
+	    url: "/twitter_api" + this.uri_ + ".json",
+	    params: params, 
+	    callback: util.bind(this, this.onRefresh)
+	});
 };
 
 tw.ServerList.prototype.newCount = function(){
@@ -60,9 +67,7 @@ tw.ServerList.prototype.toStatuses = function(json){
 tw.ServerList.prototype.onRefresh = function(json){
     console.log("on refresh");
     var newStatuses = this.toStatuses(json);
-    for(var i = 0; i < newStatuses.length; i++){
-	newStatuses[i] = tw.store.addStatus(newStatuses[i]);
-    }
+    tw.store.addStatuses(this, newStatuses);
 
     this.statuses_ = newStatuses.concat(this.statuses_);
     this.addNew(newStatuses);

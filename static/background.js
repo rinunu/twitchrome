@@ -6,6 +6,7 @@ tw.Background = function(){
 };
 
 tw.Background.prototype.initialize = function(){
+    // util.Event.bind(tw.components.mainListView, this, {timelineChange: this.onRefresh});
 };
 
 /**
@@ -34,3 +35,7 @@ tw.Background.prototype.setBackground = function(user){
     new_.addClass("current");
 };
 
+// ----------------------------------------------------------------------
+// private
+
+// tw.Background.prototype.timelineChange

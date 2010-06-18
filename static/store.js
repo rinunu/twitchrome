@@ -81,25 +81,8 @@ tw.Store.prototype.destroy = function(status){
 };
 
 /**
- * ローカルの DB へ Status を追加する
- * 
- * すでに DB に存在する場合は、それを更新し、 return する
- */
-tw.Store.prototype.addStatus = function(status){
-    var old = this.statuses_[status.id];
-    if(old){
-	$.extend(old, status); // overwrite
-	return old;
-    }
-    this.statusesCount_++;
-    this.statuses_[status.id] = status;
-    console.log("addStatus", this.statusesCount_);
-    return status;
-};
-
-/**
  * Status を取得する
- * ローカルに保持している場合は、それを取得する
+ * ローカル DB にある場合は、それを取得する
  */
 tw.Store.prototype.getStatus = function(id, callback){
     console.log("getStatus");
@@ -107,25 +90,34 @@ tw.Store.prototype.getStatus = function(id, callback){
     var status = this.statuses_[id];
     if(status){
 	console.log("use cache");
-	setTimeout(function(){callback(status);}, 100);
+	setTimeout(function(){callback(status);}, 10);
     }else{
-	this.get("/statuses/show/" + id + ".json", {},
-		 util.bind(this, this.onGetStatus, callback));
+	tw.ajax.ajax(
+	    {
+		type: "GET",
+		name: "ステータスの取得", 
+		url: "/twitter_api" + "/statuses/show/" + id + ".json",
+		callback: util.bind(this, this.onGetStatus, callback)
+	    });
     }
 };
 
 /**
+ * ローカルの DB へ statuses を追加する
+ * 
+ * すでに DB に存在する場合は、それを更新する。
+ * その場合、 statuses の当該 Status は、DB に存在するオブジェクトで置き換えられる。
+ * 
+ * timeline には、呼び出し元の Timeline を指定する。
+ * 
+ * また、addStatuses(timeline, statuses) イベント通知を行う
  */
-tw.Store.prototype.get = function(url, params, callback){
-    console.log("refresh", url);
-    tw.ajax.ajax(
-	{
-	    type: "GET",
-	    name: "取得", 
-	    url: "/twitter_api" + url + ".json",
-	    params: params, 
-	    callback: callback
-	});
+tw.Store.prototype.addStatuses = function(timeline, statuses){
+    for(var i = 0; i < statuses.length; i++){
+	statuses[i] = this.addStatus(statuses[i]);
+    }
+
+    util.Event.trigger(this, "addStatuses", timeline, statuses);
 };
 
 // ----------------------------------------------------------------------
@@ -190,6 +182,23 @@ tw.Store.isStatus = function(object){
 // private
 
 /**
+ * ローカルの DB へ Status を追加する
+ * 
+ * すでに DB に存在する場合は、それを更新し、 return する
+ */
+tw.Store.prototype.addStatus = function(status){
+    var old = this.statuses_[status.id];
+    if(old){
+	$.extend(old, status); // overwrite
+	return old;
+    }
+    this.statusesCount_++;
+    this.statuses_[status.id] = status;
+    console.log("addStatus", this.statusesCount_);
+    return status;
+};
+
+/**
  * Timeline を取得する
  * 存在しない場合は null を返す
  */
@@ -225,6 +234,9 @@ tw.Store.prototype.getOrCreateTimeline = function(uri, constructor, param){
     return timeline;
 };
 
+// ----------------------------------------------------------------------
+// イベントハンドラ
+
 tw.Store.prototype.onUpdate = function(callback, json){
     console.log("on update");
     callback();
@@ -232,8 +244,9 @@ tw.Store.prototype.onUpdate = function(callback, json){
 
 tw.Store.prototype.onGetStatus = function(callback, json){
     console.log("onGetStatus", json);
-    json = this.addStatus(json);
-    callback(json);
+    var statuses = [json];
+    this.addStatuses(null, statuses);
+    callback(statuses[0]);
 };
 
 /**
