@@ -30,7 +30,7 @@ body{
 
 .timeline_container{
     position: absolute;
-    top: 130px;
+    top: 140px;
     bottom: 35px;
     left: 30px;
     right: 280px;
@@ -51,13 +51,18 @@ body > .footer{
     right: 280px;
 }
 
+.profile{
+    clear: both;
+    margin: 5px;
+}
+
 /* ---------------------------------------------------------------------- */
 /* 全体的な配色 */
 
 .timeline_container,
-.header
-{
-    background-color: rgba(0,0,0,0.2);
+.header,
+.profile{
+    background-color: rgba(0,0,0,0.3);
     border-radius: 5px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -78,11 +83,6 @@ body > .footer{
     color: #fff;
 }
 
-.profile{
-    clear: both;
-    background-color: rgba(0,0,0,0.2);
-    margin: 5px;
-}
 .profile .content{
     background-color: #f9f9f9;
 }
@@ -145,16 +145,22 @@ body{
 /* header */
 
 .header{
+    padding: 5px;
 }
 
 .header > .menu{
-    text-align: right;
-    width: 100%;
+    font-size: 11px;
+    float: right;
+    padding: 0 5px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background-color: #fff;
 }
 
-.status_input .text{
+.status_input > .text{
     position: absolute;
-    top: 20px;
+    top: 30px;
     left: 10px;
     right: 10px;
     height: 50px;
@@ -279,9 +285,9 @@ body{
 }
 
 .status .footer{
+    margin-top: 5px;
     font-size: 10px;
     color: #ccc;
-    text-align: right;
 }
 
 .status .in_reply_to:after{
