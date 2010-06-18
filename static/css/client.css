@@ -14,9 +14,10 @@ body{
 
 .header{
     position: absolute;
-    height: 130px;
-    top: 0px;
-    width: 100%;
+    height: 120px;
+    top: 2px;
+    left: 30px;
+    right: 280px;
 }
 
 .sidebar{
@@ -24,28 +25,80 @@ body{
     top: 100px;
     right: 10px;
     width: 250px;
+    margin: 0 10px;
 }
 
 .list_container{
     position: absolute;
     top: 130px;
-    bottom: 10px;
+    bottom: 35px;
     left: 30px;
     right: 280px;
+    padding: 5px;
 }
 
 .main_list{
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 5px;
-    right: 0px;
+    height: 100%;
+    width: 100%;
+    /* position: absolute; */
+    /* top: 0px; */
+    /* bottom: 0px; */
+    /* left: 5px; */
+    /* right: 0px; */
 }
 
 .list_actions{
     margin-left: 10px;
     margin-top: 10px;
     height: 30px;
+}
+
+body > .footer{
+    position: absolute;
+    height: 15px;
+    bottom: 0px;
+    left: 30px;
+    right: 280px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 全体的な配色 */
+
+.list_container,
+.header
+{
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+.status .body{
+    background-color: #fff;
+}
+
+.status:nth-child(even) .body{
+    background-color: #efefff;
+}
+
+.status.focus .body{
+    /* -moz-box-shadow: 20px 20px 20px #224466; */
+    /* -webkit-box-shadow: 0px 0px 10px #eef; */
+    /* outline: solid 2px #55f; */
+    background-color: #889;
+    color: #fff;
+}
+
+.profile{
+    clear: both;
+    background-color: rgba(0,0,0,0.2);
+    margin: 5px;
+}
+.profile .content{
+    background-color: #f9f9f9;
+}
+
+body > .footer{
+    background-color: #fff;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -58,23 +111,14 @@ a{
 }
 
 a:hover{
-    color: #999;
+}
+
+img{
+    border: none;
 }
 
 .clear{
     clear: both;
-}
-
-a.hash, a.user, a.url{
-    color: #005;
-}
-
-/* a.url{ */
-/*     text-decoration: underline; */
-/* } */
-
-a.hash:hover, a.url:hover, a.user:hover{
-    color: #999;
 }
 
 /**
@@ -83,13 +127,15 @@ a.hash:hover, a.url:hover, a.user:hover{
  */
 .button{
     border: 1px solid #999;
-    border-radius: 5px;
+    border-radius: 3px;
     -webkit-border-radius: 3px;
-    background-color: #eee;
+    -moz-border-radius: 3px;
+    background-color: #eef;
 }
 
 .button:hover{
-    background-color: #fff;
+    color: #000;
+    background-color: #dde;
 }
 
 .hidden{
@@ -103,38 +149,37 @@ body{
     font-family: sans-serif;
     line-height: 1.5;
     word-break: break-all;
-};
-
-/* ---------------------------------------------------------------------- */
-/* .header */
-
-.header .menu{
-    text-align: right;
-    position: absolute;
-    top: 0;
-    right: 280px;
 }
 
-.status_input{
+/* ---------------------------------------------------------------------- */
+/* header */
+
+.header{
+}
+
+.header > .menu{
+    text-align: right;
+    width: 100%;
 }
 
 .status_input .text{
     position: absolute;
     top: 20px;
     left: 10px;
-    right: 280px;
+    right: 10px;
     height: 50px;
 }
 
 .status_input textarea{
     width: 100%;
+    height: 100%;
     font-size: 13px;
 }
 
 .status_input .update{
     position: absolute;
-    right: 280px;
-    bottom: 20px;
+    right: 5px;
+    bottom: 5px;
     font-size: 15px;
     padding: 3px 5px;
 }
@@ -179,10 +224,6 @@ body{
 /* ---------------------------------------------------------------------- */
 /* .main_list */
 
-.list_container{
-    background-color: rgba(0, 0, 0, 0.2);
-}
-
 .main_list{
     overflow-y: auto;
 }
@@ -191,12 +232,20 @@ body{
 /* つぶやき */
 
 .status{
-    -webkit-transition: opacity 0.5s ease-in;
+    -webkit-transition: opacity 0.3s ease-in;
     margin: 5px 10px;
 }
 
 .status.new{
     opacity: 0.1;
+}
+
+.status a{
+    color: #005;
+}
+
+.status a:hover{
+    color: #449;
 }
 
 .status .profile_image{
@@ -215,19 +264,10 @@ body{
     border: solid 1px #222;
     border-radius: 3px;
     -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     min-height: 50px;
     cursor: pointer;
-    background-color: #fff;
     margin-left: 60px;
-}
-
-.status:nth-child(even) .body{
-    background-color: #f9f9f9;
-}
-
-.status.focus .body{
-    background-color: #777;
-    color: #fff;
 }
 
 .status:focus{
@@ -255,7 +295,7 @@ body{
 }
 
 .status_actions a{
-    -webkit-transition: opacity 0.5s ease-in;
+    -webkit-transition: opacity 0.3s ease-in;
     visibility: hidden;
     display: block;
     margin: 0px 2px;
@@ -300,13 +340,17 @@ body{
 .status_actions .text img{
     border-radius: 10px;
     -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+.status .footer, .status .footer a{
+    color: #999;
 }
 
 /* ---------------------------------------------------------------------- */
 /* .sidebar */
 
 .sidebar{
-    margin: 0 10px;
 }
 
 .sidebar .button{
@@ -326,6 +370,7 @@ body{
     font-size: 14px;
     border-radius: 3px;
     -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     background-color: #eee;
     border: 1px solid #ccc;
     padding: 3px;
@@ -351,20 +396,22 @@ body{
 /* .profile */
 
 .profile{
-    clear: both;
     font-size: 11px;
     border-radius: 7px;
     -webkit-border-radius: 7px;
-    background-color: #f9f9f9;
-    border: 1px solid #999;
+    -moz-border-radius: 7px;
     padding: 5px;
-    margin: 5px;
+}
+
+.profile .content{
+    padding: 5px;
 }
 
 .profile img{
     float: left;
     border-radius: 5px;
     -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     margin-right: 5px;
     width: 48px;
     height: 48px;
@@ -383,6 +430,7 @@ body{
 
     border-radius: 3px;
     -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     color: #fff;
     font-weight: bold;
     padding: 2px;
@@ -454,4 +502,7 @@ body{
 .profile .location{
     clear: both;
 }
+
+/* ---------------------------------------------------------------------- */
+/* footer */
 
