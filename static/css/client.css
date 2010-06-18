@@ -225,7 +225,7 @@ body{
 /* .main_list */
 
 .main_list{
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 /* ---------------------------------------------------------------------- */
