@@ -38,23 +38,18 @@ tw.Background.prototype.setBackground = function(user){
 // ----------------------------------------------------------------------
 // private
 
+tw.Background.RE = /\/(user_timeline|favorites|friends|followers)\/(\w+)/;
+
 tw.Background.prototype.onSetTimeline = function(source, event, timeline){
     if(!timeline){
 	return;
     }
 
     var uri = timeline.uri();
-    console.log("backgroud", uri);
 
-    if(uri.indexOf("/user_timeline/") != -1 ||
-       uri.indexOf("/favorites/") != -1 ||
-       uri.indexOf("/friends/") != -1 ||
-       uri.indexOf("/followers/") != -1)
-    {
-	var statuses = timeline.statuses();
-	if(statuses.length >= 1){
-	    this.setBackground(statuses[0].user);
-	}
+    var m = tw.Background.RE.exec(uri);
+    if(m){
+	tw.store.user(m[2], util.bind(this, this.setBackground));
     }else{
 	if(tw.user){
 	    this.setBackground(tw.user);
