@@ -219,7 +219,9 @@ tw.Store.isStatus = function(object){
 tw.Store.prototype.addUser = function(user){
     var old = this.users_[user.screen_name];
     if(old){
-	$.extend(old, user); // overwrite
+	if(user.statuses_count > old.statuses_count){
+	    $.extend(old, user); // overwrite
+	}
 	user = old;
     }else{
 	this.usersCount_++;
