@@ -38,23 +38,32 @@ tw.ProfileView.prototype.initialize = function(){
 tw.ProfileView.prototype.setUser = function(user){
     this.user_ = user;
     
-    this.element_.find(".name.dd").text(user.name);
-    this.element_.find(".screen_name.dd").text(user.screen_name);
-    this.element_.find(".statuses_count.dd").text(user.statuses_count);
+    this.element_.find(".name.dd").text(user.name || "");
+    this.element_.find(".screen_name.dd").text(user.screen_name || "");
+    this.element_.find(".statuses_count.dd").text(user.statuses_count || "");
     
-    this.element_.find(".location .dd").text(user.location);
-    this.element_.find(".followers_count .dd").text(user.followers_count);
-    this.element_.find(".friends_count .dd").text(user.friends_count);
-    this.element_.find(".favorites_count .dd").text(user.favourites_count);
+    this.element_.find(".location .dd").text(user.location || "");
+    this.element_.find(".followers_count .dd").text(user.followers_count || "");
+    this.element_.find(".friends_count .dd").text(user.friends_count || "");
+    this.element_.find(".favorites_count .dd").text(user.favourites_count || "");
 
-    this.element_.find(".description .dd").html(user.description.replace(/\n/g, "<br>"));
+    this.element_.find(".description .dd").html(
+	user.description ?
+	    user.description.replace(/\n/g, "<br>") :
+	    "");
 
-    this.element_.find(".url .dd").attr("href", user.url).text(user.url);
+    this.element_.find(".url .dd").attr("href", user.url).text(user.url || "");
 
-    this.element_.find("img").attr("src", user.profile_image_url);
-    this.element_.find("a.profile_image").attr("href", user.profile_image_url.replace(/_normal/, ""));
+    this.element_.find("img").attr("src", user.profile_image_url || "");
+    this.element_.find("a.profile_image").attr(
+	"href", 
+	user.profile_image_url.replace(/_normal/, "") || "");
 
-    this.element_.find("a.twitter").attr("href", "http://twitter.com/" + user.screen_name);
+    this.element_.find("a.twitter").attr(
+	"href",
+	user.screen_name ?
+	    "http://twitter.com/" + user.screen_name :
+	    "");
 };
 
 /**

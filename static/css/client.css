@@ -30,16 +30,16 @@ body{
     position: absolute;
     top: 130px;
     bottom: 10px;
-    left: 10px;
+    left: 30px;
     right: 280px;
 }
 
 .main_list{
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    top: 0px;
+    bottom: 0px;
+    left: 5px;
+    right: 0px;
 }
 
 .list_actions{
@@ -159,11 +159,11 @@ body{
     top: 0;
     width: 100%;
     height: 100%;
-    -webkit-transition: opacity 5s ease-in;
+    -webkit-transition: opacity 3s ease-in;
 }
 
 .bg0{
-    background-color: #fff;
+    background-color: #09B;
 }
 
 .bg1{
@@ -180,7 +180,7 @@ body{
 /* .main_list */
 
 .list_container{
-    
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .main_list{
@@ -192,7 +192,7 @@ body{
 
 .status{
     -webkit-transition: opacity 0.5s ease-in;
-    opacity: 1;
+    margin: 5px 10px;
 }
 
 .status.new{
@@ -213,12 +213,11 @@ body{
     padding: 5px;
     padding-bottom: 0;
     border: solid 1px #222;
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
     min-height: 50px;
     cursor: pointer;
     background-color: #fff;
-    margin: 3px;
     margin-left: 60px;
 }
 
