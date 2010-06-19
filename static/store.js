@@ -124,6 +124,25 @@ tw.Store.prototype.user = function(screenName, callback){
 };
 
 /**
+ * ローカルの DB へ User を追加する
+ * 
+ * すでに DB に存在する場合は、それを更新し、 return する
+ */
+tw.Store.prototype.addUser = function(user){
+    var old = this.users_[user.screen_name];
+    if(old){
+	if(user.statuses_count > old.statuses_count){
+	    $.extend(old, user); // overwrite
+	}
+	user = old;
+    }else{
+	this.usersCount_++;
+	this.users_[user.screen_name] = user;
+    }
+    return user;
+};
+
+/**
  * ローカルの DB へ statuses を追加する
  * 
  * すでに DB に存在する場合は、それを更新する。
@@ -212,25 +231,6 @@ tw.Store.isStatus = function(object){
 
 // ----------------------------------------------------------------------
 // private
-
-/**
- * ローカルの DB へ User を追加する
- * 
- * すでに DB に存在する場合は、それを更新し、 return する
- */
-tw.Store.prototype.addUser = function(user){
-    var old = this.users_[user.screen_name];
-    if(old){
-	if(user.statuses_count > old.statuses_count){
-	    $.extend(old, user); // overwrite
-	}
-	user = old;
-    }else{
-	this.usersCount_++;
-	this.users_[user.screen_name] = user;
-    }
-    return user;
-};
 
 /**
  * ローカルの DB へ Status を追加する

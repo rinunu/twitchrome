@@ -57,6 +57,9 @@ tw.initialize = function(){
     for(var a in tw.components){
         var component = tw.components[a];
         component.initialize();
+	if(component.clear){
+	    component.clear();
+	}
     }
 };
 
@@ -70,7 +73,10 @@ tw.loadUser = function(){
 
 tw.onLoadUser = function(user){
     tw.user = user;
+    tw.store.addUser(user);
     tw.components.profileView.setUser(tw.user);
+    tw.components.profileView.addUser(tw.user);
+    
     tw.components.background.setBackground(tw.user);
 
     var send = tw.store.userTimeline(user);

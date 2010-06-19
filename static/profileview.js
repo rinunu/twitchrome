@@ -5,6 +5,11 @@ tw.ProfileView = function(){
     this.user_ = null;
 };
 
+tw.ProfileView.prototype.clear = function(){
+    this.element_.find(".tabs").empty();
+    this.setUser({});
+};
+
 tw.ProfileView.prototype.initialize = function(){
     util.Event.bind(tw.components.timelineView, this, {focus: this.onFocus});
 
@@ -32,6 +37,8 @@ tw.ProfileView.prototype.initialize = function(){
 	    event.preventDefault();
 	    tw.showTimeline(tw.store.favorites(this_.user_));
 	});
+
+    this.element_.delegate(".tab", "click", util.bind(this, this.onTabClick));
 };
 
 // ユーザのプロフィールを表示する
@@ -52,12 +59,12 @@ tw.ProfileView.prototype.setUser = function(user){
 	    user.description.replace(/\n/g, "<br>") :
 	    "");
 
-    this.element_.find(".url .dd").attr("href", user.url).text(user.url || "");
+    this.element_.find(".url .dd").attr("href", user.url || "").text(user.url || "");
 
     this.element_.find("img").attr("src", user.profile_image_url || "");
     this.element_.find("a.profile_image").attr(
-	"href", 
-	user.profile_image_url.replace(/_normal/, "") || "");
+	"href",
+	(user.profile_image_url || "").replace(/_normal/, ""));
 
     this.element_.find("a.twitter").attr(
 	"href",
@@ -67,9 +74,25 @@ tw.ProfileView.prototype.setUser = function(user){
 };
 
 /**
+ * ユーザ選択欄にユーザを追加する
+ */
+tw.ProfileView.prototype.addUser = function(user){
+    var tabs = this.element_.find(".tabs");
+    $("<a class='tab'>" + user.screen_name + "</a>").appendTo(tabs);
+};
+
+/* ---------------------------------------------------------------------- */
+/* private */
+
+/**
  * フォーカスが変更された際の処理
  */
 tw.ProfileView.prototype.onFocus = function(){
     var focus = tw.components.timelineView.focus();
     this.setUser(focus.user);
+};
+
+tw.ProfileView.prototype.onTabClick = function(event){
+    var screenName = $(event.target).text();
+    tw.store.user(screenName, util.bind(this, this.setUser));
 };

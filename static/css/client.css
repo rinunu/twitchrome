@@ -370,21 +370,21 @@ body{
 /* ---------------------------------------------------------------------- */
 /* リスト切り替えタブ */
 
-.tab{
-    display: block;
-    width: auto;
-    font-size: 14px;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-    padding: 3px;
-}
+/* .tab{ */
+/*     display: block; */
+/*     width: auto; */
+/*     font-size: 14px; */
+/*     border-radius: 3px; */
+/*     -webkit-border-radius: 3px; */
+/*     -moz-border-radius: 3px; */
+/*     background-color: #eee; */
+/*     border: 1px solid #ccc; */
+/*     padding: 3px; */
+/* } */
 
-.tab:hover{
-    background-color: #ddd;
-}
+/* .tab:hover{ */
+/*     background-color: #ddd; */
+/* } */
 
 .button .count{
     /* color: #fff; */
@@ -506,6 +506,28 @@ body{
 }
 
 .profile .location{
+    clear: both;
+}
+
+/* ---------- */
+
+.profile .tab{
+    display: block;
+    float:left;
+    width: auto;
+    font-size: 10px;
+    background-color: #eee;
+    margin: 0px 1px;
+    border-top: solid 1px #ccc;
+}
+
+.profile .tab:hover{
+    background-color: #ddd;
+}
+
+.profile .tabs:after{
+    content: "";
+    display: block;
     clear: both;
 }
 
