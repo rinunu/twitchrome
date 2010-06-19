@@ -22,10 +22,10 @@ tw.Ajax = function(){
  *   target: 操作対象}
  */
 tw.Ajax.prototype.ajax = function(command){
-    console.log("get", command.name);
+    console.log("ajax", command.name);
     $.ajax(
 	{
-	    type: command.type,
+	    type: command.type || "GET",
 	    url: command.url,
 	    data: command.params || {},
 	    dataType: "json",

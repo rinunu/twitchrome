@@ -156,6 +156,8 @@ tw.Store.prototype.mentions = function(){
 
 /**
  * 指定されたユーザの TL を取得する
+ * 
+ * user は User もしくは screen_name
  */
 tw.Store.prototype.userTimeline = function(user){
     var screenName = user.screen_name ? user.screen_name : user;

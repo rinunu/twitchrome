@@ -64,13 +64,17 @@ tw.initialize = function(){
  * 自分の情報を取得する
  */
 tw.loadUser = function(){
-    $.getJSON("/user.json", {}, util.bind(this, this.onLoadUser));
+    tw.ajax.ajax({name: "ユーザ情報の取得",
+		  url: "/user.json", callback: util.bind(this, this.onLoadUser)});
 };
 
 tw.onLoadUser = function(user){
     tw.user = user;
     tw.components.profileView.setUser(tw.user);
     tw.components.background.setBackground(tw.user);
+
+    var send = tw.store.userTimeline(user);
+    tw.ajax.addAutoRefresh(send);
 };
 
 /**
@@ -97,6 +101,5 @@ $(function(){
       var mentions = tw.store.mentions();
       tw.ajax.addAutoRefresh(homeTimeline);
       tw.ajax.addAutoRefresh(mentions);
-      // this.timelines.sent = new tw.ServerTimeline("/statuses/user_timeline.json");
       tw.showTimeline(homeTimeline);
 });
