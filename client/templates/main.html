@@ -39,7 +39,7 @@
 
 <div class="header">
   <div class="menu">
-    <a href="">設定</a>
+    <a class="settings"><s>設定</s></a>
     <a href="{% url client.views.logout %}">ログアウト</a>
   </div>
   
@@ -63,10 +63,9 @@
   <div class="menu">
     <a class="home button">ホーム<span class="count"></span></a>
     <a class="mentions button">あなた宛<span class="count"></span></a>
-    <a class="dm button">DM(まだ)<span class="count"></span></a>
-    <a class="favorites button">お気に入り</a>
-    <a class="button">リスト1(まだ)</a>
-    <a class="button">検索結果1(まだ)</a>
+    <a class="dm button"><s>DM</s><span class="count"></span></a>
+    <a class="button"><s>リスト1</s></a>
+    <a class="button"><s>検索結果1</s></a>
   </div>
 
   <div class="profile">

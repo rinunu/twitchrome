@@ -15,9 +15,4 @@ tw.Sidebar.prototype.initialize = function(){
 	function(){
 	    tw.showTimeline(tw.store.mentions());
 	});
-
-    this.element_.find(".menu a.favorites").click(
-	function(){
-	    tw.showTimeline(tw.store.favorites());
-	});
 };
