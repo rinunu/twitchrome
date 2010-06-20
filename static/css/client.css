@@ -100,11 +100,6 @@ body > .footer{
     background-color: #fff;
 }
 
-.progress{
-    color: #fff;
-    background-color: rgba(0,0,0,0.5);
-}
-
 /* ---------------------------------------------------------------------- */
 /* common */
 
@@ -561,14 +556,20 @@ body{
 
 .progress{
     position: absolute;
+    right: -100px;
+    bottom: 0;
+
     border-radius: 3px 0 0 3px;
     -webkit-border-radius: 3px 0 0 3px;
     -moz-border-radius: 3px 0 0 3px;
+
     font-size: 10px;
     padding: 3px;
+    padding-left: 10px;
     opacity: 0;
-    right: -100px;
-    bottom: 0;
+
+    color: #fff;
+    background-color: rgba(0,0,0,0.8);
 
     -webkit-transition: all 0.1s ease-out;
 }
@@ -580,7 +581,7 @@ body{
 
 .progress.error{
     color: #fff;
-    background-color: rgba(255,0,0,0.9);
+    background-color: rgba(255,0,0,0.8);
     opacity: 1;
     right: 0px;
 }
