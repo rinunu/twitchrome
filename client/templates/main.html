@@ -31,13 +31,15 @@
 <script type="text/javascript" src="/static/multitimelineview.js"></script>
 <script type="text/javascript" src="/static/background.js"></script>
 <script type="text/javascript" src="/static/main.js"></script>
+
+<script type="text/javascript" src="/static/debugview.js"></script>
 {% endblock %}
 
 {% block body %}
 <div class="bg0 bg current"></div>
 <div class="bg1 bg"></div>
 
-<div class="header">
+<div class="header frame">
   <div class="menu">
     <a class="settings"><s>設定</s></a>
     <a href="{% url client.views.logout %}">ログアウト</a>
@@ -68,7 +70,13 @@
     <a class="button"><s>検索結果1</s></a>
   </div>
 
-  <div class="profile">
+  <div class="profile frame">
+
+    <div class="tabs">
+      <a class="tab">sample1</a>
+      <a class="tab">sample2</a>
+    </div>
+
     <div class="content">
       <a href="" class="profile_image lightbox">
 	<img src="http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png">
@@ -118,17 +126,13 @@
 	</span>
       </div>
     </div>
-    <div class="tabs">
-      <a class="tab">sample1</a>
-      <a class="tab">sample2</a>
-    </div>
   </div><!-- profile -->
 
 </div><!-- sidebar -->
 
 
 
-<div class="timeline_container">
+<div class="timeline_container frame">
   <div class="timeline">
     <div tabindex='0' class='status'>
       <img class='profile_image' src='http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png'>
@@ -153,9 +157,12 @@
   </div>
 </div>
 
-<div class="footer">
+<div class="progress active">
+  処理中です...
 </div>
 
+<div class="footer">
+</div>
 
 <img class="hidden" src="/static/images/wait.gif">
 

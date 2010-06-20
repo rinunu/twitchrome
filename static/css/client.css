@@ -56,18 +56,26 @@ body > .footer{
     margin: 5px;
 }
 
+.progress{
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
+    width: 150px;
+}
+
 /* ---------------------------------------------------------------------- */
 /* 全体的な配色 */
 
-.timeline_container,
-.header,
-.profile{
+.frame{
+    color: #fff;
     background-color: rgba(0,0,0,0.5);
     border-radius: 5px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
 }
+
 .status .body{
+    color: #000;
     background-color: #fff;
 }
 
@@ -84,11 +92,17 @@ body > .footer{
 }
 
 .profile .content{
+    color: #000;
     background-color: #f9f9f9;
 }
 
 body > .footer{
     background-color: #fff;
+}
+
+.progress{
+    color: #fff;
+    background-color: rgba(0,0,0,0.5);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -116,7 +130,8 @@ img{
  * ボタンには必ずしもこの class を指定しなくてよい
  */
 .button{
-    border: 1px solid #999;
+    color: #000;
+    border: 1px solid #555;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -155,6 +170,7 @@ body{
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
+    color: #000;
     background-color: #fff;
 }
 
@@ -184,7 +200,7 @@ body{
     right: 5px;
     bottom: 5px;
     font-size: 15px;
-    padding: 3px 5px;
+    padding: 1px 5px;
 }
 
 .list_actions{
@@ -194,7 +210,7 @@ body{
 
 .list_actions .button{
     font-size: 15px;
-    padding: 3px 5px;
+    padding: 1px 5px;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -359,11 +375,11 @@ body{
 .sidebar{
 }
 
-.sidebar .button{
+.sidebar > .menu > .button{
     display: block;
     float: left;
     font-size: 15px;
-    padding: 3px 10px;
+    padding: 1px 10px;
     margin: 3px 5px;
 }
 
@@ -514,11 +530,15 @@ body{
 .profile .tab{
     display: block;
     float:left;
-    width: auto;
+    
+    border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
     font-size: 10px;
+    color: #000;
     background-color: #eee;
     margin: 0px 1px;
-    border-top: solid 1px #ccc;
+    border: solid 1px #ccc;
 }
 
 .profile .tab:hover{
@@ -529,6 +549,17 @@ body{
     content: "";
     display: block;
     clear: both;
+}
+
+/* ---------------------------------------------------------------------- */
+/* progress */
+
+.progress{
+    border-radius: 3px 0 0 3px;
+    -webkit-border-radius: 3px 0 0 3px;
+    -moz-border-radius: 3px 0 0 3px;
+    font-size: 10px;
+    padding: 3px;
 }
 
 /* ---------------------------------------------------------------------- */
