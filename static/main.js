@@ -92,7 +92,9 @@ tw.onLoadUser = function(user){
     tw.components.profileView.addUser(tw.user);
     
     tw.components.background.setBackground(tw.user);
-    var send = tw.store.userTimeline(user);
+
+    // Conversation でよく使われるため、先読み
+    var send = tw.store.userTimeline(user).refresh();
 };
 
 /**
