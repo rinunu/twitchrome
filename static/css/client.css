@@ -10,6 +10,7 @@ html{
 body{
     margin: 0;
     height: 100%;
+    overflow-x: hidden;
 }
 
 .header{
@@ -560,6 +561,15 @@ body{
     -moz-border-radius: 3px 0 0 3px;
     font-size: 10px;
     padding: 3px;
+    opacity: 0;
+    right: -100px;
+
+    -webkit-transition: all 0.1s ease-out;
+}
+
+.progress.active{
+    opacity: 1;
+    right: 0px;
 }
 
 /* ---------------------------------------------------------------------- */

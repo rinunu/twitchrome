@@ -49,9 +49,13 @@ tw.initialize = function(){
     // 使用するコンポーネント登録
     tw.components.timelineView = new tw.MultiTimelineView($(".timeline_container"));
     tw.components.statusInput = new tw.StatusInput();
+
     tw.components.profileView = new tw.ProfileView();
     tw.components.background = new tw.Background();
     tw.components.sidebar = new tw.Sidebar();
+    tw.components.progressview = new tw.ProgressView();
+
+    tw.components.debugview = new tw.DebugView();
     
     // コンポーネント初期化
     for(var a in tw.components){
