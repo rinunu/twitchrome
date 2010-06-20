@@ -26,10 +26,15 @@ tw.ServerTimeline.prototype.interval = function(){
  */
 tw.ServerTimeline.prototype.refresh = function(options){
     options = $.extend({count: 100, force: false}, options);
+    var name = this.name_ + "の取得";
     
     if(this.updatedAt_ && !options.force && new Date - this.updatedAt_ < 30 * 1000){
-	console.log("頻繁な refresh を無視しました");
+	console.log("頻繁なため無視しました: " + name);
 	return;
+    }
+    if(tw.ajax.command(name)){
+	console.log("実行中のため無視しました: " + name);
+	return;	
     }
     
     var params = {};
@@ -41,7 +46,7 @@ tw.ServerTimeline.prototype.refresh = function(options){
     tw.ajax.ajax(
 	{
 	    type: "GET",
-	    name: "TL の取得",
+	    name: name,
 	    url: "/twitter_api" + this.uri_ + ".json",
 	    params: params, 
 	    callback: util.bind(this, this.onRefresh)

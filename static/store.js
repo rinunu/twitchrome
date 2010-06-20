@@ -165,12 +165,14 @@ tw.Store.prototype.addStatuses = function(timeline, statuses){
 
 tw.Store.prototype.homeTimeline = function(){
     var uri = "/statuses/home_timeline";
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
+    var options = {name: "ホーム"};
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 tw.Store.prototype.mentions = function(){
     var uri = "/statuses/mentions";
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri);
+    var options = {name: "あなた宛"};
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**
@@ -183,7 +185,9 @@ tw.Store.prototype.userTimeline = function(user){
     var uri = "/statuses/user_timeline/" + screenName;
     var options = {filter: function(status){
 		       return status.user.screen_name == screenName;
-		   }};
+		   },
+		   name: screenName
+		  };
     return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
@@ -193,7 +197,7 @@ tw.Store.prototype.userTimeline = function(user){
  */
 tw.Store.prototype.favorites = function(user){
     var uri = "/favorites";
-    var options = {};
+    var options = {name: user.screen_name + " のお気に入り"};
     if(user){
 	uri = "/favorites/" + user.screen_name;
     }else{
@@ -209,17 +213,20 @@ tw.Store.prototype.favorites = function(user){
  */
 tw.Store.prototype.friends = function(user){
     var uri = "/statuses/friends/" + user.screen_name;
-    return this.getOrCreateTimeline(uri, tw.Users, uri);
+    var options = {name: user.screen_name + " のフォローしているユーザ"};
+    return this.getOrCreateTimeline(uri, tw.Users, uri, options);
 };
 
 tw.Store.prototype.followers = function(user){
     var uri = "/statuses/followers/" + user.screen_name;
-    return this.getOrCreateTimeline(uri, tw.Users, uri);
+    var options = {name: user.screen_name + " がフォローされているユーザ"};
+    return this.getOrCreateTimeline(uri, tw.Users, uri, options);
 };
 
 tw.Store.prototype.getConversation = function(status){
     var uri = "/conversations/" + status.id;
-    return this.getOrCreateTimeline(uri, tw.ConversationTimeline, status);
+    var options = {name: status.id + " から始まる会話"};
+    return this.getOrCreateTimeline(uri, tw.ConversationTimeline, status, options);
 };
 
 // ----------------------------------------------------------------------

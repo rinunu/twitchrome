@@ -10,7 +10,10 @@
  * refresh(newStatuses):
  *   更新された際に通知する。newStatuses は作成日の降順に並んでいる
  * 
- * options: {filter: Status をこの Timeline に含めるか判断する関数}
+ * options: {
+ *   filter: Status をこの Timeline に含めるか判断する関数,
+ *   name: この TL の名称
+ * }
  */
 tw.Timeline = function(store, uri, options){
     options = $.extend({}, options);
@@ -19,6 +22,7 @@ tw.Timeline = function(store, uri, options){
     this.store_ = store;
     this.uri_ = uri;
     this.filter_ = options.filter;
+    this.name_ = options.name;
 
     // 最終更新時間
     this.updatedAt_ = null;

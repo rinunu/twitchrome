@@ -183,9 +183,9 @@ tw.TimelineView.prototype.scrollState = function(){
 	return null;
     }
 
-    console.log("viewport scroll top", viewport.scrollTop());
-    console.log("parent offset top", parent[0].offsetTop);
-    console.log("child offset top", children[0].offsetTop); // viewport からの位置
+    // console.log("viewport scroll top", viewport.scrollTop());
+    // console.log("parent offset top", parent[0].offsetTop);
+    // console.log("child offset top", children[0].offsetTop); // viewport からの位置
 
     // ビューポートの最上部の要素を探す
     // child.offsetTop は element_ 内での相対位置
@@ -199,7 +199,7 @@ tw.TimelineView.prototype.scrollState = function(){
     }
 
     var scrollState = {child: $(child), offset: child.offsetTop - scrollTop};
-    console.log("scrollState", scrollState.child[0], scrollState.offset);
+    // console.log("scrollState", scrollState.child[0], scrollState.offset);
     return scrollState;
 };
 

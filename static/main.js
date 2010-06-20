@@ -65,6 +65,7 @@ tw.initialize = function(){
     tw.components.background = new tw.Background();
     tw.components.sidebar = new tw.Sidebar();
     tw.components.progressview = new tw.ProgressView();
+    tw.components.autoRefresh = new tw.AutoRefresh();
 
     // コンポーネント初期化
     for(var a in tw.components){
@@ -91,9 +92,7 @@ tw.onLoadUser = function(user){
     tw.components.profileView.addUser(tw.user);
     
     tw.components.background.setBackground(tw.user);
-
     var send = tw.store.userTimeline(user);
-    tw.ajax.addAutoRefresh(send);
 };
 
 /**
@@ -116,9 +115,5 @@ $(function(){
       // tw.initializeDesign();
     
       tw.loadUser();
-      var homeTimeline = tw.store.homeTimeline();
-      var mentions = tw.store.mentions();
-      tw.ajax.addAutoRefresh(homeTimeline);
-      tw.ajax.addAutoRefresh(mentions);
-      tw.showTimeline(homeTimeline);
+      tw.showTimeline(tw.store.homeTimeline());
 });
