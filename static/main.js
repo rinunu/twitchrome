@@ -32,6 +32,17 @@ tw.setCommand = function(elem, func){
 };
 
 // ----------------------------------------------------------------------
+// debug
+
+function start(){
+    util.Event.trigger(tw.ajax, "start", {name: "test"});
+}
+
+function end(){
+    util.Event.trigger(tw.ajax, "end", {name: "test"});
+}
+
+// ----------------------------------------------------------------------
 // 初期化
 
 /**
@@ -55,8 +66,6 @@ tw.initialize = function(){
     tw.components.sidebar = new tw.Sidebar();
     tw.components.progressview = new tw.ProgressView();
 
-    tw.components.debugview = new tw.DebugView();
-    
     // コンポーネント初期化
     for(var a in tw.components){
         var component = tw.components[a];
