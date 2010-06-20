@@ -264,8 +264,6 @@ tw.TimelineView.prototype.onFocus = function(event){
 };
 
 tw.TimelineView.prototype.onBlur = function(event){
-    // var target = $(event.target);
-    // this.getStatusElement(target).removeClass("focus");
 };
 
 tw.TimelineView.prototype.onReply = function(event){
@@ -307,9 +305,7 @@ tw.TimelineView.prototype.onShowHash = function(event){
 
 tw.TimelineView.prototype.onShowConversation = function(event){
     event.preventDefault();
-    console.log(event.target);
     var status = this.getStatus($(event.target));
-    console.assert(status);
     tw.showTimeline(tw.store.getConversation(status));
 };
 
