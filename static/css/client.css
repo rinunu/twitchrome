@@ -10,7 +10,6 @@ html{
 body{
     margin: 0;
     height: 100%;
-    overflow-x: hidden;
 }
 
 .header{
@@ -57,11 +56,11 @@ body > .footer{
     margin: 5px;
 }
 
-.progress{
+.progress_container{
     position: absolute;
     bottom: 10px;
     right: 0px;
-    width: 150px;
+    width: 200px;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -555,7 +554,13 @@ body{
 /* ---------------------------------------------------------------------- */
 /* progress */
 
+.progress_container{
+    overflow-x: hidden;
+    height: 20px;
+}
+
 .progress{
+    position: absolute;
     border-radius: 3px 0 0 3px;
     -webkit-border-radius: 3px 0 0 3px;
     -moz-border-radius: 3px 0 0 3px;
@@ -563,6 +568,8 @@ body{
     padding: 3px;
     opacity: 0;
     right: -100px;
+    bottom: 0;
+    width: 150px;
 
     -webkit-transition: all 0.1s ease-out;
 }
