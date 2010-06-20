@@ -10,8 +10,11 @@ tw.ProgressView.prototype.clear = function(){
 };
 
 tw.ProgressView.prototype.initialize = function(){
-    util.Event.bind(tw.ajax, this, {start: this.onStart});
-    util.Event.bind(tw.ajax, this, {end: this.onEnd});
+    util.Event.bind(tw.ajax, this, {
+			start: this.onStart,
+			success: this.onSuccess,
+			error: this.onError
+		    });
 };
 
 // ----------------------------------------------------------------------
@@ -21,14 +24,22 @@ tw.ProgressView.prototype.initialize = function(){
  *
  */
 tw.ProgressView.prototype.onStart = function(source, eventType, command){
-    console.log("test");
-    this.element_.text("「" + command.name + "」を処理中です");
+    this.element_.text(command.name);
+    this.element_.removeClass("error");
     this.element_.addClass("active");
 };
 
 /**
  *
  */
-tw.ProgressView.prototype.onEnd = function(source, eventType, command){
+tw.ProgressView.prototype.onSuccess = function(source, eventType, command){
     this.element_.removeClass("active");
+};
+
+/**
+ *
+ */
+tw.ProgressView.prototype.onError = function(source, eventType, command){
+    this.element_.removeClass("active");
+    this.element_.addClass("error");
 };

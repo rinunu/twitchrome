@@ -60,7 +60,7 @@ body > .footer{
     position: absolute;
     bottom: 10px;
     right: 0px;
-    width: 200px;
+    width: 250px;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -569,12 +569,18 @@ body{
     opacity: 0;
     right: -100px;
     bottom: 0;
-    width: 150px;
 
     -webkit-transition: all 0.1s ease-out;
 }
 
 .progress.active{
+    opacity: 1;
+    right: 0px;
+}
+
+.progress.error{
+    color: #fff;
+    background-color: rgba(255,0,0,0.9);
     opacity: 1;
     right: 0px;
 }

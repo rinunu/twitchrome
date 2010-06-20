@@ -69,6 +69,7 @@ tw.Ajax.prototype.execute = function(command){
 	    error: util.bind(this, this.onError, command)
 	});
     this.executing = true;
+    util.Event.trigger(this, "start", command);
 };
 
 /**
@@ -92,10 +93,14 @@ tw.Ajax.prototype.onSuccess = function(command, result){
     command.callback(result);
     this.commands.shift();
     this.executing = false;
+
+    util.Event.trigger(this, "success", command);
 };
 
 tw.Ajax.prototype.onError = function(command, xhr){
     console.error("ajax error", command.name);
     this.commands.shift();
     this.executing = false;
+
+    util.Event.trigger(this, "error", command);
 };

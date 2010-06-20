@@ -213,13 +213,13 @@ tw.Store.prototype.favorites = function(user){
  */
 tw.Store.prototype.friends = function(user){
     var uri = "/statuses/friends/" + user.screen_name;
-    var options = {name: user.screen_name + " のフォローしているユーザ"};
+    var options = {name: user.screen_name + " の following"};
     return this.getOrCreateTimeline(uri, tw.Users, uri, options);
 };
 
 tw.Store.prototype.followers = function(user){
     var uri = "/statuses/followers/" + user.screen_name;
-    var options = {name: user.screen_name + " がフォローされているユーザ"};
+    var options = {name: user.screen_name + " の followers"};
     return this.getOrCreateTimeline(uri, tw.Users, uri, options);
 };
 
