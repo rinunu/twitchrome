@@ -85,6 +85,9 @@ tw.Ajax.prototype.onInterval = function(){
 };
 
 tw.Ajax.prototype.onSuccess = function(command, result){
+    if(!result){ // 失敗なのに onSuccess が呼ばれる場合があるため
+	return this.onError(command);
+    }
     console.log("ajax success", command.name);
     command.callback(result);
     this.commands.shift();
