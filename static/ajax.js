@@ -42,12 +42,10 @@ tw.Ajax.prototype.ajax = function(command){
  * 指定された name を持つ command を取得する
  * 
  * 存在しない場合は null
- * 
- * 動作未確認 
  */
 tw.Ajax.prototype.command = function(name){
     for(var i = 0; i < this.commands.length; i++){
-	var command = this.commands[0];
+	var command = this.commands[i];
 	if(command.name == name){
 	    return command;
 	}
