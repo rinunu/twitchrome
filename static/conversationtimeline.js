@@ -25,7 +25,5 @@ tw.ConversationTimeline.prototype.onGet = function(status){
 			   util.bind(this, this.onGet));
     }
 
-    this.statuses_.push(status);
-    
-    this.addNew([status]);
+    this.insert([status]);
 };

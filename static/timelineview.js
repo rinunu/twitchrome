@@ -116,10 +116,51 @@ tw.TimelineView.prototype.prepend = function(statuses){
 };
 
 /**
+ * timeline と表示を同期する
+ * 
+ * 追加した要素の配列を返す
+ * 
+ * 前提
+ * - timeline の要素が削除されていないこと
+ */
+tw.TimelineView.prototype.sync = function(){
+    console.log("sync");
+    var statuses = this.timeline_.statuses();
+    var elements = this.element_.children(".status");
+    var parent = this.element_[0];
+    var newElements = [];
+    var renderer = tw.TimelineView.renderer;
+    
+    // view に存在しない status を view に追加する
+    var iStatus = 0,
+    lStatus = statuses.length,
+    iElement = 0,
+    lElement = elements.length;
+    for(; iStatus < lStatus; iStatus++){
+	var status = statuses[iStatus];
+	var element = elements[iElement];
+	if(!element || status != $(element).data("status")){
+	    var newElement = renderer.render(status);
+	    newElement.data("status", status);
+	    newElement.addClass("new");
+	    parent.insertBefore(newElement[0], element ? element : null); // null の時は末尾
+	    
+	    newElements.push(newElement);
+	}else{
+	    iElement++;
+	}
+    }
+    console.log("sync end");
+    return newElements;
+};
+
+/**
  * statuses を適切な位置へ追加する
- * statuses は作成日の降順になっていること
- *
- * 大量の statuses を追加すると遅くなるので注意。
+ * 
+ * 前提
+ * - statuses は timeline と同じ順番になっている
+ * 
+ * TODO 動作確認していない
  */
 tw.TimelineView.prototype.insert = function(statuses){
     var children = this.element_.children(".status");
@@ -151,14 +192,6 @@ tw.TimelineView.prototype.insert = function(statuses){
 	    parent.insertBefore(elem[0], after); // after == null の時は末尾
 	}
     }
-
-    // 強調表示
-    setTimeout(
-	function(){
-	    for(var i = 0; i < newElements.length; i++){
-		newElements[i].removeClass("new");
-	    }
-	}, 500);
 };
 
 /**
@@ -221,12 +254,13 @@ tw.TimelineView.prototype.refreshView = function(newStatuses){
     // 画面最上部に表示している Status をもとめる
 
     // if(this.element_[0].childNodes.length == 0){
-    // 	console.log("prepend all");
-    // 	this.prepend(newStatuses);
+    	// console.log("prepend all");
+    	// this.prepend(newStatuses);
     // }else{
 	var scrollState = this.scrollState();
 	console.log("insert partial", newStatuses.length);
-	this.insert(newStatuses);
+	// this.insert(newStatuses);
+        var newElements = this.sync();
 	this.setScrollState(scrollState);
     // }
 
@@ -234,6 +268,15 @@ tw.TimelineView.prototype.refreshView = function(newStatuses){
     // if(focus){
     // 	this.setFocus(focus);
     // }
+
+
+    // 強調表示
+    setTimeout(
+	function(){
+	    for(var i = 0; i < newElements.length; i++){
+		newElements[i].removeClass("new");
+	    }
+	}, 500);
 };
 
 // ----------------------------------------------------------------------

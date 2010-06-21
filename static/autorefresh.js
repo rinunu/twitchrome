@@ -18,9 +18,9 @@ tw.AutoRefresh.prototype.onInterval = function(){
     for(var i = 0; i < this.autoRefreshList.length; i++){
         var a = this.autoRefreshList[i];
 
-	var updatedAt = a.timeline.updatedAt();
-	if(!updatedAt || 
-	   new Date() >= new Date(a.interval + updatedAt.getTime())){
+	var refreshedAt = a.timeline.refreshedAt();
+	if(!refreshedAt || 
+	   new Date() >= new Date(a.interval + refreshedAt.getTime())){
 	    a.timeline.refresh();
 	}
     }
