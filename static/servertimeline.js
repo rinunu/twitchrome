@@ -8,12 +8,6 @@ tw.ServerTimeline = function(store, uri, options){
 
 util.extend(tw.ServerTimeline, tw.Timeline);
 
-/**
- * サーバと通信し、リストの内容を最新にする
- * 取得する件数は options.count で指定する
- * 
- * 前回の呼出から時間を開けずに呼び出した場合、何も行わない
- */
 tw.ServerTimeline.prototype.refresh = function(options){
     options = $.extend({count: 100, force: false}, options);
     var name = this.name_ + "の TL 取得";
@@ -29,11 +23,9 @@ tw.ServerTimeline.prototype.refresh = function(options){
     }
     
     var params = {};
-    if(this.refreshedAt_ && this.statuses_.length >=1){
-	// refreshedAt_ も見るのは、一度も refresh されていないときはすべて取得するため
-	params.since_id = this.statuses_[0].id;
-    }
+    this.setRefreshParams(params);
     params.count = options.count;
+
     tw.ajax.ajax(
 	{
 	    type: "GET",
@@ -52,18 +44,32 @@ tw.ServerTimeline.prototype.newCount = function(){
 // protected
 
 /**
+ * refresh 時のパラメータを調整するために呼び出される
+ */
+tw.ServerTimeline.prototype.setRefreshParams = function(params){
+    if(this.refreshedAt_ && this.statuses_.length >=1){
+	// refreshedAt_ も見るのは、一度も refresh されていないときはすべて取得するため
+	params.since_id = this.statuses_[0].id;
+    }
+};
+
+/**
  * サーバから取得した json を Statuses のリストに変換する
  */
 tw.ServerTimeline.prototype.toStatuses = function(json){
     return json;
 };
 
-// ----------------------------------------------------------------------
-// private
-
+/**
+ * refresh 完了時に呼び出される
+ */
 tw.ServerTimeline.prototype.onRefresh = function(json){
     var newStatuses = this.toStatuses(json);
     this.store_.addStatuses(this, newStatuses);
     this.insert(newStatuses);
     this.refreshedAt_ = new Date;
 };
+
+// ----------------------------------------------------------------------
+// private
+
