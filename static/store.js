@@ -150,14 +150,23 @@ tw.Store.prototype.addUser = function(user){
  * 
  * timeline には、呼び出し元の Timeline を指定する。
  * 
- * また、addStatuses(timeline, statuses) イベント通知を行う
+ * その他の処理
+ * - 指定された timeline 以外の Timeline に statuses を追加する
  */
 tw.Store.prototype.addStatuses = function(timeline, statuses){
+    var statusMap = {};
     for(var i = 0; i < statuses.length; i++){
-	statuses[i] = this.addStatus(statuses[i]);
+	var status = this.addStatus(statuses[i]);
+	statuses[i] = status;
+	statusMap[status.id] = status;
     }
 
-    util.Event.trigger(this, "addStatuses", timeline, statuses);
+    for(i = 0; i < this.timelines_.length; i++){
+	var otherTimeline = this.timelines_[i];
+	if(otherTimeline != timeline){
+	    otherTimeline.addStatuses(statusMap);
+	}
+    }
 };
 
 // ----------------------------------------------------------------------

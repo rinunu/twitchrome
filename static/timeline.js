@@ -42,10 +42,13 @@ tw.Timeline.prototype.refreshedAt = function(){
  * 追加するのは opitons.filter が true を返すもの。
  *
  * refresh イベントを通知する
+ * 
+ * 用途
+ * - Timeline 作成時に、 Store に存在する Status を取り込む
+ * - 他の Timeline が Store 更新時、関連する Status を取り込む
  */
 tw.Timeline.prototype.addStatuses = function(statuses){
     if(!this.filter_){
-	console.log("no filter");
 	return;
     }
 
@@ -56,7 +59,7 @@ tw.Timeline.prototype.addStatuses = function(statuses){
 	    newStatuses.push(status);
 	}
     }
-    
+    console.log("timeline addStatuses", newStatuses.length);
     this.sort(newStatuses);
     this.insert(newStatuses);
 };
@@ -133,3 +136,4 @@ tw.Timeline.prototype.insert = function(newStatuses){
 tw.Timeline.prototype.sort = function(statuses){
     statuses.sort(function(a, b){return b.id - a.id;});
 };
+
