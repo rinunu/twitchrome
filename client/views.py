@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
+from django.http import HttpResponseForbidden
 from django.core.urlresolvers import reverse
 
 from appengine_utilities.sessions import Session
@@ -100,6 +101,9 @@ def user(request):
 # twitter_api を実行し、結果を返す
 # url は http://api.twitter.com/1/ 以降
 def twitter_api(request, url):
+    if not settings.DEBUG and not request.is_ajax():
+        return HttpResponseForbidden("error")
+    
     session = Session()
     
     # return HttpResponse(url + " - " + str(len(request.GET)))
