@@ -67,13 +67,13 @@ tw.initialize = function(){
     tw.saveTemplates();
     
     // デザイン要素削除
-    $(".timeline_container").empty();
+    $(".timeline_viewport").empty();
     
     tw.ajax = new tw.Ajax();
     tw.store = new tw.Store();
 
     // 使用するコンポーネント登録
-    tw.components.timelineView = new tw.MultiTimelineView($(".timeline_container"));
+    tw.components.timelineView = new tw.MultiTimelineView($(".timeline_viewport"));
     tw.components.statusInput = new tw.StatusInput();
 
     tw.components.profileView = new tw.ProfileView();
