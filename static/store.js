@@ -263,7 +263,7 @@ tw.Store.prototype.userTimeline = function(user){
 tw.Store.prototype.favorites = function(user){
     var screenName = user.screen_name || user;
     var uri = "/favorites/" + screenName;
-    var options = {name: user.screen_name + " のお気に入り"};
+    var options = {name: screenName + " のお気に入り"};
     return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
