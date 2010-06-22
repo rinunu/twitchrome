@@ -10,7 +10,7 @@ util.extend(tw.ServerTimeline, tw.Timeline);
 
 tw.ServerTimeline.prototype.refresh = function(options){
     options = $.extend({count: 100, force: false}, options);
-    var name = this.name_ + "の TL 取得";
+    var name = this.name_ + "の取得";
     
     if(this.refreshedAt_ && !options.force && 
        (new Date - this.refreshedAt_ < 30 * 1000)){

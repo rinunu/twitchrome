@@ -86,6 +86,14 @@ tw.Store.prototype.destroy = function(status){
 };
 
 /**
+ * Status が存在しているならそれを取得する
+ * 存在しないなら undefined
+ */
+tw.Store.prototype.hasStatus = function(id){
+    return this.statuses_[id];
+};
+
+/**
  * Status を取得する
  * ローカル DB にある場合は、それを取得する
  */
@@ -172,6 +180,53 @@ tw.Store.prototype.addStatuses = function(timeline, statuses){
 // ----------------------------------------------------------------------
 // Timeline の取得
 
+/**
+ * 指定された URI の Timeline が存在するならそれを返す
+ * 
+ * 存在しないなら null を返す
+ */
+tw.Store.prototype.hasTimeline = function(uri){
+    for(var i = 0; i < this.timelines_.length; i++){
+	var timeline = this.timelines_[i];
+	if(timeline.uri() == uri){
+	    return timeline;
+	}
+    }
+    return null;
+};
+
+/**
+ * Timeline を取得する
+ * 存在しない場合は作成する
+ */
+tw.Store.prototype.timeline = function(uri){
+    var timeline = this.hasTimeline(uri);
+    if(timeline){
+	return timeline;
+    }
+
+    // uri を解析し、適切な TL を取得する
+    var m = null;
+    if(uri == "/statuses/home_timeline"){
+	return this.homeTimeline();
+    }else if(uri == "/statuses/mentions"){
+	return this.mentions();
+    }else if((m = /\/statuses\/user_timeline\/(\w+)/.exec(uri))){
+	return this.userTimeline(m[1]);
+    }else if((m = /\/favorites\/(\w+)/.exec(uri))){
+	return this.favorites(m[1]);
+    }else if((m = /\/statuses\/friends\/(\w+)/.exec(uri))){
+	return this.friends(m[1]);
+    }else if((m = /\/statuses\/followers\/(\w+)/.exec(uri))){
+	return this.followers(m[1]);
+    }else if((m = /\/conversations\/(\w+)/.exec(uri))){
+	return this.conversation(m[1]);
+    }else{
+	console.error("タイムラインの指定が不正です", uri);
+	return this.homeTimeline();
+    }
+};
+
 tw.Store.prototype.homeTimeline = function(){
     var uri = "/statuses/home_timeline";
     var options = {name: "ホーム"};
@@ -187,55 +242,62 @@ tw.Store.prototype.mentions = function(){
 /**
  * 指定されたユーザの TL を取得する
  * 
- * user は User もしくは screen_name
+ * user は User もしくは screenName
  */
 tw.Store.prototype.userTimeline = function(user){
-    var screenName = user.screen_name ? user.screen_name : user;
+    var screenName = user.screen_name || user;
     var uri = "/statuses/user_timeline/" + screenName;
-    var options = {filter: function(status){
-		       return status.user.screen_name == screenName;
-		   },
-		   name: screenName
-		  };
+    var options = {
+	name: screenName + "の TL",
+	filter: function(status){
+	    return status.user.screen_name == screenName;
+	}
+    };
     return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**
  * 指定されたユーザの favorites を作成する
- * user が指定されなかった場合は、自分のものを作成する
+ * user は User もしくは screenName
  */
 tw.Store.prototype.favorites = function(user){
-    var uri = "/favorites";
+    var screenName = user.screen_name || user;
+    var uri = "/favorites/" + screenName;
     var options = {name: user.screen_name + " のお気に入り"};
-    if(user){
-	uri = "/favorites/" + user.screen_name;
-    }else{
-	options.filter = function(status){
-	    return status.favorited;
-	};
-    }
     return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**
  * 指定されたユーザの friends TL を取得する
+ * user は User もしくは screenName
  */
 tw.Store.prototype.friends = function(user){
-    var uri = "/statuses/friends/" + user.screen_name;
-    var options = {name: user.screen_name + " の following"};
+    var screenName = user.screen_name || user;
+    var uri = "/statuses/friends/" + screenName;
+    var options = {name: screenName + " の following"};
     return this.getOrCreateTimeline(uri, tw.Users, uri, options);
 };
 
+/**
+ * 指定されたユーザの followers TL を取得する
+ * user は User もしくは screenName
+ */
 tw.Store.prototype.followers = function(user){
-    var uri = "/statuses/followers/" + user.screen_name;
-    var options = {name: user.screen_name + " の followers"};
+    var screenName = user.screen_name || user;
+    var uri = "/statuses/followers/" + screenName;
+    var options = {name: screenName + " の followers"};
     return this.getOrCreateTimeline(uri, tw.Users, uri, options);
 };
 
-tw.Store.prototype.getConversation = function(status){
-    var uri = "/conversations/" + status.id;
-    var options = {name: status.id + " から始まる会話"};
-    return this.getOrCreateTimeline(uri, tw.ConversationTimeline, status, options);
+/**
+ * 指定された status の conversation TL を取得する
+ * status は Status もしくは statusId
+ */
+tw.Store.prototype.conversation = function(status){
+    var statusId = status.id || status;
+    var uri = "/conversations/" + statusId;
+    var options = {name: statusId + " から始まる会話"};
+    return this.getOrCreateTimeline(uri, tw.ConversationTimeline, statusId, options);
 };
 
 // ----------------------------------------------------------------------
@@ -267,24 +329,10 @@ tw.Store.prototype.addStatus = function(status){
 };
 
 /**
- * Timeline を取得する
- * 存在しない場合は null を返す
- */
-tw.Store.prototype.timeline = function(uri){
-    for(var i = 0; i < this.timelines_.length; i++){
-	var timeline = this.timelines_[i];
-	if(timeline.uri() == uri){
-	    return timeline;
-	}
-    }
-    return null;
-};
-
-/**
  * Timeline をキャッシュへ追加する
  */
 tw.Store.prototype.addTimeline = function(timeline){
-    console.assert(!this.timeline(timeline));
+    console.assert(!this.hasTimeline(timeline.uri()));
     this.timelines_.push(timeline);
 };
 
@@ -293,7 +341,7 @@ tw.Store.prototype.addTimeline = function(timeline){
  * 存在しない場合は作成する
  */
 tw.Store.prototype.getOrCreateTimeline = function(uri, constructor, param, options){
-    var timeline = this.timeline(uri);
+    var timeline = this.hasTimeline(uri);
     if(timeline){
 	return timeline;
     }

@@ -1,15 +1,41 @@
+/**
+ * アプリ全体の制御を行う
+ */
+
 tw.templates = {};
 tw.components = {};
 
 // ----------------------------------------------------------------------
-// commands
+// ページ切り替え
 
 /**
  * 指定された TL を表示する
  * また、表示後 Refresh を実行する
  */
 tw.showTimeline = function(timeline){
+    $.history.load(timeline.uri().replace(/\//g, "."));
+};
+
+tw.onHistoryChange = function(state){
+    console.log("onHistoryChange");
+    // 現在の情報を保存する
+    // スクロール情報は hash ではなくメモリに保存する
+    var oldTimeline = tw.components.timelineView.timeline();
+    if(oldTimeline){
+	oldTimeline.tw_scrollState = tw.components.timelineView.scrollState();
+    }
+
+    if(state){
+	var uri = state.replace(/\./g, "/");
+	var timeline = tw.store.timeline(uri);
+    }else{
+	var timeline = tw.store.homeTimeline();
+    }
+
     tw.components.timelineView.setTimeline(timeline);
+    if(timeline.tw_scrollState){
+	tw.components.timelineView.setScrollState(timeline.tw_scrollState);
+    }
     timeline.refresh();
 };
 
@@ -64,6 +90,9 @@ tw.initialize = function(){
 	    component.clear();
 	}
     }
+    
+    // 登録と初回イベント実行
+    $.history.init(util.bind(this, this.onHistoryChange));
 };
 
 /**
@@ -106,5 +135,4 @@ $(function(){
       // tw.initializeDesign();
     
       tw.loadUser();
-      tw.showTimeline(tw.store.homeTimeline());
 });

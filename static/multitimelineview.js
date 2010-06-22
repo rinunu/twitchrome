@@ -20,7 +20,34 @@ tw.MultiTimelineView.prototype.initialize = function(){
  * フォーカスの当たっている Status を取得する
  */
 tw.MultiTimelineView.prototype.focus = function(){
+    if(!this.currentView_){
+	return null;
+    }
     return this.currentView_.focus();
+};
+
+tw.MultiTimelineView.prototype.scrollState = function(){
+    if(!this.currentView_){
+	return null;
+    }
+    return this.currentView_.scrollState();
+};
+
+tw.MultiTimelineView.prototype.setScrollState = function(scrollState){
+    if(!this.currentView_){
+	return null;
+    }
+    return this.currentView_.setScrollState(scrollState);
+};
+
+/**
+ * 表示している TL を取得する
+ */
+tw.MultiTimelineView.prototype.timeline = function(){
+    if(!this.currentView_){
+	return null;
+    }
+    return this.currentView_.timeline();
 };
 
 /**

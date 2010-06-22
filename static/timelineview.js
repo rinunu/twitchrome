@@ -34,7 +34,7 @@ tw.TimelineView = function(element, timeline){
 };
 
 /**
- * 表示中のリストを取得する
+ * 表示中の TL を取得する
  */
 tw.TimelineView.prototype.timeline = function(){
     return this.timeline_;
@@ -49,6 +49,73 @@ tw.TimelineView.prototype.element = function(){
  */
 tw.TimelineView.prototype.focus = function(){
     return this.focusElement_ ? this.focusElement_.data("status") : null;
+};
+
+/**
+ * スクロール状態を保存する
+ * 
+ * スクロール状態を保存し、復元した場合、ビューポートの最上部に表示されている要素の位置を維持する。
+ * 
+ * スクロール状態は 
+ * {
+ *   child: ビューポートの最上部に表示されている要素。 null 可,
+ *   offset: child.offsetTop - viewport.scrollTop,
+ *   status: ビューポートの最上部に表示されている Status
+ * }
+ * 
+ * 本処理は速度を優先する。
+ */
+tw.TimelineView.prototype.scrollState = function(){
+    var children = this.element_.children(".status");
+    var parent = this.element_;
+    var viewport = this.element_.parent();
+
+    if(children.length == 0){
+	return {};
+    }
+
+    // console.log("viewport scroll top", viewport.scrollTop());
+    // console.log("parent offset top", parent[0].offsetTop);
+    // console.log("child offset top", children[0].offsetTop); // viewport からの位置
+
+    // ビューポートの最上部の要素を探す
+    // child.offsetTop は element_ 内での相対位置
+    var scrollTop = viewport.scrollTop();
+    var child = null;
+    for(var i = 0, length = children.length; i < length; i++){
+	child = children[i];
+	if(child.offsetTop >= scrollTop){
+	    break;
+	}
+    }
+
+    child = $(child);
+    var scrollState = {status: child.data("status"), 
+		       child: child, offset: child[0].offsetTop - scrollTop};
+    return scrollState;
+};
+
+/**
+ * スクロール状態を復元する
+ * 
+ * 指定された要素が存在しない場合、復元されない。
+ */
+tw.TimelineView.prototype.setScrollState = function(scrollState){
+    console.log("setScrollState", scrollState);
+    console.assert(scrollState);
+
+    var child = scrollState.child;
+    if(!child && scrollState.status){
+	child = this.getElement(scrollState.status);
+    }
+
+    var viewport = this.element_.parent();
+    if(!child || child.length == 0){
+	console.debug("setScrollState", "スクロール位置が指定されなかった", child);
+	viewport.scrollTop(0);
+    }else{
+	viewport.scrollTop(child[0].offsetTop - scrollState.offset);
+    }
 };
 
 // ----------------------------------------------------------------------
@@ -87,6 +154,8 @@ tw.TimelineView.prototype.setFocus = function(focus){
 /**
  * Status から、それを表示している HTML 要素を取得する
  * 現在線形検索が発生するので注意
+ *
+ * 存在しない場合は null 
  */
 tw.TimelineView.prototype.getElement = function(status){
     var element = null;
@@ -195,59 +264,6 @@ tw.TimelineView.prototype.insert = function(statuses){
 };
 
 /**
- * スクロール状態を保存する
- * 
- * スクロール状態を保存し、復元した場合、ビューポートの最上部に表示されている要素の位置を維持する。
- * 
- * スクロール状態は 
- * {
- *   child: ビューポートの最上部に表示されている要素,
- *   offset: child.offsetTop - viewport.scrollTop
- * }
- * 
- * 本処理は速度を優先する。
- */
-tw.TimelineView.prototype.scrollState = function(){
-    var children = this.element_.children(".status");
-    var parent = this.element_;
-    var viewport = this.element_.parent();
-
-    if(children.length == 0){
-	return null;
-    }
-
-    // console.log("viewport scroll top", viewport.scrollTop());
-    // console.log("parent offset top", parent[0].offsetTop);
-    // console.log("child offset top", children[0].offsetTop); // viewport からの位置
-
-    // ビューポートの最上部の要素を探す
-    // child.offsetTop は element_ 内での相対位置
-    var scrollTop = viewport.scrollTop();
-    var child = null;
-    for(var i = 0, length = children.length; i < length; i++){
-	child = children[i];
-	if(child.offsetTop >= scrollTop){
-	    break;
-	}
-    }
-
-    var scrollState = {child: $(child), offset: child.offsetTop - scrollTop};
-    // console.log("scrollState", scrollState.child[0], scrollState.offset);
-    return scrollState;
-};
-
-/**
- * スクロール状態を復元する
- */
-tw.TimelineView.prototype.setScrollState = function(scrollState){
-    if(scrollState){
-	var viewport = this.element_.parent();
-	viewport.scrollTop(scrollState.child[0].offsetTop - scrollState.offset);
-    }
-};
-
-
-/**
  * Timeline の内容に合わせて表示を更新する
  */
 tw.TimelineView.prototype.refreshView = function(newStatuses){
@@ -349,7 +365,7 @@ tw.TimelineView.prototype.onShowHash = function(event){
 tw.TimelineView.prototype.onShowConversation = function(event){
     event.preventDefault();
     var status = this.getStatus($(event.target));
-    tw.showTimeline(tw.store.getConversation(status));
+    tw.showTimeline(tw.store.conversation(status));
 };
 
 // ----------------------------------------------------------------------

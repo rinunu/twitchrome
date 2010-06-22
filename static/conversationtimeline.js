@@ -1,10 +1,14 @@
 /**
  * in-reply-to のチェーンを表す
+ * 
+ * status は Status もしくは Status ID
  */
 tw.ConversationTimeline = function(store, status, options){
-    tw.Timeline.call(this, store, "/conversations/" + status.id, options);
-    this.status_ = status;
-    this.onGet(status);
+    var statusId = status.id || status;
+    tw.Timeline.call(this, store, "/conversations/" + statusId, options);
+
+    this.store_.getStatus(statusId,
+			  util.bind(this, this.onGet));
 };
 
 util.extend(tw.ConversationTimeline, tw.Timeline);
