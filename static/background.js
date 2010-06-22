@@ -20,7 +20,7 @@ tw.Background.prototype.setBackground = function(user){
     var bgColor = user.profile_background_color;
 
     // Twitter の不具合?
-    if(/\/theme1\/bg.png$/.test(bgImage) && bgColor == "9ae4e8"){
+    if(/\/theme1\/bg.png$/.test(bgImage)){
 	bgColor = "c0deed";
     }
     

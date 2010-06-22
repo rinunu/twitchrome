@@ -17,14 +17,14 @@ body{
     height: 110px;
     top: 2px;
     left: 30px;
-    right: 280px;
+    right: 290px;
 }
 
 .sidebar{
     position: absolute;
-    top: 100px;
+    top: 2px;
     right: 10px;
-    width: 250px;
+    width: 240px;
     margin: 0 10px;
 }
 
@@ -33,7 +33,7 @@ body{
     top: 140px;
     bottom: 35px;
     left: 30px;
-    right: 280px;
+    right: 290px;
 }
 
 .timeline_viewport{
@@ -60,7 +60,6 @@ body > .footer{
 
 .profile{
     clear: both;
-    margin: 5px;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -72,6 +71,7 @@ body > .footer{
     border-radius: 5px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
+    border: solid 1px #333;
 }
 
 .status .body{
@@ -376,14 +376,79 @@ body{
 /* .sidebar */
 
 .sidebar{
+    padding: 0px;
 }
 
-.sidebar > .menu > .button{
+.sidebar .frame{
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.sidebar .frame:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.sidebar .tabs{
+    margin-bottom: 10px;
+}
+
+.sidebar .tabs:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.tabs.basic a{
     display: block;
     float: left;
     font-size: 15px;
-    padding: 1px 10px;
-    margin: 3px 5px;
+    width: 90px;
+    height: 30px;
+
+    text-align: center;
+
+    color: #000;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(255,255,255)), color-stop(1, rgb(240, 240, 240)));
+    background-image: -moz-linear-gradient(-90deg,rgb(255,255,255) 0%,rgb(240,240,240) 100%);
+
+    border: solid 1px #000;
+}
+
+a .count{
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+
+    font-size: 11px;
+    margin-left: 3px;
+    padding: 1px;
+    color: #fff;
+    background-color: #001;
+}
+
+.tabs.search a, .tabs.list a{
+    display: block;
+    float: left;
+    font-size: 12px;
+    padding: 1px 2px;
+    margin: 1px;
+    height: 20px;
+
+    color: #000;
+    background-color: #fff;
+    border: solid 1px #000;
+
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.tabs.search:after, .tabs.list:after{
+    content: "";
+    display: block;
+    clear: both;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -422,9 +487,6 @@ body{
 
 .profile{
     font-size: 11px;
-    border-radius: 7px;
-    -webkit-border-radius: 7px;
-    -moz-border-radius: 7px;
     padding: 5px;
 }
 
@@ -432,7 +494,7 @@ body{
     padding: 5px;
 }
 
-.profile img{
+.profile .content img{
     float: left;
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -530,22 +592,31 @@ body{
 
 /* ---------- */
 
+.profile .tabs{
+}
+
 .profile .tab{
     display: block;
     float:left;
     
-    border-radius: 3px 3px 0 0;
-    -webkit-border-radius: 3px 3px 0 0;
-    -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     font-size: 10px;
-    color: #000;
-    background-color: #eee;
-    margin: 0px 1px;
+    margin: 2px;
     border: solid 1px #ccc;
+
+    width: 20px;
+    height: 20px;
+}
+
+.profile .tab img{
+    width: 100%;
+    height: 100%;
 }
 
 .profile .tab:hover{
-    background-color: #ddd;
+    border: solid 1px #fff;
 }
 
 .profile .tabs:after{

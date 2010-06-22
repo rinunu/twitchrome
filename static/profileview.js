@@ -61,7 +61,7 @@ tw.ProfileView.prototype.setUser = function(user){
 
     this.element_.find(".url .dd").attr("href", user.url || "").text(user.url || "");
 
-    this.element_.find("img").attr("src", user.profile_image_url || "");
+    this.element_.find(".content img").attr("src", user.profile_image_url || "");
     this.element_.find("a.profile_image").attr(
 	"href",
 	(user.profile_image_url || "").replace(/_normal/, ""));
@@ -78,7 +78,9 @@ tw.ProfileView.prototype.setUser = function(user){
  */
 tw.ProfileView.prototype.addUser = function(user){
     var tabs = this.element_.find(".tabs");
-    $("<a class='tab'>" + user.screen_name + "</a>").appendTo(tabs);
+    $('<a class="tab"><img src="' + user.profile_image_url + '"></a>').
+	data("user", user).
+	appendTo(tabs);
 };
 
 /* ---------------------------------------------------------------------- */
@@ -93,6 +95,7 @@ tw.ProfileView.prototype.onFocus = function(){
 };
 
 tw.ProfileView.prototype.onTabClick = function(event){
-    var screenName = $(event.target).text();
+    var target = $(event.target).closest(".tab");
+    var screenName = target.data("user").screen_name;
     tw.store.user(screenName, util.bind(this, this.setUser));
 };
