@@ -18,7 +18,7 @@ body{
 
 .header{
     position: absolute;
-    height: 70px;
+    height: 90px;
     top: 35px;
     left: 30px;
     right: 290px;
@@ -34,7 +34,7 @@ body{
 
 .timeline_frame{
     position: absolute;
-    top: 130px;
+    top: 140px;
     bottom: 5px;
     left: 30px;
     right: 290px;
@@ -171,11 +171,7 @@ body{
 }
 
 /* ---------------------------------------------------------------------- */
-/* header */
-
-.header{
-    padding: 5px;
-}
+/* root menu */
 
 .root.menu{
     font-size: 11px;
@@ -205,8 +201,17 @@ h1{
     vertical-align: middle;
 }
 
+/* ---------------------------------------------------------------------- */
+/* status input */
+
+.header{
+    padding: 5px;
+}
+
 .status_input > .text{
-    margin-right: 10px;
+    height: 50px;
+    padding-bottom: 5px;
+    padding-right: 5px;
 }
 
 .status_input textarea{
@@ -216,27 +221,15 @@ h1{
     resize: none;
 }
 
-.status_input .count{
+.status_input .actions{
+    margin-top: 5px;
+    text-align: right;
 }
 
 .status_input .update{
     display: block;
     float: right;
 
-    font-size: 15px;
-    padding: 1px 5px;
-}
-
-.status_input .actions{
-    text-align: right;
-}
-
-.list_actions{
-    position: absolute;
-    bottom: 0;
-}
-
-.list_actions .button{
     font-size: 15px;
     padding: 1px 5px;
 }
