@@ -12,17 +12,21 @@ body{
     height: 100%;
 }
 
+.root.menu{
+    height: 30px;
+}
+
 .header{
     position: absolute;
-    height: 110px;
-    top: 2px;
+    height: 70px;
+    top: 35px;
     left: 30px;
     right: 290px;
 }
 
 .sidebar{
     position: absolute;
-    top: 2px;
+    top: 35px;
     right: 10px;
     width: 240px;
     margin: 0 10px;
@@ -30,8 +34,8 @@ body{
 
 .timeline_frame{
     position: absolute;
-    top: 140px;
-    bottom: 35px;
+    top: 130px;
+    bottom: 5px;
     left: 30px;
     right: 290px;
 }
@@ -74,6 +78,13 @@ body > .footer{
     border: solid 1px #333;
 }
 
+.header.frame, .sidebar .frame{
+    background-color: rgba(0,0,0,0.2);
+
+    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    -moz-box-shadow: 20px 20px 20px #224466;
+}
+
 .status .body{
     color: #000;
     background-color: #fff;
@@ -97,7 +108,7 @@ body > .footer{
 }
 
 body > .footer{
-    background-color: #fff;
+    /* background-color: #fff; */
 }
 
 /* ---------------------------------------------------------------------- */
@@ -165,23 +176,25 @@ body{
     padding: 5px;
 }
 
-.header > .menu{
+.root.menu{
     font-size: 11px;
-    float: right;
     padding: 0 5px;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    color: #000;
-    background-color: #fff;
+    color: #fff;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.root.menu div:nth-child(1){
+    text-align: right;
+    height: 100%;
+}
+
+.root.menu div:nth-child(1) a{
+    line-height: 30px;
+    vertical-align: middle;
 }
 
 .status_input > .text{
-    position: absolute;
-    top: 30px;
-    left: 10px;
-    right: 20px;
-    height: 50px;
+    margin-right: 10px;
 }
 
 .status_input textarea{
@@ -192,18 +205,18 @@ body{
 }
 
 .status_input .count{
-    display: block;
-    position: absolute;
-    right: 100px;
-    bottom: 5px;
 }
 
 .status_input .update{
-    position: absolute;
-    right: 10px;
-    bottom: 5px;
+    display: block;
+    float: right;
+
     font-size: 15px;
     padding: 1px 5px;
+}
+
+.status_input .actions{
+    text-align: right;
 }
 
 .list_actions{
@@ -405,7 +418,7 @@ body{
     float: left;
     font-size: 15px;
     width: 90px;
-    height: 30px;
+    margin: 1px;
 
     text-align: center;
 
@@ -488,6 +501,11 @@ a .count{
 .profile{
     font-size: 11px;
     padding: 5px;
+}
+
+.profile .tabs{
+    background-color: rgba(0,0,0,0.5);
+    padding: 2px;
 }
 
 .profile .content{

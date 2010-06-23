@@ -44,18 +44,21 @@
 <div class="bg0 bg current"></div>
 <div class="bg1 bg"></div>
 
-<div class="header frame">
-  <div class="menu">
+<div class="root menu">
+  <div>
     <a class="settings"><s>設定</s></a>
     <a href="{% url client.views.logout %}">ログアウト</a>
   </div>
+</div>
+
+<div class="header frame">
   
   <div class="status_input">
     <div class="text">
       <textarea></textarea>
     </div>
-    <span class="count"></span>
-    <div>
+    <div class="actions">
+      <span class="count"></span>
       <a href="" class="update button">ツイート</a>
     </div>
   </div>
