@@ -106,6 +106,7 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
 
     var child = scrollState.child;
     if(!child && scrollState.status){
+	console.debug("setScrollState", "getElement", child);
 	child = this.getElement(scrollState.status);
     }
 

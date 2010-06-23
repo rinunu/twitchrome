@@ -79,9 +79,10 @@ def authenticated(request):
     return HttpResponseRedirect(reverse(main))
 
 # Twitter オブジェクトを生成する
-def create_twitter():
-    session = Session()
-
+def create_twitter(session):
+    if 'access_token' not in session:
+        raise "login"
+    
     return twitter.Twitter(settings.TWITTER_CONSUMER_KEY,
                            settings.TWITTER_CONSUMER_SECRET,
                            session['access_token']['oauth_token'],
@@ -92,11 +93,11 @@ def create_twitter():
 def user(request):
     session = Session()
 
-    t = create_twitter()
-    a = t.get("http://api.twitter.com/1/users/show/" +
-              session['access_token']['user_id'] + 
-              ".json", {})
-    return HttpResponse(a)
+    t = create_twitter(session)
+    response = t.get("http://api.twitter.com/1/users/show/" +
+                     session['access_token']['user_id'] + 
+                     ".json", {})
+    return HttpResponse(response.content, status=response.status_code) # , 'application/json')
 
 # twitter_api を実行し、結果を返す
 # url は http://api.twitter.com/1/ 以降
@@ -116,17 +117,17 @@ def twitter_api(request, url):
     for key, value in src_params.iteritems():
         params[key] = value.encode('utf-8')
 
-    t = create_twitter()
+    t = create_twitter(session)
 
     url = 'http://api.twitter.com/1/' + url;
 
     if request.method == "POST":
-        a = t.post(url, params)
+        response = t.post(url, params)
     else:
-        # a = t.post(url, params)
-        a = t.get(url, params)
+        # response = t.post(url, params)
+        response = t.get(url, params)
 
-    return HttpResponse(a) # , 'application/json')
+    return HttpResponse(response.content, status=response.status_code) # , 'application/json')
 
 def index(request):
     return render_to_response("index.html", {})

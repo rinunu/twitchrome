@@ -1,6 +1,7 @@
 import oauth2 as oauth
 import time
 import urllib2
+from google.appengine.api import urlfetch
 
 class Twitter:
     def __init__(self, consumer_key, consumer_secret, token, token_secret):
@@ -18,8 +19,8 @@ class Twitter:
         
         req.sign_request(oauth.SignatureMethod_HMAC_SHA1(), self.consumer, self.token)
 
-        f = urllib2.urlopen(req.to_url())
-        return f.read()
+        result = urlfetch.fetch(req.to_url(), method=urlfetch.GET, deadline=10)
+        return result
     
     def post(self, url, parameters):
         req = oauth.Request.from_consumer_and_token(
@@ -31,5 +32,10 @@ class Twitter:
             )
         
         req.sign_request(oauth.SignatureMethod_HMAC_SHA1(), self.consumer, self.token)
-        f = urllib2.urlopen(url, req.to_postdata())
-        return f.read()
+
+        result = urlfetch.fetch(url,
+                                payload=req.to_postdata(),
+                                method=urlfetch.POST,
+                                deadline=10)
+
+        return result
