@@ -359,7 +359,8 @@ tw.TimelineView.prototype.onShowUser = function(event){
 
 tw.TimelineView.prototype.onShowHash = function(event){
     event.preventDefault();
-    alert("TODO ハッシュを検索した結果を表示する予定");
+    var hash = $(event.target).text();
+    tw.showTimeline(tw.store.search(hash));
 };
 
 tw.TimelineView.prototype.onShowConversation = function(event){
