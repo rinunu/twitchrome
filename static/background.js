@@ -3,6 +3,7 @@
  * 背景の制御を行う
  */
 tw.Background = function(){
+    this.user_ = null;
 };
 
 tw.Background.prototype.initialize = function(){
@@ -13,6 +14,10 @@ tw.Background.prototype.initialize = function(){
  * ユーザ情報をもとに、背景を設定する
  */
 tw.Background.prototype.setBackground = function(user){
+    if(user == this.user_){
+	return;
+    }
+
     var old = $(".bg.current");
     var new_ = $(".bg:not(.current)");
 
@@ -33,6 +38,8 @@ tw.Background.prototype.setBackground = function(user){
     
     old.removeClass("current");
     new_.addClass("current");
+
+    this.user_ = user;
 };
 
 // ----------------------------------------------------------------------
@@ -47,10 +54,10 @@ tw.Background.prototype.onSetTimeline = function(source, event, timeline){
 
     var uri = timeline.uri();
 
-    var m = tw.Background.RE.exec(uri);
-    if(m){
+    var m = null;
+    if((m = tw.Background.RE.exec(uri))){
 	tw.store.user(m[2], util.bind(this, this.setBackground));
-    }else{
+    }else if(/\/(home_timeline|mentions)/.test(uri)){
 	if(tw.user){
 	    this.setBackground(tw.user);
 	}
