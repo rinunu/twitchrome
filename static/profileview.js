@@ -63,8 +63,11 @@ tw.ProfileView.prototype.setUser = function(user){
 	    user.description.replace(/\n/g, "<br>") :
 	    "?");
 
-    this.element_.find(".url .dd").attr("href", user.url || "").text(
-	user.url !== undefined ? user.url : "?");
+    if(user.url){
+	this.element_.find(".url .dd").attr("href", user.url).text(user.url);
+    }else{
+	this.element_.find(".url .dd").removeAttr("href").text("?");
+    }
 
     this.element_.find(".content img").attr("src", user.profile_image_url || "");
     this.element_.find("a.profile_image").attr(

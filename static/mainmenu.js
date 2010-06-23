@@ -10,13 +10,4 @@ tw.MainMenu = function(){
 	    tw.showTimeline(tw.store.search(text));
 	});
 
-    this.element_.find("a.home").click(
-	function(){
-	    tw.showTimeline(tw.store.homeTimeline());
-	});
-    
-    this.element_.find("a.mentions").click(
-	function(){
-	    tw.showTimeline(tw.store.mentions());
-	});
 };
