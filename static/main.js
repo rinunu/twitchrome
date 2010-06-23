@@ -104,8 +104,7 @@ tw.loadUser = function(){
 };
 
 tw.onLoadUser = function(user){
-    tw.user = user;
-    tw.store.addUser(user);
+    tw.user = tw.store.addUser(user);
     tw.components.profileView.setUser(tw.user);
     tw.components.profileView.addUser(tw.user);
     

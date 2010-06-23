@@ -12,6 +12,7 @@ tw.ProfileView.prototype.clear = function(){
 
 tw.ProfileView.prototype.initialize = function(){
     util.Event.bind(tw.components.timelineView, this, {focus: this.onFocus});
+    util.Event.bind(tw.store.mentions(), this, {refresh: this.onMentionsRefresh});
 
     var this_ = this;
     this.element_.find("a.user_timeline").click(
@@ -77,10 +78,22 @@ tw.ProfileView.prototype.setUser = function(user){
  * ユーザ選択欄にユーザを追加する
  */
 tw.ProfileView.prototype.addUser = function(user){
-    var tabs = this.element_.find(".tabs");
-    $('<a class="tab"><img src="' + user.profile_image_url + '"></a>').
-	data("user", user).
-	appendTo(tabs);
+    var parent = this.element_.find(".tabs");
+    var tabs = parent.find(".tab");
+    for(var i = 0; i < tabs.length; i++){
+	if($(tabs[i]).data("user") == user){
+	    return;
+	}
+    }
+    
+    var tab = $('<a class="tab"><img src="' + user.profile_image_url + '"></a>').
+	data("user", user);
+
+    if(user == tw.user){
+	tab.prependTo(parent);
+    }else{
+	tab.appendTo(parent);
+    }
 };
 
 /* ---------------------------------------------------------------------- */
@@ -98,4 +111,34 @@ tw.ProfileView.prototype.onTabClick = function(event){
     var target = $(event.target).closest(".tab");
     var screenName = target.data("user").screen_name;
     tw.store.user(screenName, util.bind(this, this.setUser));
+};
+
+/**
+ * お気に入りユーザとして登録する
+ */
+tw.ProfileView.prototype.onMentionsRefresh = function(){
+    var statuses = tw.store.mentions().statuses();
+    var userMap = {};
+    for(var i = 0; i < statuses.length; i++){
+	var user = statuses[i].user;
+	var a = userMap[user.screen_name] = userMap[user.screen_name] || {count:0};
+	a.user = user;
+	a.count++;
+    };
+
+    var users = [];
+    for(i in userMap){
+	users.push(userMap[i]);
+    }
+    users.sort(function(a, b){return b.count - a.count;});
+
+    for(i = 0; i < 7; i++){
+	var user = users[i];
+	if(!user){
+	    break;
+	}
+	this.addUser(user.user);
+    }
+
+    util.Event.unbind(this, tw.store.mentions());
 };
