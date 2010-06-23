@@ -183,12 +183,23 @@ body{
     background-color: rgba(0,0,0,0.5);
 }
 
+h1{
+    display: inline;
+    font-size: 12px;
+    line-height: 30px;
+    vertical-align: middle;
+}
+
 .root.menu div:nth-child(1){
+    float: left;
+}
+
+.root.menu div:nth-child(2){
     text-align: right;
     height: 100%;
 }
 
-.root.menu div:nth-child(1) a{
+.root.menu div:nth-child(2) a{
     line-height: 30px;
     vertical-align: middle;
 }
