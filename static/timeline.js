@@ -69,9 +69,11 @@ tw.Timeline.prototype.addStatuses = function(statuses){
 	    newStatuses.push(status);
 	}
     }
-    console.log("timeline addStatuses", newStatuses.length);
-    this.sort(newStatuses);
-    this.insert(newStatuses);
+    if(newStatuses.length >= 1){
+	console.log("timeline addStatuses", newStatuses.length);
+	this.sort(newStatuses);
+	this.insert(newStatuses);
+    }
 };
 
 tw.Timeline.prototype.statuses = function(){
