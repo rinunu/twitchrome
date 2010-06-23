@@ -78,14 +78,16 @@ tw.initialize = function(){
 
     tw.components.profileView = new tw.ProfileView();
     tw.components.background = new tw.Background();
-    tw.components.sidebar = new tw.Sidebar();
+    tw.components.mainMenu = new tw.MainMenu();
     tw.components.progressview = new tw.ProgressView();
     tw.components.autoRefresh = new tw.AutoRefresh();
 
     // コンポーネント初期化
     for(var a in tw.components){
         var component = tw.components[a];
-        component.initialize();
+	if(component.initialize){
+            component.initialize();
+	}
 	if(component.clear){
 	    component.clear();
 	}

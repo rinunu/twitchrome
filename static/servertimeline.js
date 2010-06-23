@@ -19,21 +19,23 @@ tw.ServerTimeline.prototype.refresh = function(options){
     }
     if(tw.ajax.command(name)){
 	console.log("実行中のため無視しました: " + name);
-	return;	
+	return;
     }
-    
-    var params = {};
-    this.setRefreshParams(params);
-    params.count = options.count;
 
-    tw.ajax.ajax(
-	{
-	    type: "GET",
-	    name: name,
-	    url: "/twitter_api" + this.uri_ + ".json",
-	    params: params, 
-	    callback: util.bind(this, this.onRefresh)
-	});
+    var params = {
+	count: options.count
+    };
+    this.setRefreshParams(params);
+
+    var command = {
+	type: "GET",
+	name: name,
+	url: "/twitter_api" + this.uri_ + ".json",
+	params: params, 
+	callback: util.bind(this, this.onRefresh)
+    };
+
+    this.request(command);
 };
 
 tw.ServerTimeline.prototype.newCount = function(){
@@ -42,6 +44,13 @@ tw.ServerTimeline.prototype.newCount = function(){
 
 // ----------------------------------------------------------------------
 // protected
+
+/**
+ * サーバへリクエストを送信する
+ */
+tw.ServerTimeline.prototype.request = function(command, options){
+    tw.ajax.ajax(command);
+};
 
 /**
  * refresh 時のパラメータを調整するために呼び出される

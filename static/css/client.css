@@ -415,11 +415,15 @@ h1{
     clear: both;
 }
 
-.sidebar .tabs{
+
+/* ---------------------------------------------------------------------- */
+/* main menu */
+
+.main.menu .tabs{
     margin-bottom: 10px;
 }
 
-.sidebar .tabs:after{
+.main.menu .tabs:after{
     content: "";
     display: block;
     clear: both;
@@ -441,7 +445,7 @@ h1{
     border: solid 1px #000;
 }
 
-a .count{
+.tab .count{
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -453,7 +457,7 @@ a .count{
     background-color: #001;
 }
 
-.tabs.search a, .tabs.list a{
+.tabs.search .tab, .tabs.list .tab{
     display: block;
     float: left;
     font-size: 12px;

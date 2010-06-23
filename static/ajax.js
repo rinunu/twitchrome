@@ -62,7 +62,7 @@ tw.Ajax.prototype.execute = function(command){
 	    type: command.type || "GET",
 	    url: command.url,
 	    data: command.params || {},
-	    dataType: "json",
+	    dataType: command.dataType || "json",
 	    success: util.bind(this, this.onSuccess, command),
 	    error: util.bind(this, this.onError, command)
 	});

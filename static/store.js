@@ -116,6 +116,14 @@ tw.Store.prototype.getStatus = function(id, callback){
 };
 
 /**
+ * User が存在するならそれを返す
+ * 存在しないなら null を返す
+ */
+tw.Store.prototype.hasUser = function(screenName){
+    return this.users_[screenName];
+};
+
+/**
  * User を取得する
  * ローカル DB にある場合は、それを取得する
  * 
@@ -139,7 +147,7 @@ tw.Store.prototype.user = function(screenName, callback){
 tw.Store.prototype.addUser = function(user){
     var old = this.users_[user.screen_name];
     if(old){
-	if(user.statuses_count > old.statuses_count){
+	if(!old.statuses_count || user.statuses_count > old.statuses_count){
 	    $.extend(old, user); // overwrite
 	}
 	user = old;
@@ -221,6 +229,8 @@ tw.Store.prototype.timeline = function(uri){
 	return this.followers(m[1]);
     }else if((m = /\/conversations\/(\w+)/.exec(uri))){
 	return this.conversation(m[1]);
+    }else if((m = /\/search\/(.*)/.exec(uri))){
+	return this.search(m[1]);
     }else{
 	console.error("タイムラインの指定が不正です", uri);
 	return this.homeTimeline();
@@ -298,6 +308,14 @@ tw.Store.prototype.conversation = function(status){
     var uri = "/conversations/" + statusId;
     var options = {name: statusId + " から始まる会話"};
     return this.getOrCreateTimeline(uri, tw.ConversationTimeline, statusId, options);
+};
+
+/**
+ * 指定された text を検索する TL を取得する
+ */
+tw.Store.prototype.search = function(text){
+    var uri = tw.SearchResult.uri(text);
+    return this.getOrCreateTimeline(uri, tw.SearchResult, text);
 };
 
 // ----------------------------------------------------------------------
