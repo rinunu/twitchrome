@@ -44,23 +44,27 @@ tw.ProfileView.prototype.initialize = function(){
 
 // ユーザのプロフィールを表示する
 tw.ProfileView.prototype.setUser = function(user){
+    function format(s){
+	return s !== undefined ? s : "?";
+    };
+    
     this.user_ = user;
     
-    this.element_.find(".name.dd").text(user.name || "");
-    this.element_.find(".screen_name.dd").text(user.screen_name || "");
-    this.element_.find(".statuses_count.dd").text(user.statuses_count || "");
-    
-    this.element_.find(".location .dd").text(user.location || "");
-    this.element_.find(".followers_count .dd").text(user.followers_count || "");
-    this.element_.find(".friends_count .dd").text(user.friends_count || "");
-    this.element_.find(".favorites_count .dd").text(user.favourites_count || "");
+    this.element_.find(".name.dd").text(format(user.name));
+    this.element_.find(".screen_name.dd").text(format(user.screen_name));
+    this.element_.find(".statuses_count.dd").text(format(user.statuses_count));
+    this.element_.find(".location .dd").text(format(user.location));
+    this.element_.find(".followers_count .dd").text(format(user.followers_count));
+    this.element_.find(".friends_count .dd").text(format(user.friends_count));
+    this.element_.find(".favorites_count .dd").text(format(user.favourites_count));
 
     this.element_.find(".description .dd").html(
-	user.description ?
+	user.description !== undefined ?
 	    user.description.replace(/\n/g, "<br>") :
-	    "");
+	    "?");
 
-    this.element_.find(".url .dd").attr("href", user.url || "").text(user.url || "");
+    this.element_.find(".url .dd").attr("href", user.url || "").text(
+	user.url !== undefined ? user.url : "?");
 
     this.element_.find(".content img").attr("src", user.profile_image_url || "");
     this.element_.find("a.profile_image").attr(
