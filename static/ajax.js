@@ -23,19 +23,33 @@ tw.Ajax = function(){
 };
 
 /**
+ * ajax 処理にて command を実行する
+ * 
  * command: {
- *   type,
- *   name: 処理の名称を渡す(ID およびエラー表示に使用する),
- *   url,
- *   params,
- *   callback,
- *   target: 操作対象,
+ *   type: デフォルトは GET,
+ *   name: 処理の名称を渡す(ID およびエラー表示に使用する)。 必須,
+ *   url : 必須,
+ *   params: ,
+ *   callback:,
  *   maxRetry: 最大再送回数
  * }
+ * 
+ * 同じ name の GET command が存在する場合、1つにまとめる
+ * 
+ * command は Ajax によって変更/別の command と統合される場合がある。
+ * 戻り値で新しい command を返す。
  */
 tw.Ajax.prototype.ajax = function(command){
-    command.retryCount = 0;
-    this.commands.push(command);
+    var other = this.command(command.name);
+    if(other){
+	console.log("ajax", "処理をまとめました", command.name);
+	other.callback = util.concat(other.callback, command.callback);
+	command = other;
+    }else{
+	command.retryCount = 0;
+	this.commands.push(command);
+    }
+    return command;
 };
 
 /**

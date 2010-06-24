@@ -22,6 +22,16 @@ util.bind = function(this_, method){
     };
 };
 
+/**
+ * a, b 二つの関数を順番に呼び出す関数を返す
+ */
+util.concat = function(a, b){
+    return function(){
+	a.apply(this, arguments);
+	b.apply(this, arguments);
+    };
+};
+
 util.setCaretPosition = function(textarea, pos){
     if(textarea[0].setSelectionRange){
 	textarea[0].setSelectionRange(pos, pos);

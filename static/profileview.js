@@ -40,6 +40,14 @@ tw.ProfileView.prototype.initialize = function(){
 	});
 
     this.element_.delegate(".tab", "click", util.bind(this, this.onTabClick));
+
+    tw.store.user(
+	tw.screenName,
+	function(user){
+	    this_.setUser(user);
+	    this_.addUser(user);
+	}
+    );
 };
 
 // ユーザのプロフィールを表示する
@@ -96,7 +104,7 @@ tw.ProfileView.prototype.addUser = function(user){
     var tab = $('<a class="tab"><img src="' + user.profile_image_url + '"></a>').
 	data("user", user);
 
-    if(user == tw.user){
+    if(user.screen_name == tw.screenName){
 	tab.prependTo(parent);
     }else{
 	tab.appendTo(parent);

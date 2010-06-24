@@ -135,7 +135,12 @@ tw.Store.prototype.user = function(screenName, callback){
 	console.log("use cache");
 	setTimeout(function(){callback(user);}, 10);
     }else{
-	// TODO
+	var command = {
+	    name: screenName + " のユーザ情報取得",
+	    url: "/twitter_api/users/show/" + screenName + ".json",
+	    callback: util.bind(this, this.onGetUser, callback)
+	};
+	tw.ajax.ajax(command);
     }
 };
 
@@ -382,6 +387,12 @@ tw.Store.prototype.onGetStatus = function(callback, json){
     var statuses = [json];
     this.addStatuses(null, statuses);
     callback(statuses[0]);
+};
+
+tw.Store.prototype.onGetUser = function(callback, json){
+    console.log("onGetUser", json);
+    var user = this.addUser(json);
+    callback(user);
 };
 
 /**

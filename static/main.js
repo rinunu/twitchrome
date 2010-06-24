@@ -3,6 +3,14 @@
  */
 
 tw.templates = {};
+
+/**
+ * アプリの UI を構成するオブジェクトの map
+ * 
+ * 以下のメソッドを持つ(持たなくても良い)
+ * - clear() デザイン要素を削除する
+ * - initialize() 初期化を行う
+ */
 tw.components = {};
 
 // ----------------------------------------------------------------------
@@ -40,11 +48,7 @@ tw.onHistoryChange = function(state){
 };
 
 // ----------------------------------------------------------------------
-// private
-
-tw.saveTemplates = function(){
-    tw.templates.status = $(".timeline .status").first().clone();
-};
+// utility
 
 /**
  * リンクにクリック時の処理をセットする
@@ -60,60 +64,49 @@ tw.setCommand = function(elem, func){
 // ----------------------------------------------------------------------
 // 初期化
 
-/**
- * 通常時・デザイン時共通の初期化処理
- */
-tw.initialize = function(){
-    tw.saveTemplates();
-    
-    // デザイン要素削除
-    $(".timeline_viewport").empty();
-    
-    tw.ajax = new tw.Ajax();
-    tw.store = new tw.Store();
-
-    // 使用するコンポーネント登録
-    tw.components.timelineView = new tw.MultiTimelineView($(".timeline_viewport"));
+tw.addComponents = function(){
+    tw.components.timelineView = new tw.MultiTimelineView();
     tw.components.statusInput = new tw.StatusInput();
-
     tw.components.profileView = new tw.ProfileView();
     tw.components.background = new tw.Background();
     tw.components.mainMenu = new tw.MainMenu();
     tw.components.progressview = new tw.ProgressView();
     tw.components.autoRefresh = new tw.AutoRefresh();
-
-    // コンポーネント初期化
-    for(var a in tw.components){
-        var component = tw.components[a];
-	if(component.initialize){
-            component.initialize();
-	}
-	if(component.clear){
-	    component.clear();
-	}
-    }
-    
-    // 登録と初回イベント実行
-    $.history.init(util.bind(this, this.onHistoryChange));
 };
 
 /**
- * 自分の情報を取得する
+ * 通常時・デザイン時共通の初期化処理
  */
-tw.loadUser = function(){
-    tw.ajax.ajax({name: "ユーザ情報の取得",
-		  url: "/user.json", callback: util.bind(this, this.onLoadUser)});
-};
+tw.initialize = function(){
+    $("a.lightbox").fancybox({});
 
-tw.onLoadUser = function(user){
-    tw.user = tw.store.addUser(user);
-    tw.components.profileView.setUser(tw.user);
-    tw.components.profileView.addUser(tw.user);
+    tw.screenName = $(".system .screen_name").text();
     
-    tw.components.background.setBackground(tw.user);
+    tw.ajax = new tw.Ajax();
+    tw.store = new tw.Store();
+    tw.addComponents();
 
-    // Conversation でよく使われるため、先読み
-    var send = tw.store.userTimeline(user).refresh();
+    // デザイン要素削除/初期化
+    for(var a in tw.components){
+        var component = tw.components[a];
+	if(component.clear){
+	    component.clear();
+	}
+	if(component.initialize){
+            component.initialize();
+	}
+    }
+
+    tw.store.user(
+	tw.screenName, 
+	function(user){
+	    // Conversation でよく使われるため、先読み
+	    tw.store.userTimeline(user).refresh();
+	}
+    );
+
+    // 登録と初回イベント実行
+    $.history.init(util.bind(this, this.onHistoryChange));
 };
 
 /**
@@ -126,14 +119,7 @@ tw.initializeDesign = function(){
     }
 };
 
-$(function() {
-      $("a.lightbox").fancybox({
-      });
-});
-
 $(function(){
       tw.initialize();
       // tw.initializeDesign();
-    
-      tw.loadUser();
 });

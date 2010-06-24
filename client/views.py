@@ -68,10 +68,10 @@ def authenticated(request):
     This is what you'll get back from Twitter. Note that it includes the
     user's user_id and screen_name.
     {
-        'oauth_token_secret': 'IcJXPiJh8be3BjDWW50uCY31chyhsMHEhqJVsphC3M',
-        'user_id': '120889797', 
-        'oauth_token': '120889797-H5zNnM3qE0iFoTTpNEHIz3noL9FKzXiOxwtnyVOD',
-        'screen_name': 'heyismysiteup'
+        'oauth_token_secret': 'xxxxxxxxxxxx',
+        'user_id': '1111111111', 
+        'oauth_token': 'xxxxxxx',
+        'screen_name': 'aaaaaaaaaaa'
     }
     """
     session['access_token'] = dict(cgi.parse_qsl(content))
@@ -88,16 +88,6 @@ def create_twitter(session):
                            session['access_token']['oauth_token'],
                            session['access_token']['oauth_token_secret']
                            )
-
-# 自身の情報を取得する
-def user(request):
-    session = Session()
-
-    t = create_twitter(session)
-    response = t.get("http://api.twitter.com/1/users/show/" +
-                     session['access_token']['user_id'] + 
-                     ".json", {})
-    return HttpResponse(response.content, status=response.status_code) # , 'application/json')
 
 # twitter_api を実行し、結果を返す
 # url は http://api.twitter.com/1/ 以降
@@ -138,4 +128,5 @@ def main(request):
     if 'access_token' not in session:
         return HttpResponseRedirect(reverse(index))
     
-    return render_to_response("main.html", {})
+    return render_to_response("main.html", {
+            'screen_name': session['access_token']['screen_name']})

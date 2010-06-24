@@ -8,8 +8,6 @@ urlpatterns = patterns('',
 
                        url(r'^main/?$', views.main),
 
-                       url(r'^user.json$', views.user),
-
                        url(r'^twitter_api/(?P<url>.+)$', views.twitter_api),
                        url(r'', views.index)
 )

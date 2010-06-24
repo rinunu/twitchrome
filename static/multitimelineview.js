@@ -5,12 +5,17 @@
  * - setTimeline
  * - focus
  */
-tw.MultiTimelineView = function(element){
-    this.element_ = element;
-
+tw.MultiTimelineView = function(){
+    this.element_ = $(".timeline_viewport");
     this.currentView_ = null;
 
+    tw.templates.status = $(".timeline .status").first().clone();
+
     this.views_ = [];
+};
+
+tw.MultiTimelineView.prototype.clear = function(){
+    this.element_.empty();
 };
 
 tw.MultiTimelineView.prototype.initialize = function(){
