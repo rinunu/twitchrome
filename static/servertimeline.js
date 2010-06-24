@@ -28,7 +28,7 @@ tw.ServerTimeline.prototype.refresh = function(options){
     this.setRefreshParams(params);
 
     var command = {
-	type: "GET",
+	type: "timeline.refresh",
 	name: name,
 	url: "/twitter_api" + this.uri_ + ".json",
 	params: params, 

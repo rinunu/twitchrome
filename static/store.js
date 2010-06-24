@@ -41,7 +41,8 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
     }
     tw.ajax.ajax(
 	{
-	    type: "POST",
+	    type: "update",
+	    method: "POST",
 	    name: "ツイート", 
 	    url: url, 
 	    params: params, 
@@ -57,7 +58,8 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
 tw.Store.prototype.favorite = function(status){
     tw.ajax.ajax(
 	{
-	    type: "POST",
+	    type: "favorite",
+	    method: "POST",
 	    name: "お気に入りに追加する",
 	    url: "/twitter_api/favorites/create/" + status.id + ".json",
 	    callback: util.bind(this, this.onStatusRefresh),
@@ -71,7 +73,8 @@ tw.Store.prototype.favorite = function(status){
 tw.Store.prototype.unfavorite = function(status){
     tw.ajax.ajax(
 	{
-	    type: "POST",
+	    type: "unfavorite",
+	    method: "POST",
 	    name: "お気に入りから削除する",
 	    url: "/twitter_api/favorites/destroy/" + status.id + ".json",
 	    callback: util.bind(this, this.onStatusRefresh),
@@ -107,7 +110,7 @@ tw.Store.prototype.getStatus = function(id, callback){
     }else{
 	tw.ajax.ajax(
 	    {
-		type: "GET",
+		type: "getStatus",
 		name: "ステータスの取得", 
 		url: "/twitter_api" + "/statuses/show/" + id + ".json",
 		callback: util.bind(this, this.onGetStatus, callback)
@@ -136,6 +139,7 @@ tw.Store.prototype.user = function(screenName, callback){
 	setTimeout(function(){callback(user);}, 10);
     }else{
 	var command = {
+	    type: "getUser",
 	    name: screenName + " のユーザ情報取得",
 	    url: "/twitter_api/users/show/" + screenName + ".json",
 	    callback: util.bind(this, this.onGetUser, callback)

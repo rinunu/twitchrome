@@ -26,7 +26,8 @@ tw.Ajax = function(){
  * ajax 処理にて command を実行する
  * 
  * command: {
- *   type: デフォルトは GET,
+ *   type: リクエストのタイプを表す任意の文字列,
+ *   method: デフォルトは GET,
  *   name: 処理の名称を渡す(ID およびエラー表示に使用する)。 必須,
  *   url : 必須,
  *   params: ,
@@ -41,11 +42,12 @@ tw.Ajax = function(){
  */
 tw.Ajax.prototype.ajax = function(command){
     var other = this.command(command.name);
-    if(other || other.type == "GET"){
+    if(other && other.method == "GET"){
 	console.log("ajax", "処理をまとめました", command.name);
 	other.callback = util.concat(other.callback, command.callback);
 	command = other;
     }else{
+	command.method = command.method || "GET";
 	command.retryCount = 0;
 	this.commands.push(command);
     }
@@ -74,7 +76,7 @@ tw.Ajax.prototype.execute = function(command){
     console.log("ajax", command.name);
     $.ajax(
 	{
-	    type: command.type || "GET",
+	    type: command.method,
 	    url: command.url,
 	    data: command.params || {},
 	    dataType: command.dataType || "json",
