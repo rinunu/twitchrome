@@ -31,7 +31,6 @@ tw.MainMenu.prototype.addList = function(list){
 
     if(list.screenName() == tw.screenName){
 	element.addClass("your");
-	console.log("test!!", list);
 	element.find(".name").text(list.shortName());
 
 	var yours = this.listsElement_.find(".your");
