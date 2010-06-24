@@ -31,7 +31,7 @@ tw.Ajax = function(){
  *   url : 必須,
  *   params: ,
  *   callback:,
- *   maxRetry: 最大再送回数
+ *   priority: 0 が最も高い。 デフォルトは 1
  * }
  * 
  * 同じ name の GET command が存在する場合、1つにまとめる
@@ -41,7 +41,7 @@ tw.Ajax = function(){
  */
 tw.Ajax.prototype.ajax = function(command){
     var other = this.command(command.name);
-    if(other){
+    if(other || other.type == "GET"){
 	console.log("ajax", "処理をまとめました", command.name);
 	other.callback = util.concat(other.callback, command.callback);
 	command = other;
@@ -49,6 +49,7 @@ tw.Ajax.prototype.ajax = function(command){
 	command.retryCount = 0;
 	this.commands.push(command);
     }
+    
     return command;
 };
 
@@ -91,6 +92,7 @@ tw.Ajax.prototype.onInterval = function(){
     if(this.executing || this.commands.length == 0){
 	return;
     }
+
     var command = this.commands[0];
     // TODO ここでリトライ判定
     
