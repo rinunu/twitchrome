@@ -62,6 +62,29 @@ tw.setCommand = function(elem, func){
 };
 
 // ----------------------------------------------------------------------
+// 
+
+/**
+ * Ajax 処理の優先度等を調整する
+ */
+tw.adjustRequest = function(command){
+    // console.log("adj");
+
+    // var map = {
+    // 	refreshTimeline: {priority: 2},
+    // 	update: {maxRetryCount: 0, priority: 0},
+    // 	favorite: {maxRetryCount: 0, priority: 0},
+    // 	unfavorite: {maxRetryCount: 0, priority: 0},
+    // 	getStatus: {},
+    // 	getUser: {}
+    // };
+
+    // command.name
+
+    return command;
+};
+
+// ----------------------------------------------------------------------
 // 初期化
 
 tw.addComponents = function(){
@@ -82,7 +105,7 @@ tw.initialize = function(){
 
     tw.screenName = $(".system .screen_name").text();
     
-    tw.ajax = new tw.Ajax();
+    tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
     tw.store = new tw.Store();
     tw.addComponents();
 

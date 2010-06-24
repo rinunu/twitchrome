@@ -6,12 +6,19 @@
  * - 再送
  * - (サーバの都合により、1度に1リクエストのみ処理する。)
  * 
+ * options = {
+ *   // コマンドを実行前に呼び出される。 コマンドの調整を行う際に使用する。
+ *   adjustCommand: function(command),
+ * }
+ * 
  * イベント
  * - start(command)
  * - success(command)
  * - error(command)
  */
-tw.Ajax = function(){
+tw.Ajax = function(options){
+    this.options = $.extend({}, options);
+
     // 万が一処理が JavaScript エラーが起きたとしても処理を継続するために、
     // setTimeout ではなく setInterval を使用する。
     setInterval(util.bind(this, this.onInterval), 1 * 1000);
@@ -32,6 +39,7 @@ tw.Ajax = function(){
  *   url : 必須,
  *   params: ,
  *   callback:,
+ *   maxRetryCount: 最大リトライ回数。 デフォルトは 0,
  *   priority: 0 が最も高い。 デフォルトは 1
  * }
  * 
@@ -41,6 +49,11 @@ tw.Ajax = function(){
  * 戻り値で新しい command を返す。
  */
 tw.Ajax.prototype.ajax = function(command){
+    if(this.options.adjustCommand){
+	command = this.options.adjustCommand(command);
+	console.assert(command);
+    }
+
     var other = this.command(command.name);
     if(other && other.method == "GET"){
 	console.log("ajax", "処理をまとめました", command.name);
@@ -73,7 +86,7 @@ tw.Ajax.prototype.command = function(name){
 // ----------------------------------------------------------------------
 
 tw.Ajax.prototype.execute = function(command){
-    console.log("ajax", command.name);
+    console.log("ajax", command.name, command);
     $.ajax(
 	{
 	    type: command.method,
