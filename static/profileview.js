@@ -67,7 +67,7 @@ tw.ProfileView.prototype.setUser = function(user){
     this.element_.find(".favorites_count .dd").text(format(user.favourites_count));
 
     this.element_.find(".description .dd").html(
-	user.description !== undefined ?
+	user.description ?
 	    user.description.replace(/\n/g, "<br>") :
 	    "?");
 
