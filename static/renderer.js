@@ -61,7 +61,7 @@ tw.Renderer.prototype.formatText = function(text, status){
     }else{
 	var userClass = "user";
     }
-    text = text.replace(tw.Renderer.USER_RE, "<a class='" + userClass + "'>$&</a>");
+    text = text.replace(tw.Renderer.USER_RE, "@<a class='" + userClass + "'>$1</a>");
     text = text.replace(tw.Renderer.HASH_RE, "<a class='hash'>$&</a>");
     
     text = text.replace(tw.Renderer.URL_RE, tw.Inline.inline);
