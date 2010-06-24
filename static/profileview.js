@@ -6,7 +6,7 @@ tw.ProfileView = function(){
 };
 
 tw.ProfileView.prototype.clear = function(){
-    this.element_.find(".tabs").empty();
+    this.element_.find(".users.tabs").empty();
     this.setUser({});
 };
 
@@ -39,7 +39,7 @@ tw.ProfileView.prototype.initialize = function(){
 	    tw.showTimeline(tw.store.favorites(this_.user_));
 	});
 
-    this.element_.delegate(".tab", "click", util.bind(this, this.onTabClick));
+    this.element_.delegate(".users .tab", "click", util.bind(this, this.onTabClick));
 
     tw.store.user(
 	tw.screenName,
@@ -93,7 +93,7 @@ tw.ProfileView.prototype.setUser = function(user){
  * ユーザ選択欄にユーザを追加する
  */
 tw.ProfileView.prototype.addUser = function(user){
-    var parent = this.element_.find(".tabs");
+    var parent = this.element_.find(".users.tabs");
     var tabs = parent.find(".tab");
     for(var i = 0; i < tabs.length; i++){
 	if($(tabs[i]).data("user") == user){

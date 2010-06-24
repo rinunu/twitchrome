@@ -60,5 +60,8 @@ tw.Background.prototype.onSetTimeline = function(source, event, timeline){
     }else if(/\/(home_timeline|mentions)/.test(uri)){
 	var screenName = tw.screenName;
     }
-    tw.store.user(screenName, util.bind(this, this.setBackground));
+    var user = tw.store.hasUser(screenName);
+    if(user){
+	this.setBackground(user);
+    }
 };
