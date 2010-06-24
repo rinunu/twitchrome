@@ -37,7 +37,7 @@ util.Event.bind = function(source, object, methods){
 util.Event.unbind = function(object, source){
     var sourceId = source ? this.getId(source) : null;
     console.assert(object);
-    var unbound = 0;
+    var unbound = [];
     for(var i in this.handlerMap){
 	if(sourceId && sourceId != i){
 	    continue;
@@ -47,7 +47,7 @@ util.Event.unbind = function(object, source){
 	    var handler = handlers[j];
 	    if(handler.object == object){
 		handlers.splice(j, 1);
-		unbound++;
+		unbound.push(handler);
 		break;
 	    }
 	}
@@ -66,6 +66,8 @@ util.Event.trigger = function(source, eventType){
 	return;
     }
     
+    // イベント処理の途中で handlers が変更される場合を考慮し、コピー
+    handlers = handlers.slice(0);
     for(var i = 0; i < handlers.length; i++){
         var handler = handlers[i];
 	var method = handler.methods[eventType];
