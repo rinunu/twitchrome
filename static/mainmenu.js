@@ -26,12 +26,13 @@ tw.MainMenu.prototype.initialize = function(){
 
 tw.MainMenu.prototype.addList = function(list){
     var element = tw.templates.list.clone();
-    element.data("href", list);
+    element.attr("href", "#" + tw.hash(list));
     element.find(".count").hide();
 
-    if(list.user.screen_name == tw.screenName){
+    if(list.screenName() == tw.screenName){
 	element.addClass("your");
-	element.find(".name").text(list.name);
+	console.log("test!!", list);
+	element.find(".name").text(list.shortName());
 
 	var yours = this.listsElement_.find(".your");
 	if(yours.length >= 1){
@@ -41,7 +42,7 @@ tw.MainMenu.prototype.addList = function(list){
 	}
     }else{
 	element.removeClass("your");
-	element.find(".name").text(list.full_name);
+	element.find(".name").text(list.fullName());
 
 	this.listsElement_.append(element);
     }

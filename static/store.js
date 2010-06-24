@@ -228,18 +228,20 @@ tw.Store.prototype.timeline = function(uri){
 	return this.homeTimeline();
     }else if(uri == "/statuses/mentions"){
 	return this.mentions();
-    }else if((m = /\/statuses\/user_timeline\/(\w+)/.exec(uri))){
+    }else if((m = /\/statuses\/user_timeline\/([\w-]+)/.exec(uri))){
 	return this.userTimeline(m[1]);
-    }else if((m = /\/favorites\/(\w+)/.exec(uri))){
+    }else if((m = /\/favorites\/([\w-]+)/.exec(uri))){
 	return this.favorites(m[1]);
-    }else if((m = /\/statuses\/friends\/(\w+)/.exec(uri))){
+    }else if((m = /\/statuses\/friends\/([\w-]+)/.exec(uri))){
 	return this.friends(m[1]);
-    }else if((m = /\/statuses\/followers\/(\w+)/.exec(uri))){
+    }else if((m = /\/statuses\/followers\/([\w-]+)/.exec(uri))){
 	return this.followers(m[1]);
-    }else if((m = /\/conversations\/(\w+)/.exec(uri))){
+    }else if((m = /\/conversations\/([\w-]+)/.exec(uri))){
 	return this.conversation(m[1]);
     }else if((m = /\/search\/(.*)/.exec(uri))){
 	return this.search(m[1]);
+    }else if((m = /\/([\w-]+)\/lists\/([\w-]+)\/statuses/.exec(uri))){
+	return this.list("@" + m[1] + "/" + m[2]);
     }else{
 	console.error("タイムラインの指定が不正です", uri);
 	return this.homeTimeline();
@@ -325,6 +327,12 @@ tw.Store.prototype.conversation = function(status){
 tw.Store.prototype.search = function(text){
     var uri = tw.SearchResult.uri(text);
     return this.getOrCreateTimeline(uri, tw.SearchResult, text);
+};
+
+tw.Store.prototype.list = function(fullName, raw){
+    var uri = tw.List.uri(fullName);
+    var options = {raw: raw};
+    return this.getOrCreateTimeline(uri, tw.List, fullName, options);
 };
 
 // ----------------------------------------------------------------------

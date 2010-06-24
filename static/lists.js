@@ -1,6 +1,8 @@
 
 /**
- * List を管理する
+ * List の取得等を行う
+ * 
+ * List の管理は Store にて行う
  */
 tw.Lists = function(){
 };
@@ -33,12 +35,15 @@ tw.Lists.prototype.subscriptions = function(user, callback){
 	});
 };
 
+// ----------------------------------------------------------------------
+// private
+
 tw.Lists.prototype.onGetLists = function(callback, json){
     var lists = json.lists;
-    for(var i = 0; i < lists; i++){
-	var list = lists[i];
-	list.user = tw.store.addUser(list.user);
+    var result = [];
+    for(var i = 0; i < lists.length; i++){
+	var list = tw.store.list(lists[i].full_name, lists[i]);
+	result.push(list);
     }
-
-    callback(lists);
+    callback(result);
 };

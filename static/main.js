@@ -21,7 +21,7 @@ tw.components = {};
  * また、表示後 Refresh を実行する
  */
 tw.showTimeline = function(timeline){
-    $.history.load(timeline.uri().replace(/\//g, "."));
+    $.history.load(tw.hash(timeline));
 };
 
 tw.onHistoryChange = function(state){
@@ -59,6 +59,13 @@ tw.setCommand = function(elem, func){
 	    event.preventDefault();
 	    func(event);
 	});
+};
+
+/**
+ * timeline.uri() を location.hash に指定できる形式へ変換する
+ */
+tw.hash = function(timeline){
+    return timeline.uri().replace(/\//g, ".");
 };
 
 // ----------------------------------------------------------------------
