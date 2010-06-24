@@ -21,7 +21,7 @@ tw.Ajax = function(options){
 
     // 万が一処理が JavaScript エラーが起きたとしても処理を継続するために、
     // setTimeout ではなく setInterval を使用する。
-    setInterval(util.bind(this, this.onInterval), 1 * 1000);
+    setInterval(util.bind(this, this.onInterval), 0.5 * 1000);
 
     this.executing = false;
 

@@ -109,6 +109,7 @@ tw.ProfileView.prototype.addUser = function(user){
     }else{
 	tab.appendTo(parent);
     }
+    tab.hide().fadeIn();
 };
 
 /* ---------------------------------------------------------------------- */

@@ -107,6 +107,7 @@ tw.initialize = function(){
     
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
     tw.store = new tw.Store();
+    tw.lists = new tw.Lists();
     tw.addComponents();
 
     // デザイン要素削除/初期化
