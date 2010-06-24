@@ -354,7 +354,7 @@ tw.TimelineView.prototype.onRt = function(event){
 
 tw.TimelineView.prototype.onShowUser = function(event){
     event.preventDefault();
-    var screenName = $(event.target).text().slice(1);
+    var screenName = $(event.target).text();
     tw.showTimeline(tw.store.userTimeline(screenName));
 };
 
