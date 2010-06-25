@@ -20,8 +20,8 @@ tw.Renderer.prototype.render = function(status, element){
 // private
 
 tw.Renderer.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
-tw.Renderer.USER_RE = /(^| )@(\w+)/g;
-tw.Renderer.HASH_RE = /(^| )(#\w+)/g;
+tw.Renderer.USER_RE = /@(\w+)/g;
+tw.Renderer.HASH_RE = /([^&])(#\w+)/g;
 
 /**
  * Status 表示用の Element を更新する
@@ -61,7 +61,7 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 tw.Renderer.prototype.formatText = function(text, status){
     text = text.replace(/\n/g, "<br>");
     var userClass = "user";
-    text = text.replace(tw.Renderer.USER_RE, "$1@<a class='" + userClass + "'>$2</a>");
+    text = text.replace(tw.Renderer.USER_RE, "@<a class='" + userClass + "'>$1</a>");
     text = text.replace(tw.Renderer.HASH_RE, "$1<a class='hash'>$2</a>");
     
     text = text.replace(tw.Renderer.URL_RE, tw.Inline.inline);
