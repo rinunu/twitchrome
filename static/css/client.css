@@ -48,6 +48,11 @@ body{
     right: 0px;
 }
 
+.timeline{
+    position: absolute;
+    width: 100%;
+}
+
 body > .footer{
     position: absolute;
     height: 15px;
@@ -284,7 +289,7 @@ h1{
 /* つぶやき */
 
 .status{
-    -webkit-transition: opacity 0.2s ease-in;
+    /* -webkit-transition: opacity 0.2s ease-in; */
     margin: 5px 10px;
 }
 

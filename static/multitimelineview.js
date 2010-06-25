@@ -60,10 +60,8 @@ tw.MultiTimelineView.prototype.timeline = function(){
  */
 tw.MultiTimelineView.prototype.setTimeline = function(timeline){
     // 後始末
-    if(this.currentView_){
-	this.currentView_.element().hide();
-	this.currentView_ = null;
-    }
+    var oldView = this.currentView_;
+    this.currentView_ = null;
 
     // 初期化
     var newView = this.view(timeline);
@@ -74,8 +72,13 @@ tw.MultiTimelineView.prototype.setTimeline = function(timeline){
 	this.views_.push(newView);
     }
     this.currentView_ = newView;
-    newView.element().show();
 
+    // 切り替え
+    if(oldView){
+	oldView.element().animate({top: 0, left:-1000}).fadeOut({queue: false});
+    }
+    newView.element().animate({top: 0, left:0}).fadeIn({queue: false});
+    
     util.Event.trigger(this, "setTimeline", timeline);
 };
 
