@@ -304,7 +304,6 @@ tw.TimelineView.prototype.onRefresh = function(s, e, newStatuses){
 };
 
 tw.TimelineView.prototype.onStatusRefresh = function(source, eventType, status){
-    console.log('on status refresh', status);
     var element = this.getElement(status);
     if(element){
 	tw.TimelineView.renderer.render(element.data("status"), element);
