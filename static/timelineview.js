@@ -212,6 +212,7 @@ tw.TimelineView.prototype.sync = function(){
 	if(!element || status != $(element).data("status")){
 	    var newElement = renderer.render(status);
 	    newElement.data("status", status);
+	    newElement.addClass("new");
 	    parent.insertBefore(newElement[0], element ? element : null); // null の時は末尾
 	    
 	    newElements.push(newElement);
@@ -256,6 +257,7 @@ tw.TimelineView.prototype.insert = function(statuses){
 	if(!skip){
 	    var elem = tw.TimelineView.renderer.render(statuses[i]);
 	    elem.data("status", statuses[i]);
+	    elem.addClass("new");
 	    newElements.push(elem);
 	    parent.insertBefore(elem[0], after); // after == null の時は末尾
 	}
@@ -286,9 +288,12 @@ tw.TimelineView.prototype.refreshView = function(newStatuses){
 
 
     // 強調表示
-    for(var i = 0; i < newElements.length; i++){
-	newElements[i].hide().fadeIn();
-    }
+    setTimeout(
+	function(){
+	    for(var i = 0; i < newElements.length; i++){
+		newElements[i].removeClass("new");
+	    }
+	}, 500);
 };
 
 // ----------------------------------------------------------------------
