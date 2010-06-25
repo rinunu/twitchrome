@@ -50,7 +50,7 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 	favorite.addClass("off");
     }
 
-    if(status.in_reply_to_status_id){
+    if(status.in_reply_to_status_id || status.replies){
 	element.addClass("in_reply_to");
     }
 };

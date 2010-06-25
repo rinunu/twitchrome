@@ -65,6 +65,9 @@ tw.Timeline.prototype.addStatuses = function(statuses){
     var newStatuses = [];
     for(var i in statuses){
 	var status = statuses[i];
+	if(!status.text){ // 不完全な Status(Store参照)は除外する
+	    continue;
+	}
 	if(this.filter_(status)){
 	    newStatuses.push(status);
 	}

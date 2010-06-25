@@ -7,7 +7,12 @@
  * Status について
  * Status は Twitter API の Status をそのまま使用する。
  * ただし、以下のプロパティを追加で保持する。
- * - 処理中かどうか
+ * - replies: その Status への返信の map
+ * 
+ * Status の種類
+ * - 完全な Status
+ * - 検索結果(不完全. 完全な user を持っていない. ただし表示するには十分)
+ * - ID と replies のみもっている。 言及はされたがデータは持っていないもの。
  * 
  * Status の変更について
  * 変更が正常に完了すると statusRefresh イベントを発生させる
@@ -104,7 +109,7 @@ tw.Store.prototype.getStatus = function(id, callback){
     console.log("getStatus");
 
     var status = this.statuses_[id];
-    if(status){
+    if(status && status.user){
 	console.log("use cache");
 	setTimeout(function(){callback(status);}, 10);
     }else{
@@ -352,13 +357,32 @@ tw.Store.isStatus = function(object){
  */
 tw.Store.prototype.addStatus = function(status){
     var old = this.statuses_[status.id];
-    if(old){
-	$.extend(old, status); // overwrite
+    if(old && old.user && old.user.created_at){
+	// すでに十分な情報を DB に持っている場合
+	return old;
+    }
+    else if(old){
+	// old よりも多くの情報を持っている場合は上書きする。
+	$.extend(old, status);
 	status = old;
     }else{
 	this.statusesCount_++;
 	this.statuses_[status.id] = status;
     }
+
+    var inReplyTo = status.in_reply_to_status_id;
+    if(inReplyTo){
+	var dest = this.statuses_[inReplyTo];
+	if(!dest){
+	    dest = {
+		id: inReplyTo
+	    };
+	    this.statuses_[inReplyTo] = dest;
+	}
+	dest.replies = dest.replies || {};
+	dest.replies[status.id] = status;
+    }
+
     status.user = this.addUser(status.user);
     return status;
 };

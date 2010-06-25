@@ -258,6 +258,13 @@ h1{
 .timeline{
 }
 
+/* パディング */
+.timeline:after{
+    content: "";
+    display: block;
+    height: 1000px;
+}
+
 .timeline_frame{
     padding: 3px;
 }

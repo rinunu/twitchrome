@@ -8,7 +8,8 @@ tw.ConversationTimeline = function(store, status, options){
     tw.Timeline.call(this, store, "/conversations/" + statusId, options);
 
     this.store_.getStatus(statusId,
-			  util.bind(this, this.onGet));
+			  util.concat(util.bind(this, this.onGetOld),
+				      util.bind(this, this.onGetNew)));
 };
 
 util.extend(tw.ConversationTimeline, tw.Timeline);
@@ -21,12 +22,32 @@ tw.ConversationTimeline.prototype.refresh = function(){
 // ----------------------------------------------------------------------
 // private
 
-tw.ConversationTimeline.prototype.onGet = function(status){
-    console.log("ConversationTimeline onGet", this.statuses_);
+/**
+ * 過去方向への言及を遡る
+ */
+tw.ConversationTimeline.prototype.onGetOld = function(status){
+    console.log("ConversationTimeline onGetOld");
 
+    // 過去方向への言及を遡る
     if(status.in_reply_to_status_id){
 	this.store_.getStatus(status.in_reply_to_status_id,
-			   util.bind(this, this.onGet));
+			   util.bind(this, this.onGetOld));
+    }
+
+    this.insert([status]);
+};
+
+/**
+ * 未来方向への言及を遡る
+ */
+tw.ConversationTimeline.prototype.onGetNew = function(status){
+    console.log("ConversationTimeline onGetNew");
+
+    // 未来方向への言及を遡る
+    if(status.replies){
+	for(var i in status.replies){
+	    this.store_.getStatus(i, util.bind(this, this.onGetNew));
+	}
     }
 
     this.insert([status]);
