@@ -8,6 +8,7 @@ tw.Background = function(){
 
 tw.Background.prototype.initialize = function(){
     util.Event.bind(tw.components.timelineView, this, {setTimeline: this.onSetTimeline});
+    tw.store.user(tw.screenName, util.bind(this, this.setBackground));
 };
 
 /**
