@@ -19,9 +19,9 @@ tw.TimelineView = function(element, timeline){
     element.delegate(".status", "focus", util.bind(this, this.onFocus));
     element.delegate(".status", "blur", util.bind(this, this.onBlur));
     
-    element.delegate("a.user:not(.in_reply_to)", "click",
+    element.delegate("a.user", "click",
 		     util.bind(this, this.onShowUser));
-    element.delegate("a.user.in_reply_to", "click",
+    element.delegate(".in_reply_to .name", "click",
 		     util.bind(this, this.onShowConversation));
     element.delegate("a.hash", "click", util.bind(this, this.onShowHash));
 

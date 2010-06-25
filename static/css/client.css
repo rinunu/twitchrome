@@ -323,14 +323,15 @@ h1{
     font-weight: bold;
 }
 
+.status.in_reply_to .name:after{
+    content: url(../images/conversation.png);
+    cursor: pointer;
+}
+
 .status .footer{
     margin-top: 5px;
     font-size: 10px;
     color: #ccc;
-}
-
-.status .in_reply_to:after{
-    content: url(../images/conversation.png);
 }
 
 .status_actions{
