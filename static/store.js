@@ -357,12 +357,7 @@ tw.Store.isStatus = function(object){
  */
 tw.Store.prototype.addStatus = function(status){
     var old = this.statuses_[status.id];
-    if(old && old.user && old.user.created_at){
-	// すでに十分な情報を DB に持っている場合
-	return old;
-    }
-    else if(old){
-	// old よりも多くの情報を持っている場合は上書きする。
+    if(old){
 	$.extend(old, status);
 	status = old;
     }else{
