@@ -357,14 +357,23 @@ tw.Store.isStatus = function(object){
  */
 tw.Store.prototype.addStatus = function(status){
     var old = this.statuses_[status.id];
+    // すでに存在し、内容が十分で、内容も変わっていない場合
+    if(old && old.user && old.user.created_at &&
+       old.favorited == status.favorited){
+	return old;
+    }
+    
+    // 内容が変わっている場合は上書きする
     if(old){
 	$.extend(old, status);
 	status = old;
+	util.Event.trigger(this, "statusRefresh", status);
     }else{
 	this.statusesCount_++;
 	this.statuses_[status.id] = status;
     }
 
+    // in_reply_to の宛先に情報を追加する
     var inReplyTo = status.in_reply_to_status_id;
     if(inReplyTo){
 	var dest = this.statuses_[inReplyTo];
@@ -376,6 +385,9 @@ tw.Store.prototype.addStatus = function(status){
 	}
 	dest.replies = dest.replies || {};
 	dest.replies[status.id] = status;
+	if(dest.user){ // dest が完全な Status の場合のみ
+	    util.Event.trigger(this, "statusRefresh", dest);
+	}
     }
 
     status.user = this.addUser(status.user);
@@ -431,7 +443,5 @@ tw.Store.prototype.onGetUser = function(callback, json){
  */
 tw.Store.prototype.onStatusRefresh = function(json){
     console.log("store on status refresh");
-    json = this.addStatus(json);
-
-    util.Event.trigger(this, "statusRefresh", json);
+    this.addStatus(json);
 };
