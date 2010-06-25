@@ -138,6 +138,11 @@ tw.initialize = function(){
 
     // 登録と初回イベント実行
     $.history.init(util.bind(this, this.onHistoryChange));
+
+    $("a.refresh").click(
+	function(){
+	    tw.components.timelineView.timeline().refresh();
+	});
 };
 
 /**
