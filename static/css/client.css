@@ -340,6 +340,11 @@ h1{
     cursor: pointer;
 }
 
+.status .user.in_reply_to:after{
+    content: url(../images/conversation.png);
+    cursor: pointer;
+}
+
 .status .footer{
     margin-top: 5px;
     font-size: 10px;

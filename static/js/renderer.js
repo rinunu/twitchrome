@@ -50,7 +50,7 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 	favorite.addClass("off");
     }
 
-    if(status.in_reply_to_status_id || status.replies){
+    if(status.replies){
 	element.addClass("in_reply_to");
     }
 };
@@ -60,8 +60,13 @@ tw.Renderer.prototype.refreshElement = function(element, status){
  */
 tw.Renderer.prototype.formatText = function(text, status){
     text = text.replace(/\n/g, "<br>");
-    var userClass = "user";
-    text = text.replace(tw.Renderer.USER_RE, "@<a class='" + userClass + "'>$1</a>");
+    text = text.replace(tw.Renderer.USER_RE, function(s, p1, p2){
+			    if(screen.in_reply_to_screen_name == p1){
+				return "@<a class='user'>" + p1 + "</a>";
+			    }else{
+				return "@<a class='user in_reply_to'>" + p1 + "</a>";
+			    }
+			});
     text = text.replace(tw.Renderer.HASH_RE, "$1<a class='hash'>$2</a>");
     
     text = text.replace(tw.Renderer.URL_RE, tw.Inline.inline);
