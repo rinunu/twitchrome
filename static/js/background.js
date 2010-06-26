@@ -58,16 +58,16 @@ tw.Background.prototype.setBackground = function(user){
 tw.Background.RE = /\/(user_timeline|favorites|friends|followers)\/(\w+)/;
 
 tw.Background.prototype.onInput = function(){
-    this.waits_ = 2;
+    this.waits_ = Math.max(2, this.waits_);
 };
 
 tw.Background.prototype.onSetTimeline = function(){
-    this.waits_ = 6;
+    this.waits_ = Math.max(8, this.waits_);
 };
 
 tw.Background.prototype.onInterval = function(){
     if(tw.ajax.commands().length >= 1){
-	this.waits_ = 4;
+	this.waits_ = Math.max(4, this.waits_);
 	return;
     }
 
