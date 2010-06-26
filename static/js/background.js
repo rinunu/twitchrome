@@ -62,7 +62,7 @@ tw.Background.prototype.onInput = function(){
 };
 
 tw.Background.prototype.onSetTimeline = function(){
-    this.waits_ = Math.max(8, this.waits_);
+    this.waits_ = Math.max(6, this.waits_);
 };
 
 tw.Background.prototype.onInterval = function(){
@@ -72,7 +72,7 @@ tw.Background.prototype.onInterval = function(){
     }
 
     this.waits_--;
-    console.debug("background waits", this.waits_);
+    // console.debug("background waits", this.waits_);
     
     if(this.waits_ <= 0){
 	this.setBackgroundIf(tw.components.timelineView.timeline());
