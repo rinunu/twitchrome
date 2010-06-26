@@ -63,6 +63,8 @@
     <div class="text">
       <textarea></textarea>
     </div>
+    <div class="tasks">
+    </div>
     <div class="actions">
       <span class="count"></span>
       <a href="" class="update button">ツイート</a>
@@ -179,28 +181,36 @@
 
   <div class="timeline_viewport">
 
-    <div class="timeline">
+    <ol class="timeline">
 
-      <div tabindex='0' class='status'>
+      <li tabindex="0" class="status">
         <img class='profile_image' src='http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png'>
         <div class="body">
-  	<div class="status_actions">
-  	  <a class="favorite"> </a>
-  	  <a class="reply">返信</a>
-  	  <a class="rt">RT</a>
-  	</div>
-  	<span class="name">name</span>
-  	<div class="text">
-  	  つぶやきいいいい！
-  	</div>
-  	<div class="footer">
-  	  <a class="created_at">20:20:20</a>
-  	  <a class="source">Client</a>から
-  	</div>
+  	  <a class="favorite off"></a>
+  	  <span class="name">name</span>
+	
+  	  <div class="text">
+  	    つぶやき！
+	    <a class="hash">#hash</a>
+	    @<a class="user">user</a>
+	    @<a class="user in_reply_to">user</a>
+  	  </div>
+	  
+  	  <div class="footer">
+	    <div class="info">
+  	      <a class="created_at">20:20:20</a>
+  	      <a class="source">Client</a>から
+	    </div>
+	    
+	    <div class="actions">
+  	      <a class="reply">返信</a>
+  	      <a class="rt">リツイート</a>
+	    </div>
+  	  </div>
         </div>
-      </div><!-- status -->
-
-    </div><!-- timeline -->
+      </li><!-- status -->
+      
+    </ol><!-- timeline -->
     
   </div><!-- timeline_viewport -->
 </div><!-- frame -->

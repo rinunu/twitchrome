@@ -21,14 +21,14 @@ body{
     height: 90px;
     top: 35px;
     left: 30px;
-    right: 290px;
+    right: 310px;
 }
 
 .sidebar{
     position: absolute;
     top: 35px;
     right: 10px;
-    width: 240px;
+    width: 280px;
     margin: 0 10px;
 }
 
@@ -37,7 +37,7 @@ body{
     top: 140px;
     bottom: 5px;
     left: 30px;
-    right: 290px;
+    right: 310px;
 }
 
 .timeline_viewport{
@@ -89,16 +89,16 @@ body > .footer{
     background-color: #fff;
 }
 
-.status:nth-child(even) .body{
-    background-color: #f5f5ff;
-}
+/* .status:nth-child(even) .body{ */
+/*     background-color: #f5f5ff; */
+/* } */
 
 .status.focus .body{
     /* -moz-box-shadow: 20px 20px 20px #224466; */
     /* -webkit-box-shadow: 0px 0px 10px #eef; */
     /* outline: solid 2px #55f; */
-    background-color: #889;
-    color: #fff;
+    background-color: #dde;
+    color: #000;
 }
 
 .profile .content{
@@ -157,7 +157,7 @@ img{
 body{
     font-size: 13px;
     font-family: sans-serif;
-    line-height: 1.5;
+    line-height: 1.2;
     word-break: break-all;
     overflow: hidden;
 }
@@ -198,6 +198,7 @@ h1{
 
 .header{
     padding: 5px;
+    overflow: hidden;
 }
 
 .status_input > .text{
@@ -224,6 +225,28 @@ h1{
 
     font-size: 15px;
     padding: 1px 5px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* tasks */
+
+.tasks{
+    display: none;
+    float: left;
+    width: 30px;
+    height: 20px;
+    margin-left: 0px;
+
+    margin-top: 10px;
+    border-radius: 0 10px 0 0 ;
+    -webkit-border-radius: 0 10px 0 0;
+    -moz-border-radius: 0 10px 0 0;
+    padding: 1px 10px;
+    background: #000 url(../images/wait2.gif) no-repeat center;
+}
+
+.tasks{
+    margin-left: 0px;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -261,6 +284,8 @@ h1{
 }
 
 .timeline{
+    list-style-type: none;
+    padding: 0px;
 }
 
 /* パディング */
@@ -289,6 +314,7 @@ h1{
 /* つぶやき */
 
 .status{
+    font-size: 13px;
     -webkit-transition: opacity 0.2s ease-in;
     margin: 5px 10px;
 }
@@ -297,12 +323,12 @@ h1{
     opacity: 0.01;
 }
 
-.status a{
-    color: #005;
+.status .text a{
+    color: #33b;
 }
 
-.status a:hover{
-    color: #449;
+.status .text a:hover{
+    text-decoration: underline;
 }
 
 .status .profile_image{
@@ -347,67 +373,102 @@ h1{
 
 .status .footer{
     margin-top: 5px;
-    font-size: 10px;
-    color: #ccc;
 }
 
-.status_actions{
+.status .info{
+    float: left;
+    font-size: 10px;
+    color: #999;
+}
+
+.status .actions{
+    font-size: 11px;
+    float: right;
+}
+
+.status .actions a{
+    color: #000;
+}
+.status .actions a:hover{
+    text-decoration: underline;
+}
+
+.status .footer:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.status a.favorite{
+    display: block;
+    width: 16px;
+    height: 16px;
     float: right;
     font-size: 8px;
-    margin-left: 10px;
 }
 
-.status_actions a{
-    -webkit-transition: opacity 0.3s ease-in;
-    visibility: hidden;
-    display: block;
-    margin: 0px 2px;
-    font-size: 12px;
+.status a.favorite.off{
+    background-image: url(../images/star_off.png);
+}
+
+.status a.favorite.on{
+    background-image: url(../images/star.png);
+}
+
+.status a.favorite.wait{
+    background-image: url(../images/wait.gif);
+}
+
+/* .a{ */
+/*     -webkit-transition: opacity 0.3s ease-in; */
+/*     visibility: hidden; */
+/*     display: block; */
+/*     margin: 0px 2px; */
+/*     font-size: 12px; */
+/*     opacity: 0; */
+/* } */
+
+/* .status:hover .status_actions a{ */
+/*     visibility: visible; */
+/*     opacity: 1; */
+/* } */
+
+/* ---------- */
+/* hover */
+
+.status:not(.focus):hover .body{
+    background-color: #f7f7ff;
+}
+
+.status .actions{
     opacity: 0;
 }
 
-.status:hover .status_actions a{
-    visibility: visible;
+.status:hover .actions{
     opacity: 1;
-}
-
-.status_actions .favorite{
-    display: block;
-    float: left;
-    width: 16px;
-    height: 16px;
-}
-
-.status_actions .favorite:hover, .status .unfavorite:hover{
-    /* background-image: url(../images/star.png); */
 }
 
 /**
  */
-.status_actions a.favorite.off{
-    background-image: url(../images/star_off.png);
+.status a.favorite.off{
+    opacity: 0;
 }
-
-.status_actions a.favorite.on{
-    background-image: url(../images/star.png);
-    visibility: visible;
+.status:hover a.favorite.off{
     opacity: 1;
 }
 
-.status_actions a.favorite.wait{
-    background-image: url(../images/wait.gif);
-    visibility: visible;
+.status a.favorite.on{
     opacity: 1;
 }
 
-.status_actions .text img{
+.status a.favorite.wait{
+    opacity: 1;
+}
+
+.status .text img{
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
-}
-
-.status .footer, .status .footer a{
-    color: #999;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -432,6 +493,7 @@ h1{
 /* logo */
 
 .logo.frame{
+    visibility: hidden;
     height: 100px;
 }
 

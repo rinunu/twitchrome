@@ -116,7 +116,12 @@ tw.initialize = function(){
     tw.store = new tw.Store();
     tw.lists = new tw.Lists();
     tw.addComponents();
+};
 
+/**
+ * 本番時の初期化処理
+ */
+tw.initializeSystem = function(){
     // デザイン要素削除/初期化
     for(var a in tw.components){
         var component = tw.components[a];
@@ -146,16 +151,19 @@ tw.initialize = function(){
 };
 
 /**
- * デザイン時の初期化処理
+ * デザインモードの初期化処理
  */
 tw.initializeDesign = function(){
-    var timelineView = $(".timeline");
+    var timeline = $(".timeline");
+    var status = $(".timeline .status");
+    status.clone().appendTo(timeline).addClass("focus");
     for(var i = 0; i < 20; i++){
-	timelineView.append(this.templates.status.clone());
+    	timeline.append(status.clone());
     }
 };
 
 $(function(){
       tw.initialize();
+      tw.initializeSystem();
       // tw.initializeDesign();
 });
