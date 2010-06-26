@@ -77,16 +77,23 @@ tw.hash = function(timeline){
 tw.adjustRequest = function(command){
     // console.log("adj");
 
-    // var map = {
-    // 	refreshTimeline: {priority: 2},
-    // 	update: {maxRetryCount: 0, priority: 0},
-    // 	favorite: {maxRetryCount: 0, priority: 0},
-    // 	unfavorite: {maxRetryCount: 0, priority: 0},
-    // 	getStatus: {},
-    // 	getUser: {}
-    // };
+    var default_ = {maxTryCount: 3, priority: 1};
+    var map = {
+    	refreshTimeline: {},
+    	update: {maxTryCount: 1, priority: 0},
+    	favorite: {maxTryCount: 1, priority: 3},
+    	unfavorite: {maxTryCount: 1, priority: 3},
+    	getStatus: {},
+    	getUser: {},
+	lists: {priority: 3}
+    };
 
-    // command.name
+    var settings = map[command.type];
+    if(settings){
+	command = $.extend(settings, command);
+    }
+    
+    command = $.extend(default_, command);
 
     return command;
 };

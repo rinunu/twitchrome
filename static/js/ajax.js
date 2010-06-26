@@ -4,7 +4,8 @@
  * 
  * 通常の Ajax 処理に加え、以下の処理を行う
  * - 再送
- * - (サーバの都合により、1度に1リクエストのみ処理する。)
+ * - リクエスト数制限
+ *   基本は1リクエスト毎。
  * 
  * options = {
  *   // コマンドを実行前に呼び出される。 コマンドの調整を行う際に使用する。
@@ -21,9 +22,10 @@ tw.Ajax = function(options){
 
     // 万が一処理が JavaScript エラーが起きたとしても処理を継続するために、
     // setTimeout ではなく setInterval を使用する。
-    setInterval(util.bind(this, this.onInterval), 0.5 * 1000);
+    setInterval(util.bind(this, this.onInterval), 1 * 1000);
 
-    this.executing = false;
+    // 実行中の Command
+    this.executing = null;
 
     // 実行待ち Command。 優先度の降順。
     this.commands = [];
@@ -39,7 +41,7 @@ tw.Ajax = function(options){
  *   url : 必須,
  *   params: ,
  *   callback:,
- *   maxRetryCount: 最大リトライ回数。 デフォルトは 0,
+ *   maxTryCount: 最大リトライ回数。 デフォルトは 1,
  *   priority: 0 が最も高い。 デフォルトは 1
  * }
  * 
@@ -49,19 +51,24 @@ tw.Ajax = function(options){
  * 戻り値で新しい command を返す。
  */
 tw.Ajax.prototype.ajax = function(command){
-    if(this.options.adjustCommand){
-	command = this.options.adjustCommand(command);
-	console.assert(command);
-    }
-
     var other = this.command(command.name);
     if(other && other.method == "GET"){
 	console.log("ajax", "処理をまとめました", command.name);
 	other.callback = util.concat(other.callback, command.callback);
 	command = other;
     }else{
-	command.method = command.method || "GET";
-	command.retryCount = 0;
+	if(this.options.adjustCommand){
+	    command = this.options.adjustCommand(command);
+	}
+
+	command = $.extend(
+	    {
+		priority: 1,
+		maxTryCount: 1,
+		method: "GET",
+		errors: []
+	    }, command);
+
 	this.commands.push(command);
     }
     
@@ -96,7 +103,7 @@ tw.Ajax.prototype.execute = function(command){
 	    success: util.bind(this, this.onSuccess, command),
 	    error: util.bind(this, this.onError, command)
 	});
-    this.executing = true;
+    this.executing = command;
     util.Event.trigger(this, "start", command);
 };
 
@@ -107,6 +114,9 @@ tw.Ajax.prototype.onInterval = function(){
     if(this.executing || this.commands.length == 0){
 	return;
     }
+
+    // priority の昇順
+    this.commands.sort(function(a, b){return a.priority - b.priority;});
 
     var command = this.commands[0];
     // TODO ここでリトライ判定
@@ -122,16 +132,20 @@ tw.Ajax.prototype.onSuccess = function(command, result){
     console.log("ajax success", command.name);
     
     this.commands.shift();
-    this.executing = false;
+    this.executing = null;
 
     util.Event.trigger(this, "success", command);
     command.callback(result);
 };
 
 tw.Ajax.prototype.onError = function(command, xhr){
-    console.error("ajax error", command.name);
-    this.commands.shift();
-    this.executing = false;
-
-    util.Event.trigger(this, "error", command);
+    command.errors.push(xhr);
+    this.executing = null;
+    if(command.errors.length >= command.maxTryCount){
+	console.error("ajax error", command.name);
+	this.commands.shift();
+	util.Event.trigger(this, "error", command);
+    }else{
+	console.error("ajax error retry", command.name, command);
+    }
 };
