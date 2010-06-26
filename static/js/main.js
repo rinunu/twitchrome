@@ -77,13 +77,13 @@ tw.hash = function(timeline){
 tw.adjustRequest = function(command){
     // console.log("adj");
 
-    var default_ = {maxTryCount: 3, priority: 1};
+    var default_ = {maxTryCount: 3, priority: 2};
     var map = {
     	refreshTimeline: {},
     	update: {maxTryCount: 1, priority: 0},
     	favorite: {maxTryCount: 1, priority: 3},
     	unfavorite: {maxTryCount: 1, priority: 3},
-    	getStatus: {},
+    	getStatus: {priority: 1}, // TL の表示で使用するため優先度高め
     	getUser: {},
 	lists: {priority: 3}
     };
