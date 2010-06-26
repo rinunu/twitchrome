@@ -21,7 +21,7 @@ tw.Renderer.prototype.render = function(status, element){
 
 tw.Renderer.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
 tw.Renderer.USER_RE = /@(\w+)/g;
-tw.Renderer.HASH_RE = /([^&])(#\w+)/g;
+tw.Renderer.HASH_RE = /([^&]|^)(#\w+)/g;
 
 /**
  * Status 表示用の Element を更新する
