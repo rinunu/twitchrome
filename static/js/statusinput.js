@@ -1,9 +1,13 @@
 
+/**
+ * 入力欄
+ */
 tw.StatusInput = function(){
     this.element_ = $(".status_input");
     this.textarea_ = this.element_.find("textarea");
     this.count_ = this.element_.find(".count");
     this.inReplyTo_ = null;
+    this.oldText_ = "";
 };
 
 tw.StatusInput.prototype.initialize = function(){
@@ -11,6 +15,9 @@ tw.StatusInput.prototype.initialize = function(){
 
     this.textarea_.keydown(util.bind(this, this.onKeyDown));
     this.textarea_.keyup(util.bind(this, this.onKeyUp));
+    this.textarea_.change(util.bind(this, this.onChange));
+
+    setInterval(util.bind(this, this.onInterval), 100);
 };
 
 /**
@@ -53,9 +60,23 @@ tw.StatusInput.prototype.onUpdate = function(){
     this.inReplyTo_ = null;
 };
 
+tw.StatusInput.prototype.refreshCount = function(){
+    this.count_.text(140 - this.textarea_.val().length);
+};
+
+tw.StatusInput.prototype.onInterval = function(){
+    if(this.textarea_.val() != this.oldText_){
+	this.refreshCount();
+	this.oldText_ = this.textarea_.val();
+    }
+};
+
 tw.StatusInput.prototype.onKeyDown = function(){
 };
 
 tw.StatusInput.prototype.onKeyUp = function(){
-    this.count_.text(140 - this.textarea_.val().length);
 };
+
+tw.StatusInput.prototype.onChange = function(){
+};
+
