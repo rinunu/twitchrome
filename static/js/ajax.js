@@ -28,7 +28,7 @@ tw.Ajax = function(options){
     this.executing = null;
 
     // 実行待ち Command。 優先度の降順。
-    this.commands = [];
+    this.commands_ = [];
 };
 
 /**
@@ -69,7 +69,7 @@ tw.Ajax.prototype.ajax = function(command){
 		errors: []
 	    }, command);
 
-	this.commands.push(command);
+	this.commands_.push(command);
     }
     
     return command;
@@ -81,13 +81,17 @@ tw.Ajax.prototype.ajax = function(command){
  * 存在しない場合は null
  */
 tw.Ajax.prototype.command = function(name){
-    for(var i = 0; i < this.commands.length; i++){
-	var command = this.commands[i];
+    for(var i = 0; i < this.commands_.length; i++){
+	var command = this.commands_[i];
 	if(command.name == name){
 	    return command;
 	}
     }
     return null;
+};
+
+tw.Ajax.prototype.commands = function(){
+    return this.commands_;
 };
 
 // ----------------------------------------------------------------------
@@ -111,14 +115,14 @@ tw.Ajax.prototype.execute = function(command){
  * 処理する command があるなら、それを実行する
  */
 tw.Ajax.prototype.onInterval = function(){
-    if(this.executing || this.commands.length == 0){
+    if(this.executing || this.commands_.length == 0){
 	return;
     }
 
     // priority の昇順
-    this.commands.sort(function(a, b){return a.priority - b.priority;});
+    this.commands_.sort(function(a, b){return a.priority - b.priority;});
 
-    var command = this.commands[0];
+    var command = this.commands_[0];
     // TODO ここでリトライ判定
     
     this.execute(command);
@@ -131,7 +135,7 @@ tw.Ajax.prototype.onSuccess = function(command, result){
     }
     console.log("ajax success", command.name);
     
-    this.commands.shift();
+    this.commands_.shift();
     this.executing = null;
 
     util.Event.trigger(this, "success", command);
@@ -143,7 +147,7 @@ tw.Ajax.prototype.onError = function(command, xhr){
     this.executing = null;
     if(command.errors.length >= command.maxTryCount){
 	console.error("ajax error", command.name);
-	this.commands.shift();
+	this.commands_.shift();
 	util.Event.trigger(this, "error", command);
     }else{
 	console.error("ajax error retry", command.name, command);

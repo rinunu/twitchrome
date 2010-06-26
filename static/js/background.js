@@ -7,8 +7,17 @@ tw.Background = function(){
 };
 
 tw.Background.prototype.initialize = function(){
-    util.Event.bind(tw.components.timelineView, this, {setTimeline: this.onSetTimeline});
     tw.store.user(tw.screenName, util.bind(this, this.setBackground));
+
+    this.hasInput = false;
+    $(document.body).bind("mousemove.background", util.bind(this, this.onInput));
+    $(document.body).bind("keydown.background", util.bind(this, this.onInput));
+    util.Event.bind(tw.components.timelineView, this, {setTimeline: this.onSetTimeline});
+
+    // 背景切り替えまでの待ち時間
+    // 操作すると増え、定期的に減る
+    this.waits_ = 0;
+    setInterval(util.bind(this, this.onInterval), 500);
 };
 
 /**
@@ -48,21 +57,47 @@ tw.Background.prototype.setBackground = function(user){
 
 tw.Background.RE = /\/(user_timeline|favorites|friends|followers)\/(\w+)/;
 
-tw.Background.prototype.onSetTimeline = function(source, event, timeline){
+tw.Background.prototype.onInput = function(){
+    this.waits_ = 2;
+};
+
+tw.Background.prototype.onSetTimeline = function(){
+    this.waits_ = 6;
+};
+
+tw.Background.prototype.onInterval = function(){
+    if(tw.ajax.commands().length >= 1){
+	this.waits_ = 4;
+	return;
+    }
+
+    this.waits_--;
+    console.debug("background waits", this.waits_);
+    
+    if(this.waits_ <= 0){
+	this.setBackgroundIf(tw.components.timelineView.timeline());
+    }
+};
+
+/**
+ * 必要なら背景を変更する
+ */
+tw.Background.prototype.setBackgroundIf = function(timeline){
     if(!timeline){
 	return;
     }
 
     var uri = timeline.uri();
-
     var m = null;
     if((m = tw.Background.RE.exec(uri))){
 	var screenName = m[2];
     }else if(/\/(home_timeline|mentions)/.test(uri)){
 	var screenName = tw.screenName;
     }
+
     var user = tw.store.hasUser(screenName);
     if(user){
-	this.setBackground(user);
+    	this.setBackground(user);
     }
 };
+
