@@ -75,7 +75,7 @@ tw.MultiTimelineView.prototype.setTimeline = function(timeline){
 
     // 切り替え
     if(oldView){
-	oldView.element().animate({top: 0, left:-1000}).fadeOut({queue: false});
+	oldView.element().animate({left:-1000}).fadeOut({queue: false});
     }
     newView.element().animate({top: 0, left:0}).fadeIn({queue: false});
     

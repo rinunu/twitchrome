@@ -61,10 +61,10 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 tw.Renderer.prototype.formatText = function(text, status){
     text = text.replace(/\n/g, "<br>");
     text = text.replace(tw.Renderer.USER_RE, function(s, p1, p2){
-			    if(screen.in_reply_to_screen_name == p1){
-				return "@<a class='user'>" + p1 + "</a>";
-			    }else{
+			    if(status.in_reply_to_screen_name == p1){
 				return "@<a class='user in_reply_to'>" + p1 + "</a>";
+			    }else{
+				return "@<a class='user'>" + p1 + "</a>";
 			    }
 			});
     text = text.replace(tw.Renderer.HASH_RE, "$1<a class='hash'>$2</a>");
