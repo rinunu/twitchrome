@@ -61,7 +61,9 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 tw.Renderer.prototype.formatText = function(text, status){
     text = text.replace(/\n/g, "<br>");
     text = text.replace(tw.Renderer.USER_RE, function(s, p1, p2){
-			    if(status.in_reply_to_screen_name == p1){
+			    // in_reply_to_screen_name だけ付いてる場合があるが、それは無視する
+			    if(status.in_reply_to_status_id && 
+				status.in_reply_to_screen_name == p1){
 				return "@<a class='user in_reply_to'>" + p1 + "</a>";
 			    }else{
 				return "@<a class='user'>" + p1 + "</a>";
