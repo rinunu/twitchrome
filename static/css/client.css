@@ -152,6 +152,12 @@ img{
     display: none;
 }
 
+.float{
+    position: absolute;
+    
+    -webkit-box-shadow: 0px 7px 7px #777;
+}
+
 /* ---------------------------------------------------------------------- */
 
 body{
@@ -763,6 +769,25 @@ h1{
     background-color: rgba(255,0,0,0.8);
     opacity: 1;
     left: 0px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* context menu */
+
+.popup.menu{
+    display: absolute;
+    width: 200px;
+    left: 0;
+    top: 0;
+
+    text-align: center;
+
+    background-color: #fff;
+    padding: 5px;
+
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
 /* ---------------------------------------------------------------------- */

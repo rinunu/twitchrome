@@ -10,6 +10,13 @@ tw.StatusInput = function(){
     this.oldText_ = "";
 };
 
+/**
+ * メッセージを削除する
+ */
+tw.StatusInput.prototype.clear = function(){
+    this.textarea_.text("");
+};
+
 tw.StatusInput.prototype.initialize = function(){
     tw.setCommand($("a.update"), util.bind(this, this.update));
 

@@ -351,6 +351,14 @@ tw.TimelineView.prototype.onRt = function(event){
     event.preventDefault();
     var status = this.getStatus($(event.target));
     tw.components.statusInput.rt(status);
+    tw.components.popupMenu.show(
+	{left: event.pageX, top: event.pageY},
+	"コメントを書かずにリツイートする場合は、以下をクリックしてください(公式リツイート)。",
+	[{label: "リツイートする",
+	  callback: function(){
+	      tw.store.retweet(status, function(){});
+	      tw.components.statusInput.clear();
+	  }}]);
 };
 
 tw.TimelineView.prototype.onShowUser = function(event){

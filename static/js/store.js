@@ -57,6 +57,22 @@ tw.Store.prototype.update = function(status, inReplyTo, callback){
 };
 
 /**
+ * 公式 RT を行う
+ */
+tw.Store.prototype.retweet = function(status, callback){
+    console.log("retweet", status);
+
+    tw.ajax.ajax(
+	{
+	    type: "retweet",
+	    method: "POST",
+	    name: "リツイート",
+	    url: "/twitter_api/statuses/retweet/" + status.id + ".json",
+	    callback: util.bind(this, this.onUpdate, callback)
+	});
+};
+
+/**
  * お気に入りにする
  * 
  */
@@ -420,6 +436,9 @@ tw.Store.prototype.getOrCreateTimeline = function(uri, constructor, param, optio
 // ----------------------------------------------------------------------
 // イベントハンドラ
 
+/**
+ * update / retweet 完了時の処理
+ */
 tw.Store.prototype.onUpdate = function(callback, json){
     console.log("on update");
     callback();
