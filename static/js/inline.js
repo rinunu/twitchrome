@@ -15,7 +15,7 @@ tw.Inline.inline = function(url){
     var content = url;
     if(m){
 	return "<div><a href='" + url + "' class='url' target='_blank'>"
-	    + "<img src='http://twitpic.com/show/thumb/" + m[1] + ".jpg'></div>";
+	    + "<img src='http://twitpic.com/show/thumb/" + m[1] + ".jpg'></a></div>";
     }
 
     return "<a href='" + url + "' class='url' target='_blank'>" + content + "</a>";
