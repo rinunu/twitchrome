@@ -28,13 +28,16 @@ tw.ConversationTimeline.prototype.refresh = function(){
 tw.ConversationTimeline.prototype.onGetOld = function(status){
     console.log("ConversationTimeline onGetOld");
 
-    // 過去方向への言及を遡る
+    this.insert([status]);
+
+    if(status.retweeted_status){
+	status = status.retweeted_status;
+    }
+
     if(status.in_reply_to_status_id){
 	this.store_.getStatus(status.in_reply_to_status_id,
 			   util.bind(this, this.onGetOld));
     }
-
-    this.insert([status]);
 };
 
 /**
@@ -43,7 +46,6 @@ tw.ConversationTimeline.prototype.onGetOld = function(status){
 tw.ConversationTimeline.prototype.onGetNew = function(status){
     console.log("ConversationTimeline onGetNew");
 
-    // 未来方向への言及を遡る
     if(status.replies){
 	for(var i in status.replies){
 	    this.store_.getStatus(i, util.bind(this, this.onGetNew));

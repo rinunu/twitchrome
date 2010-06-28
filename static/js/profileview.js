@@ -120,7 +120,11 @@ tw.ProfileView.prototype.addUser = function(user){
  */
 tw.ProfileView.prototype.onFocus = function(){
     var focus = tw.components.timelineView.focus();
-    this.setUser(focus.user);
+    if(focus.retweeted_status){
+	this.setUser(focus.retweeted_status.user);
+    }else{
+	this.setUser(focus.user);
+    }
 };
 
 tw.ProfileView.prototype.onTabClick = function(event){

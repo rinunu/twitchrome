@@ -342,9 +342,21 @@ h1{
     float: left;
     width: 48px;
     height: 48px;
-    margin-right: 5px;
     /* border-radius: 5px; */
     border: 2px solid #fff;
+}
+
+.status:not(.retweet) .profile_image_rt{
+    display: none;
+}
+
+.status.retweet img.profile_image_rt{
+    float: left;
+    width: 24px;
+    height: 24px;
+    margin-top: 26px;
+    margin-left: -26px;
+    border: 1px solid #000;
 }
 
 .status .body{

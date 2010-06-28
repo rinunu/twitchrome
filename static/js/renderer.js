@@ -29,8 +29,17 @@ tw.Renderer.HASH_RE = /([^&]|^)(#\w+)/g;
 tw.Renderer.prototype.refreshElement = function(element, status){
     console.assert(element);
     console.assert(status);
-    
-    element.find("img").attr("src", status.user.profile_image_url);
+
+    if(status.retweeted_status && status.retweeted_status.user){
+	// RT 情報はあるが user が入っていない場合は通常通り表示する(friends etc.)
+	this.refreshElement(element, status.retweeted_status);
+	element.addClass("retweet");
+	element.find(".profile_image_rt").attr("src", status.user.profile_image_url);
+	return;
+    }
+
+    element.removeClass("retweet");
+    element.find(".profile_image").attr("src", status.user.profile_image_url);
     element.find(".name").text(status.user.screen_name);
 
     var textElem = element.find(".text");
@@ -52,7 +61,10 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 
     if(status.replies){
 	element.addClass("in_reply_to");
+    }else{
+	element.removeClass("in_reply_to");
     }
+    
 };
 
 /**

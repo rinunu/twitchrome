@@ -163,8 +163,9 @@ tw.initializeSystem = function(){
  */
 tw.initializeDesign = function(){
     var timeline = $(".timeline");
-    var status = $(".timeline .status");
+    var status = $(".timeline .status").first();
     status.clone().appendTo(timeline).addClass("focus");
+    status.clone().appendTo(timeline).addClass("retweet");
     for(var i = 0; i < 20; i++){
     	timeline.append(status.clone());
     }
