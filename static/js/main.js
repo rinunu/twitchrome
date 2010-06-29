@@ -110,6 +110,7 @@ tw.addComponents = function(){
     tw.components.progressview = new tw.ProgressView();
     tw.components.autoRefresh = new tw.AutoRefresh();
     tw.components.popupMenu = new tw.PopupMenu();
+    tw.components.upload = new tw.Upload();
 };
 
 /**
@@ -176,3 +177,5 @@ $(function(){
       tw.initializeSystem();
       // tw.initializeDesign();
 });
+
+
