@@ -3,6 +3,8 @@
 import time
 import cgi
 import logging
+import urllib
+import cgi
 
 from django.shortcuts import render_to_response
 from django.conf import settings
@@ -12,36 +14,59 @@ from django.http import HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.views.generic.simple import direct_to_template
 
-import oauth2 as oauth
-import urllib
+import oauth
+from google.appengine.api import urlfetch
 
 from poster.encode import multipart_encode
-
-import twitter
-
-consumer = oauth.Consumer(settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CONSUMER_SECRET)
-client = oauth.Client(consumer)
 
 request_token_url = 'http://twitter.com/oauth/request_token'
 authenticate_url = 'http://twitter.com/oauth/authorize'
 access_token_url = 'http://twitter.com/oauth/access_token'
 
+consumer = oauth.OAuthConsumer(settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CONSUMER_SECRET)
+signature_method = oauth.OAuthSignatureMethod_HMAC_SHA1()
+
 logger = logging.getLogger("views")
 
+def fetch(url, method, payload = None):
+    response = urlfetch.fetch(url, method=method, payload=payload, deadline=10)
+    return response.status_code, response.content
+
+# oauth を使用してデータを取得する
+def fetch_oauth(url, parameters, method, token):
+    req = oauth.OAuthRequest.from_consumer_and_token(
+        consumer,
+        token,
+        http_method=method,
+        http_url=url,
+        parameters=parameters
+        )
+    
+    req.sign_request(signature_method, consumer, token)
+
+    if method == 'GET':
+        return fetch(url=req.to_url(), method=method)
+    else:
+        return fetch(url=url, method=method, payload=req.to_postdata())
+
+# ------------------------------------------------------------
+
 def login(request):
-    # "oauth_callback": request.build_absolute_uri("authenticated")
-    resp, content = client.request(request_token_url, "GET")
-    if resp['status'] != '200':
-        raise Exception("Invalid response from Twitter.")
+    # get request token
+    oauth_request = oauth.OAuthRequest.from_consumer_and_token(
+        consumer, http_url=request_token_url, callback=request.build_absolute_uri("authenticated"))
+    oauth_request.sign_request(signature_method, consumer, None)
+    status, content = fetch(method=oauth_request.http_method, url=oauth_request.to_url())
+    if status != 200:
+        raise Exception("Invalid response from Twitter.", status, content)
+    token = oauth.OAuthToken.from_string(content)
 
-    request.session['request_token'] = dict(cgi.parse_qsl(content))
+    # to session
+    request.session['request_token'] = token
 
-    url = "%s?%s" % (
-        authenticate_url,
-        urllib.urlencode({
-                "oauth_token": request.session['request_token']['oauth_token']
-                }))
-    return HttpResponseRedirect(url)
+    # redirect
+    oauth_request = oauth.OAuthRequest.from_token_and_callback(token=token, http_url=authenticate_url)
+    return HttpResponseRedirect(oauth_request.to_url())
 
 def logout(request):
     request.session.clear()
@@ -49,40 +74,23 @@ def logout(request):
 
 # リクエストトークンを認可された
 def authenticated(request):
-    # リクエストトークン
-    token = oauth.Token(request.session['request_token']['oauth_token'],
-                        request.session['request_token']['oauth_token_secret'])
-    client = oauth.Client(consumer, token)
+    token = request.session['request_token']
 
-    # アクセストークンをリクエスト
-    resp, content = client.request(access_token_url, "GET")
-    if resp['status'] != '200':
-        raise Exception("Invalid response from Twitter.")
+    # get access token
+    oauth_request = oauth.OAuthRequest.from_consumer_and_token(
+        consumer, token, http_url=access_token_url, verifier=request.GET['oauth_verifier'])
+    oauth_request.sign_request(signature_method, consumer, token)
+    status, content = fetch(method=oauth_request.http_method, url=oauth_request.to_url())
+    if status != 200:
+        raise Exception("Invalid response from Twitter.", status, content)
+    token = oauth.OAuthToken.from_string(content)
 
-    """
-    This is what you'll get back from Twitter. Note that it includes the
-    user's user_id and screen_name.
-    {
-        'oauth_token_secret': 'xxxxxxxxxxxx',
-        'user_id': '1111111111', 
-        'oauth_token': 'xxxxxxx',
-        'screen_name': 'aaaaaaaaaaa'
-    }
-    """
-    request.session['access_token'] = dict(cgi.parse_qsl(content))
+    # to session
+    qs = cgi.parse_qs(content)
+    request.session['screen_name'] = qs['screen_name'][0]
+    request.session['access_token'] = token
 
     return HttpResponseRedirect(reverse(main))
-
-# Twitter オブジェクトを生成する
-def create_twitter(session):
-    if 'access_token' not in session:
-        raise "login"
-    
-    return twitter.Twitter(settings.TWITTER_CONSUMER_KEY,
-                           settings.TWITTER_CONSUMER_SECRET,
-                           session['access_token']['oauth_token'],
-                           session['access_token']['oauth_token_secret']
-                           )
 
 # twitter_api を実行し、結果を返す
 # url は http://api.twitter.com/1/ 以降
@@ -94,6 +102,8 @@ def twitter_api(request, url):
     
     # return HttpResponse(url + " - " + str(len(request.GET)))
 
+    token = request.session['access_token']
+
     src_params = request.GET
     if request.method == "POST":
         src_params = request.POST
@@ -102,18 +112,11 @@ def twitter_api(request, url):
     for key, value in src_params.iteritems():
         params[key] = value.encode('utf-8')
 
-    t = create_twitter(request.session)
-
     url = 'http://api.twitter.com/1/' + url;
 
-    if request.method == "POST":
-        response = t.post(url, params)
-    else:
-        # response = t.post(url, params)
-        response = t.get(url, params)
-
-    return HttpResponse(response.content, status=response.status_code) # , 'application/json')
-
+    status, content = fetch_oauth(url=url, method=request.method, parameters=params, token=token)
+   
+    return HttpResponse(content, status=status) # , 'application/json')
 
 def upload(request):
     file = request.FILES.popitem()[1][0]
@@ -146,5 +149,5 @@ def main(request):
     return direct_to_template(request,
                               'main.html',
                               extra_context={
-            'screen_name': request.session['access_token']['screen_name']})
+            'screen_name': request.session['screen_name']})
 
