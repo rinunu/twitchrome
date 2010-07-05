@@ -10,9 +10,12 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.core.urlresolvers import reverse
+from django.views.generic.simple import direct_to_template
 
 import oauth2 as oauth
 import urllib
+
+from poster.encode import multipart_encode
 
 import twitter
 
@@ -111,6 +114,28 @@ def twitter_api(request, url):
 
     return HttpResponse(response.content, status=response.status_code) # , 'application/json')
 
+
+def upload(request):
+    file = request.FILES.popitem()[1][0]
+    # file は seek も tail もサポートしていないため、そのまま渡せない。 
+    datagen, headers = multipart_encode({file.name: file})
+
+
+# OAuth realm="http://api.twitter.com/", 
+# oauth_consumer_key="GDdmIQH6jhtmLUypg82g", 
+# oauth_signature_method="HMAC-SHA1", 
+# oauth_token="819797-Jxq8aYUDRmykzVKrgoLhXSq67TEa5ruc4GJC2rWimw", 
+# oauth_timestamp="1272325550", 
+# oauth_nonce="oElnnMTQIZvqvlfXM56aBLAf5noGD0AQR3Fmi7Q6Y", 
+# oauth_version="1.0", 
+# oauth_signature="U1obTfE7Rs9J1kafTGwufLJdspo%3D"
+
+# X-Auth-Service-Provider (Required)
+# https://api.twitter.com/1/account/verify_credentials.json
+    
+    return HttpResponse(str("".join(datagen)) + "  /  " + str(headers))
+
+
 def index(request):
     return render_to_response("index.html", {})
 
@@ -118,5 +143,8 @@ def main(request):
     if 'access_token' not in request.session:
         return HttpResponseRedirect(reverse(index))
     
-    return render_to_response("main.html", {
+    return direct_to_template(request,
+                              'main.html',
+                              extra_context={
             'screen_name': request.session['access_token']['screen_name']})
+

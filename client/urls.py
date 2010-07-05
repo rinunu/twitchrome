@@ -9,5 +9,6 @@ urlpatterns = patterns('',
                        url(r'^main/?$', views.main),
 
                        url(r'^twitter_api/(?P<url>.+)$', views.twitter_api),
+                       url(r'^upload$', views.upload),
                        url(r'', views.index)
 )
