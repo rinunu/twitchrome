@@ -28,12 +28,12 @@ signature_method = oauth.OAuthSignatureMethod_HMAC_SHA1()
 
 logger = logging.getLogger("views")
 
-def fetch(url, method, payload = None):
-    response = urlfetch.fetch(url, method=method, payload=payload, deadline=10)
+def fetch(url, method, payload = None, headers = {}):
+    response = urlfetch.fetch(url, method=method, payload=payload, deadline=10, headers=headers)
     return response.status_code, response.content
 
 # oauth を使用してデータを取得する
-def fetch_oauth(url, parameters, method, token):
+def fetch_oauth(url, parameters, method, token, headers = {}):
     req = oauth.OAuthRequest.from_consumer_and_token(
         consumer,
         token,
@@ -45,9 +45,9 @@ def fetch_oauth(url, parameters, method, token):
     req.sign_request(signature_method, consumer, token)
 
     if method == 'GET':
-        return fetch(url=req.to_url(), method=method)
+        return fetch(url=req.to_url(), method=method, headers=headers)
     else:
-        return fetch(url=url, method=method, payload=req.to_postdata())
+        return fetch(url=url, method=method, payload=req.to_postdata(), headers=headers)
 
 # ------------------------------------------------------------
 
@@ -119,25 +119,44 @@ def twitter_api(request, url):
     return HttpResponse(content, status=status) # , 'application/json')
 
 def upload(request):
+    # todo 入力チェック
+
     file = request.FILES.popitem()[1][0]
-    # file は seek も tail もサポートしていないため、そのまま渡せない。 
-    datagen, headers = multipart_encode({file.name: file})
+    datagen, headers = multipart_encode({
+            'key': settings.TWITPIC_API_KEY,
+            'message': 'テスト!',
+            'media': file})
 
+    token = request.session['access_token']
+    auth_service_provider_url = 'https://api.twitter.com/1/account/verify_credentials.json'
 
-# OAuth realm="http://api.twitter.com/", 
-# oauth_consumer_key="GDdmIQH6jhtmLUypg82g", 
-# oauth_signature_method="HMAC-SHA1", 
-# oauth_token="819797-Jxq8aYUDRmykzVKrgoLhXSq67TEa5ruc4GJC2rWimw", 
-# oauth_timestamp="1272325550", 
-# oauth_nonce="oElnnMTQIZvqvlfXM56aBLAf5noGD0AQR3Fmi7Q6Y", 
-# oauth_version="1.0", 
-# oauth_signature="U1obTfE7Rs9J1kafTGwufLJdspo%3D"
-
-# X-Auth-Service-Provider (Required)
-# https://api.twitter.com/1/account/verify_credentials.json
+    req = oauth.OAuthRequest.from_consumer_and_token(
+        consumer,
+        token,
+        http_method='GET',
+        http_url=auth_service_provider_url
+        )
     
-    return HttpResponse(str("".join(datagen)) + "  /  " + str(headers))
+    req.sign_request(signature_method, consumer, token)
 
+    auth = ['%s="%s"' % (i, urllib.quote(str(req.get_parameter(i)))) for i in [
+            'oauth_consumer_key',
+            'oauth_signature_method',
+            'oauth_token',
+            'oauth_timestamp',
+            'oauth_nonce',
+            'oauth_version',
+            'oauth_signature']]
+    auth.append('realm="http://api.twitter.com/"')
+    headers['X-Verify-Credentials-Authorization'] = 'OAuth ' + ', '.join(auth)
+    headers['X-Auth-Service-Provider'] = auth_service_provider_url
+
+    status, content = fetch(url='http://api.twitpic.com/2/upload.json',
+                            method='POST',
+                            payload="".join(datagen),
+                            headers=headers)
+
+    return HttpResponse(content, status=status)
 
 def index(request):
     return render_to_response("index.html", {})
