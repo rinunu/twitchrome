@@ -28,6 +28,24 @@ tw.Background.prototype.setBackground = function(user){
 	return;
     }
 
+    var image = new Image();
+    $(image).load(util.bind(this, this.onLoad, user));
+    image.src = user.profile_background_image_url;
+
+    this.user_ = user;
+};
+
+// ----------------------------------------------------------------------
+// private
+
+tw.Background.RE = /\/(user_timeline|favorites|friends|followers)\/(\w+)/;
+
+tw.Background.prototype.onLoad = function(user){
+    console.log("background onLoad");
+    if(this.user_ != user){ // すでに別の user に切り替わっている
+	return;
+    }
+
     var old = $(".bg.current");
     var new_ = $(".bg:not(.current)");
 
@@ -38,7 +56,7 @@ tw.Background.prototype.setBackground = function(user){
     if(/\/theme1\/bg.png$/.test(bgImage)){
 	bgColor = "c0deed";
     }
-    
+
     new_.css(
 	{
 	    backgroundImage: "url(" + bgImage + ")",
@@ -48,14 +66,7 @@ tw.Background.prototype.setBackground = function(user){
     
     old.removeClass("current");
     new_.addClass("current");
-
-    this.user_ = user;
 };
-
-// ----------------------------------------------------------------------
-// private
-
-tw.Background.RE = /\/(user_timeline|favorites|friends|followers)\/(\w+)/;
 
 tw.Background.prototype.onInput = function(){
     this.waits_ = Math.max(2, this.waits_);
