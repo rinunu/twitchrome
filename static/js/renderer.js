@@ -19,7 +19,6 @@ tw.Renderer.prototype.render = function(status, element){
 // ----------------------------------------------------------------------
 // private
 
-tw.Renderer.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
 tw.Renderer.USER_RE = /@(\w+)/g;
 tw.Renderer.HASH_RE = /([^&]|^)(#\w+)/g;
 
@@ -83,7 +82,7 @@ tw.Renderer.prototype.formatText = function(text, status){
 			});
     text = text.replace(tw.Renderer.HASH_RE, "$1<a class='hash'>$2</a>");
     
-    text = text.replace(tw.Renderer.URL_RE, tw.Inline.inline);
+    text = tw.Inline.inline(text);
     return text;
 };
 
