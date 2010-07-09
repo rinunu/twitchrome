@@ -148,6 +148,9 @@ tw.Ajax.prototype.onError = function(command, xhr){
     if(command.errors.length >= command.maxTryCount){
 	console.error("ajax error", command.name);
 	this.commands_.shift();
+	if(command.error){
+	    command.error();
+	}
 	util.Event.trigger(this, "error", command);
     }else{
 	console.error("ajax error retry", command.name, command);

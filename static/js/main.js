@@ -110,7 +110,6 @@ tw.addComponents = function(){
     tw.components.progressview = new tw.ProgressView();
     tw.components.autoRefresh = new tw.AutoRefresh();
     tw.components.popupMenu = new tw.PopupMenu();
-    tw.components.upload = new tw.Upload();
 };
 
 /**
@@ -120,6 +119,7 @@ tw.initialize = function(){
     $("a.lightbox").fancybox({});
 
     tw.screenName = $(".system .screen_name").text();
+    tw.csrfToken = $("input[name='csrfmiddlewaretoken']").val();
     
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
     tw.store = new tw.Store();

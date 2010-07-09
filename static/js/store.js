@@ -31,29 +31,58 @@ tw.Store = function(){
 /**
  * 自分の status を更新する
  * inReplyTo は status の先頭に「@対象ユーザ 」という文字が入っている場合のみ有効。
+ * 
+ * file にはアップロードする <input> を指定する
  */
-tw.Store.prototype.update = function(status, inReplyTo, callback){
-    console.assert(status);
+tw.Store.prototype.update = function(text, inReplyTo, file){
+    console.assert(text);
 
-    var url = "/twitter_api/statuses/update.json";
     var params = {
-	status: status
+	status: text
     };
     if(inReplyTo &&
-       status.indexOf("@" + inReplyTo.user.screen_name + " ") == 0){
+       text.indexOf("@" + inReplyTo.user.screen_name + " ") == 0){
 	console.log("in_reply_to", inReplyTo);
 	params.in_reply_to_status_id = inReplyTo.id;
     }
-    tw.ajax.ajax(
-	{
-	    type: "update",
-	    method: "POST",
-	    name: "ツイート", 
-	    url: url, 
-	    params: params, 
-	    callback: util.bind(this, this.onUpdate, callback),
-	    target: status
+
+    var command = new tw.Command(
+	function(){
+	    if(file){
+		var upload = tw.Twitpic.upload(file, text);
+		upload.success(util.bind(this, this.onUpload));
+		upload.error(util.bind(this, this.onError));
+	    }else{
+		this.update();
+	    }
 	});
+
+    command.update = function(){
+	tw.ajax.ajax(
+	    {
+		type: "update",
+		method: "POST",
+		name: "ツイート", 
+		url: "/twitter_api/statuses/update.json",
+		params: params,
+		callback: util.bind(this, this.onUpdate),
+		error: util.bind(this, this.onError)
+	    });
+    };
+
+    command.onUpload = function(result){
+	console.log("on upload");
+	console.assert(result.url);
+	params.status += " " + result.url;
+	this.update();
+    };
+
+    command.onUpdate = function(result){
+	this.onSuccess(result);
+    };
+
+    command.execute();
+    return command;
 };
 
 /**

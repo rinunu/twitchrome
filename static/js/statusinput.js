@@ -8,6 +8,8 @@ tw.StatusInput = function(){
     this.count_ = this.element_.find(".count");
     this.inReplyTo_ = null;
     this.oldText_ = "";
+
+    this.file_ = $(".status_input input[type='file']");
 };
 
 /**
@@ -32,7 +34,16 @@ tw.StatusInput.prototype.initialize = function(){
  */
 tw.StatusInput.prototype.update = function(){
     var text = this.textarea_.val();
-    tw.store.update(text, this.inReplyTo_, util.bind(this, this.onUpdate));
+
+    // 更新中の UI にする
+    this.textarea_.attr("readonly", true);
+    this.file_.attr("readonly", true);
+
+    var file = this.file_.val() ? this.file_ : null;
+
+    var command = tw.store.update(text, this.inReplyTo_, file);
+    command.success(util.bind(this, this.onUpdate));
+    command.error(util.bind(this, this.onUpdateError));
 };
 
 /**
@@ -60,22 +71,41 @@ tw.StatusInput.prototype.rt = function(status){
 // ----------------------------------------------------------------------
 // private
 
+/**
+ * Status に URI を埋めこむ際に使用する文字数を返す。
+ */
+tw.StatusInput.prototype.fileUriLength = function(){
+    if(this.file_.val()){
+	return 25 + 1;
+    }
+    return 0;
+};
+
 tw.StatusInput.prototype.onUpdate = function(){
-    console.log("on update(statusinput)");
-    tw.store.homeTimeline().refresh({force: true});
+    this.textarea_.attr("readonly", false);
+    this.file_.attr("readonly", false);
+
     this.textarea_.val("");
+    this.file_.val("");
     this.inReplyTo_ = null;
+    tw.store.homeTimeline().refresh({force: true});
+};
+
+tw.StatusInput.prototype.onUpdateError = function(){
+    $.jGrowl("ツイートに失敗しました");
+    this.textarea_.attr("readonly", false);
+    this.file_.attr("readonly", false);
 };
 
 tw.StatusInput.prototype.refreshCount = function(){
-    this.count_.text(140 - this.textarea_.val().length);
+    var newCount = 140 - this.textarea_.val().length - this.fileUriLength();
+    if(this.count_.text() != newCount){
+	this.count_.text(newCount);
+    }
 };
 
 tw.StatusInput.prototype.onInterval = function(){
-    if(this.textarea_.val() != this.oldText_){
-	this.refreshCount();
-	this.oldText_ = this.textarea_.val();
-    }
+    this.refreshCount();
 };
 
 tw.StatusInput.prototype.onKeyDown = function(){

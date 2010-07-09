@@ -119,12 +119,10 @@ def twitter_api(request, url):
     return HttpResponse(content, status=status) # , 'application/json')
 
 def upload(request):
-    # todo 入力チェック
-
     file = request.FILES.popitem()[1][0]
     datagen, headers = multipart_encode({
             'key': settings.TWITPIC_API_KEY,
-            'message': 'テスト!',
+            'message': request.POST['message'],
             'media': file})
 
     token = request.session['access_token']
@@ -151,11 +149,36 @@ def upload(request):
     headers['X-Verify-Credentials-Authorization'] = 'OAuth ' + ', '.join(auth)
     headers['X-Auth-Service-Provider'] = auth_service_provider_url
 
-    status, content = fetch(url='http://api.twitpic.com/2/upload.json',
-                            method='POST',
-                            payload="".join(datagen),
-                            headers=headers)
+    try:
+        # raise urlfetch.DownloadError
+        status, content = fetch(url='http://api.twitpic.com/2/upload.json',
+                                method='POST',
+                                payload="".join(datagen),
+                                headers=headers)
+        return HttpResponse(content, status=status)
+    except urlfetch.DownloadError:
+        return HttpResponse('{}', status='504')
 
+# プロキシ
+#
+# 使用制限
+# - ajax からのみ使用できる
+# - セッションを持っているユーザのみ使用できる(todo)
+# - http のみ
+# - GET のみ
+def proxy(request, url):
+    # return HttpResponse("error", status=404)
+
+    if not settings.DEBUG and not request.is_ajax():
+        return HttpResponseForbidden("error")
+    
+    if request.method != "GET":
+        return HttpResponseForbidden("error")
+
+    url = "http://" + url + "?" + urllib.urlencode(request.GET)
+    logger.info("proxy: %s", url)
+
+    status, content = fetch(url=url, method="GET")
     return HttpResponse(content, status=status)
 
 def index(request):
