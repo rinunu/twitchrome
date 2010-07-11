@@ -37,7 +37,7 @@ tw.TimelineView = function(element, timeline){
     element.delegate("a.favorite.off", "click", util.bind(this, this.onFavorite, true));
     element.delegate("a.favorite.on", "click", util.bind(this, this.onFavorite, false));
 
-    this.refreshView(timeline.statuses());
+    this.refreshPartial(timeline.statuses(), 0);
 };
 
 /**
@@ -55,7 +55,7 @@ tw.TimelineView.prototype.element = function(){
  * フォーカスの当たっている Status を取得する
  */
 tw.TimelineView.prototype.focus = function(){
-    return this.focusElement_ ? this.focusElement_.data("status") : null;
+    return this.focusElement_ ? this.focusElement_[0].status : null;
 };
 
 /**
@@ -97,7 +97,7 @@ tw.TimelineView.prototype.scrollState = function(){
     }
 
     child = $(child);
-    var scrollState = {status: child.data("status"), 
+    var scrollState = {status: child[0].status, 
 		       child: child, offset: child[0].offsetTop - scrollTop};
     return scrollState;
 };
@@ -108,14 +108,20 @@ tw.TimelineView.prototype.scrollState = function(){
  * 指定された要素が存在しない場合、復元されない。
  */
 tw.TimelineView.prototype.setScrollState = function(scrollState){
-    console.log("setScrollState", scrollState);
+    // console.log("setScrollState", scrollState);
     console.assert(scrollState);
 
+    // var old = this.scrollState();
+    // if(old.child == scrollState.child &&
+    //    old.offset == scrollState.offset){
+    // 	return;
+    // }
+
     var child = scrollState.child;
-    if(!child && scrollState.status){
-	console.debug("setScrollState", "getElement", child);
-	child = this.getElement(scrollState.status);
-    }
+    // if(!child && scrollState.status){
+    // 	console.debug("setScrollState", "getElement", child);
+    // 	child = this.getElement(scrollState.status);
+    // }
 
     var viewport = this.element_.parent();
     if(!child || child.length == 0){
@@ -136,6 +142,7 @@ tw.TimelineView.renderer = new tw.Renderer;
  */
 tw.TimelineView.prototype.render = function(status, element){
     element = tw.TimelineView.renderer.render(status, element);
+    element[0].status = status;
     for(var i = 0, l = element.loadingUris.length; i < l; i++){
 	var uri = element.loadingUris[i];
 	this.loadingElements_[uri] = this.loadingElements_[uri] || [];
@@ -156,7 +163,7 @@ tw.TimelineView.prototype.setFocus = function(focus){
 	var focusElement = this.getElement(focusStatus);
     }else{
 	var focusElement = focus;
-	var focusStatus = focusElement.data("status");
+	var focusStatus = focusElement[0].status;
     }
     console.log("focus", focusStatus);
     
@@ -183,7 +190,7 @@ tw.TimelineView.prototype.getElement = function(status){
     this.element_.find(".status").each(
 	function(){
 	    var child = $(this);
-	    if(child.data("status") == status){
+	    if(child[0].status == status){
 		element = child;
 		return false;
 	    }
@@ -200,7 +207,7 @@ tw.TimelineView.prototype.getElement = function(status){
 tw.TimelineView.prototype.prepend = function(statuses){
     for(var i = statuses.length - 1; i >= 0; i--){
 	var elem = this.render(statuses[i]);
-	elem.data("status", statuses[i]);
+	elem[0].status = statuses[i];
 	this.element_.prepend(elem);
     }
 };
@@ -228,11 +235,11 @@ tw.TimelineView.prototype.sync = function(){
     for(; iStatus < lStatus; iStatus++){
 	var status = statuses[iStatus];
 	var element = elements[iElement];
-	if(!element || status != $(element).data("status")){
+	if(!element || status != element.status){
 	    var newElement = this.render(status);
-	    newElement.data("status", status);
 	    newElement.addClass("new");
-	    parent.insertBefore(newElement[0], element ? element : null); // null の時は末尾
+	    // null の時は末尾
+	    parent.insertBefore(newElement[0], element ? element : null);
 	    
 	    newElements.push(newElement);
 	}else{
@@ -247,23 +254,24 @@ tw.TimelineView.prototype.sync = function(){
  * statuses を適切な位置へ追加する
  * 
  * 前提
- * - statuses は timeline と同じ順番になっている
+ * - statuses と timeline は status.id の降順になっている
  * 
  * TODO 動作確認していない
+ * 
  */
-tw.TimelineView.prototype.insert = function(statuses){
+tw.TimelineView.prototype.insert = function(statuses, start, end){
+    console.log("insert");
     var children = this.element_.children(".status");
     var parent = this.element_[0];
     var newElements = [];
     
-    for(var i = 0; i < statuses.length; i++){
+    for(var i = start; i < end; i++){
 	var status = statuses[i];
 	var after = null;
 	var skip = false;
-	// 先頭に追加されるパターンが多いため、2分探索ではなく、普通の検索を行う
-	for(var j = 0; j < children.length; j++){
+	for(var j = 0, l2 = children.length; j < l2; j++){
 	    var child = $(children[j]);
-	    var oldStatus = child.data("status");
+	    var oldStatus = child[0].status;
 	    if(status.id == oldStatus.id){
 		skip = true;
 		break;
@@ -275,25 +283,26 @@ tw.TimelineView.prototype.insert = function(statuses){
 	}
 	if(!skip){
 	    var elem = this.render(statuses[i]);
-	    elem.data("status", statuses[i]);
 	    elem.addClass("new");
 	    newElements.push(elem);
 	    parent.insertBefore(elem[0], after); // after == null の時は末尾
+	}else{
 	}
     }
+    return newElements;
 };
 
 /**
  * Timeline の内容に合わせて表示を更新する
  */
-tw.TimelineView.prototype.refreshView = function(newStatuses){
+tw.TimelineView.prototype.refreshView = function(newStatuses, start, end){
     // if(this.element_[0].childNodes.length == 0){
     	// console.log("prepend all");
     	// this.prepend(newStatuses);
     // }else{
 	var scrollState = this.scrollState();
-	console.log("insert partial", newStatuses.length);
-	// this.insert(newStatuses);
+	console.log("insert partial", newStatuses.length, start, end);
+	// var newElements = this.insert(newStatuses, start, end);
         var newElements = this.sync();
 	this.setScrollState(scrollState);
     // }
@@ -312,17 +321,32 @@ tw.TimelineView.prototype.refreshView = function(newStatuses){
 	}, 500);
 };
 
+/**
+ * 少しずつ更新する
+ */
+tw.TimelineView.prototype.refreshPartial = function(statuses, start){
+    if(start >= statuses.length){
+	return;
+    }
+
+    var end = Math.min(start + 100, statuses.length);
+    this.refreshView(statuses, start, end);
+
+    setTimeout(util.bind(this, this.refreshPartial, statuses, end), 100);
+};
+
 // ----------------------------------------------------------------------
 // 状態変化イベント
 
 tw.TimelineView.prototype.onRefresh = function(s, e, newStatuses){
-    this.refreshView(newStatuses);
+    this.refreshPartial(newStatuses, 0);
+    // this.refreshView(newStatuses, 0, newStatuses.length);
 };
 
 tw.TimelineView.prototype.onStatusRefresh = function(source, eventType, status){
     var element = this.getElement(status);
     if(element){
-	this.render(element.data("status"), element);
+	this.render(element[0].status, element);
     }
 };
 
@@ -341,7 +365,7 @@ tw.TimelineView.prototype.onUriRefresh = function(source, eventType, uri){
 
     for(var i = 0, l = elements.length; i < l; i++){
 	var element = elements[i];
-	var status = element.data("status");
+	var status = element[0].status;
 	this.render(status, element);
     }
 
@@ -438,5 +462,5 @@ tw.TimelineView.prototype.getStatusElement = function(child){
  * 指定された HTML 要素を含む .status 要素に関連づいた Status を取得する
  */
 tw.TimelineView.prototype.getStatus = function(child){
-    return this.getStatusElement(child).data("status");
+    return this.getStatusElement(child)[0].status;
 };
