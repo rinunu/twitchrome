@@ -124,6 +124,7 @@ tw.initialize = function(){
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
     tw.store = new tw.Store();
     tw.lists = new tw.Lists();
+    tw.uriManager = new tw.UriManager();
     tw.addComponents();
 };
 

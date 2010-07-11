@@ -9,6 +9,8 @@ tw.Renderer = function(){
  * 描画結果の HTML 要素を返す
  * 
  * element が指定された場合は、それを更新する
+ * 
+ * 描画が完了していない uri は elements.loadingUris に格納される
  */
 tw.Renderer.prototype.render = function(status, element){
     element = element || tw.templates.status.clone();
@@ -19,6 +21,7 @@ tw.Renderer.prototype.render = function(status, element){
 // ----------------------------------------------------------------------
 // private
 
+tw.Renderer.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
 tw.Renderer.USER_RE = /@(\w+)/g;
 tw.Renderer.HASH_RE = /([^&]|^)(#\w+)/g;
 
@@ -43,7 +46,7 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 
     var textElem = element.find(".text");
     textElem.empty();
-    textElem.html(this.formatText(status.text, status));
+    textElem.html(this.formatText(status.text, status, element));
 
     element.find(".source").html(status.source);
     element.find(".created_at").html(this.formatDate(status.created_at));
@@ -68,9 +71,16 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 
 /**
  * テキスト内の URL などを リンクにする
+ * 
+ * また URL 情報を解析し、その結果を格納する
+ * 
+ * status.entities に情報は入っているが、使用すると遅くなりそうなので
+ * 
+ * 描画が完了していない場合 element.loadingUris を設定する。
  */
-tw.Renderer.prototype.formatText = function(text, status){
-    text = text.replace(/\n/g, "<br>");
+tw.Renderer.prototype.formatText = function(text, status, element){
+    element.loadingUris = [];
+
     text = text.replace(tw.Renderer.USER_RE, function(s, p1, p2){
 			    // in_reply_to_screen_name だけ付いてる場合があるが、それは無視する
 			    if(status.in_reply_to_status_id && 
@@ -80,9 +90,32 @@ tw.Renderer.prototype.formatText = function(text, status){
 				return "@<a class='user'>" + p1 + "</a>";
 			    }
 			});
+
     text = text.replace(tw.Renderer.HASH_RE, "$1<a class='hash'>$2</a>");
-    
-    text = tw.Inline.inline(text);
+
+    text = text.replace(
+	tw.Renderer.URL_RE,
+	function(uri){
+	    var info = tw.uriManager.info(uri);
+	    if(info && info.loading){
+		element.loadingUris.push(uri);
+	    }
+
+	    if(info && !info.loading && info.media){
+		return "<div>" + 
+		    "<a href='" + uri + "' target='_blank'>" +
+		    "<img src='" + info.media.uri + 
+		    "' width='" + info.media.width + 
+		    "' height='" + info.media.height + "'>" + 
+		    "</a>" +
+		    "</div>";
+	    }else{
+		return "<a href='" + uri + "' class='url' target='_blank'>" 
+		    + uri + "</a>";
+	    }
+	});
+
+    text = text.replace(/\n/g, "<br>");
     return text;
 };
 

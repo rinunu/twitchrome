@@ -399,6 +399,8 @@ tw.Store.isStatus = function(object){
  * ローカルの DB へ Status を追加する
  * 
  * すでに DB に存在する場合は、それを更新し、 return する
+ * 
+ * text をパースし、 entities 情報を追加する
  */
 tw.Store.prototype.addStatus = function(status){
     var old = this.statuses_[status.id];
@@ -407,6 +409,8 @@ tw.Store.prototype.addStatus = function(status){
        old.favorited == status.favorited){
 	return old;
     }
+
+    this.addEntities(status);
     
     // 内容が変わっている場合は上書きする
     if(old){
@@ -438,6 +442,66 @@ tw.Store.prototype.addStatus = function(status){
     status.user = this.addUser(status.user);
     return status;
 };
+
+/**
+ * 正規表現にマッチする部分を取得する
+ */
+tw.Store.prototype.findAll = function(re, string, callback){
+    re.lastIndex = 0;
+    var result = [];
+    var m;
+    while ((m = re.exec(string)) != null) {
+	result.push(callback(m));
+    }
+    return result;
+};
+
+/**
+ * 
+ */
+tw.Store.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
+tw.Store.USER_RE = /@(\w+)/g;
+tw.Store.HASH_RE = /([^&]|^)#(\w+)/g;
+tw.Store.prototype.addEntities = function(status){
+    if(status.entities){
+	return;
+    }
+
+    status.entities = {};
+
+    status.entities.hashtags = this.findAll(
+	tw.Store.HASH_RE,
+	status.text,
+	function(m){
+	    var start = m.index + m[1].length;
+	    return {
+		text: m[2],
+		indices: [start, start + 1 + m[2].length]
+	    };
+	});
+
+    status.entities.urls = this.findAll(
+	tw.Store.URL_RE,
+	status.text,
+	function(m){
+	    return {
+		url: m[0],
+		indices: [m.index, m.index + m[0].length]
+	    };
+	});
+
+    status.entities.user_mentions = this.findAll(
+	tw.Store.USER_RE,
+	status.text,
+	function(m){
+	    var start = m.index;
+	    return {
+		screen_name: m[1],
+		indices: [m.index, m.index + 1 + m[1].length]
+	    };
+	});
+};
+
 
 /**
  * Timeline をキャッシュへ追加する

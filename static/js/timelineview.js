@@ -13,8 +13,13 @@ tw.TimelineView = function(element, timeline){
     this.element_ = element;
     this.focusElement_ = null;
 
+    // 描画が完了していない要素
+    // {"uri" : [element]}
+    this.loadingElements_ = {};
+
     util.Event.bind(this.timeline_, this, {refresh: this.onRefresh});
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
+    util.Event.bind(tw.uriManager, this, {refresh: this.onUriRefresh});
 
     element.delegate(".status", "focus", util.bind(this, this.onFocus));
     element.delegate(".status", "blur", util.bind(this, this.onBlur));
@@ -127,6 +132,19 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
 tw.TimelineView.renderer = new tw.Renderer;
 
 /**
+ * Status の描画を行う
+ */
+tw.TimelineView.prototype.render = function(status, element){
+    element = tw.TimelineView.renderer.render(status, element);
+    for(var i = 0, l = element.loadingUris.length; i < l; i++){
+	var uri = element.loadingUris[i];
+	this.loadingElements_[uri] = this.loadingElements_[uri] || [];
+	this.loadingElements_[uri].push(element);
+    }
+    return element;
+};
+
+/**
  * フォーカスを設定する
  * focus は Status もしくは Status を表示している HTML 要素
  */
@@ -181,7 +199,7 @@ tw.TimelineView.prototype.getElement = function(status){
  */
 tw.TimelineView.prototype.prepend = function(statuses){
     for(var i = statuses.length - 1; i >= 0; i--){
-	var elem = tw.TimelineView.renderer.render(statuses[i]);
+	var elem = this.render(statuses[i]);
 	elem.data("status", statuses[i]);
 	this.element_.prepend(elem);
     }
@@ -201,7 +219,6 @@ tw.TimelineView.prototype.sync = function(){
     var elements = this.element_.children(".status");
     var parent = this.element_[0];
     var newElements = [];
-    var renderer = tw.TimelineView.renderer;
     
     // view に存在しない status を view に追加する
     var iStatus = 0,
@@ -212,7 +229,7 @@ tw.TimelineView.prototype.sync = function(){
 	var status = statuses[iStatus];
 	var element = elements[iElement];
 	if(!element || status != $(element).data("status")){
-	    var newElement = renderer.render(status);
+	    var newElement = this.render(status);
 	    newElement.data("status", status);
 	    newElement.addClass("new");
 	    parent.insertBefore(newElement[0], element ? element : null); // null の時は末尾
@@ -257,7 +274,7 @@ tw.TimelineView.prototype.insert = function(statuses){
 	    }
 	}
 	if(!skip){
-	    var elem = tw.TimelineView.renderer.render(statuses[i]);
+	    var elem = this.render(statuses[i]);
 	    elem.data("status", statuses[i]);
 	    elem.addClass("new");
 	    newElements.push(elem);
@@ -270,8 +287,6 @@ tw.TimelineView.prototype.insert = function(statuses){
  * Timeline の内容に合わせて表示を更新する
  */
 tw.TimelineView.prototype.refreshView = function(newStatuses){
-    // 画面最上部に表示している Status をもとめる
-
     // if(this.element_[0].childNodes.length == 0){
     	// console.log("prepend all");
     	// this.prepend(newStatuses);
@@ -287,7 +302,6 @@ tw.TimelineView.prototype.refreshView = function(newStatuses){
     // if(focus){
     // 	this.setFocus(focus);
     // }
-
 
     // 強調表示
     setTimeout(
@@ -308,8 +322,30 @@ tw.TimelineView.prototype.onRefresh = function(s, e, newStatuses){
 tw.TimelineView.prototype.onStatusRefresh = function(source, eventType, status){
     var element = this.getElement(status);
     if(element){
-	tw.TimelineView.renderer.render(element.data("status"), element);
+	this.render(element.data("status"), element);
     }
+};
+
+/**
+ * URI を表示している、まだ loading な要素を再描画する
+ */
+tw.TimelineView.prototype.onUriRefresh = function(source, eventType, uri){
+    var elements = this.loadingElements_[uri];
+    if(!elements || elements.length == 0){
+	return;
+    }
+    console.debug("onUriRefresh", elements.length);
+    delete this.loadingElements_[uri];
+
+    var scrollState = this.scrollState();
+
+    for(var i = 0, l = elements.length; i < l; i++){
+	var element = elements[i];
+	var status = element.data("status");
+	this.render(status, element);
+    }
+
+    this.setScrollState(scrollState);
 };
 
 // ----------------------------------------------------------------------

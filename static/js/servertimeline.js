@@ -23,7 +23,8 @@ tw.ServerTimeline.prototype.refresh = function(options){
     }
 
     var params = {
-	count: options.count
+	count: options.count,
+	include_entities: true
     };
     this.setRefreshParams(params);
 
