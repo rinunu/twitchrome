@@ -24,7 +24,8 @@ tw.ServerTimeline.prototype.refresh = function(options){
 
     var params = {
 	count: options.count,
-	include_entities: true
+	include_entities: true,
+	include_rts: true	
     };
     this.setRefreshParams(params);
 
