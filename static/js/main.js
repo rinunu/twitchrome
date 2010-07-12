@@ -118,13 +118,14 @@ tw.addComponents = function(){
 tw.initialize = function(){
     $("a.lightbox").fancybox({});
 
+    tw.settings = new tw.Settings;
     tw.screenName = $(".system .screen_name").text();
     tw.csrfToken = $("input[name='csrfmiddlewaretoken']").val();
     
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
-    tw.store = new tw.Store();
-    tw.lists = new tw.Lists();
-    tw.uriManager = new tw.UriManager();
+    tw.store = new tw.Store;
+    tw.lists = new tw.Lists;
+    tw.uriManager = new tw.UriManager;
     tw.addComponents();
 };
 

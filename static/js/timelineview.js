@@ -256,11 +256,8 @@ tw.TimelineView.prototype.sync = function(){
  * 前提
  * - statuses と timeline は status.id の降順になっている
  * 
- * TODO 動作確認していない
- * 
  */
 tw.TimelineView.prototype.insert = function(statuses, start, end){
-    console.log("insert");
     var children = this.element_.children(".status");
     var parent = this.element_[0];
     var newElements = [];
@@ -270,14 +267,14 @@ tw.TimelineView.prototype.insert = function(statuses, start, end){
 	var after = null;
 	var skip = false;
 	for(var j = 0, l2 = children.length; j < l2; j++){
-	    var child = $(children[j]);
-	    var oldStatus = child[0].status;
+	    var child = children[j];
+	    var oldStatus = child.status;
 	    if(status.id == oldStatus.id){
 		skip = true;
 		break;
 	    }
 	    else if(status.id > oldStatus.id){
-		after = child[0];
+		after = child;
 		break;
 	    }
 	}
@@ -302,8 +299,8 @@ tw.TimelineView.prototype.refreshView = function(newStatuses, start, end){
     // }else{
 	var scrollState = this.scrollState();
 	console.log("insert partial", newStatuses.length, start, end);
-	// var newElements = this.insert(newStatuses, start, end);
-        var newElements = this.sync();
+	var newElements = this.insert(newStatuses, start, end);
+        // var newElements = this.sync();
 	this.setScrollState(scrollState);
     // }
 
@@ -329,10 +326,11 @@ tw.TimelineView.prototype.refreshPartial = function(statuses, start){
 	return;
     }
 
-    var end = Math.min(start + 100, statuses.length);
+    var end = Math.min(start + tw.settings.partialCount, statuses.length);
     this.refreshView(statuses, start, end);
 
-    setTimeout(util.bind(this, this.refreshPartial, statuses, end), 100);
+    setTimeout(util.bind(this, this.refreshPartial, statuses, end), 
+	       tw.settings.partialInterval);
 };
 
 // ----------------------------------------------------------------------

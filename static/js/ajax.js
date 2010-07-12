@@ -98,15 +98,19 @@ tw.Ajax.prototype.commands = function(){
 
 tw.Ajax.prototype.execute = function(command){
     console.log("ajax", command.name, command);
-    $.ajax(
-	{
-	    type: command.method,
-	    url: command.url,
-	    data: command.params || {},
-	    dataType: command.dataType || "json",
-	    success: util.bind(this, this.onSuccess, command),
-	    error: util.bind(this, this.onError, command)
-	});
+    var options = {
+	type: command.method,
+	url: command.url,
+	data: command.params || {},
+	dataType: command.dataType || "json",
+	success: util.bind(this, this.onSuccess, command),
+	error: util.bind(this, this.onError, command)
+    };
+    if(command.jsonp){
+	options.jsonp = command.jsonp;
+    }
+    console.log(options);
+    $.ajax(options);
     this.executing = command;
     util.Event.trigger(this, "start", command);
 };

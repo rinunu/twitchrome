@@ -376,7 +376,7 @@ tw.Store.prototype.conversation = function(status){
  */
 tw.Store.prototype.search = function(text){
     var uri = tw.SearchResult.uri(text);
-    return this.getOrCreateTimeline(uri, tw.SearchResult, text);
+    return this.getOrCreateTimeline(uri, tw.settings.searchResult, text);
 };
 
 tw.Store.prototype.list = function(fullName, raw){

@@ -9,7 +9,7 @@ tw.ServerTimeline = function(store, uri, options){
 util.extend(tw.ServerTimeline, tw.Timeline);
 
 tw.ServerTimeline.prototype.refresh = function(options){
-    options = $.extend({count: 100, force: false}, options);
+    options = $.extend({count: tw.settings.refreshCount, force: false}, options);
     var name = this.name_ + "の取得";
     
     if(this.refreshedAt_ && !options.force && 
