@@ -56,3 +56,13 @@ tw.List.prototype.fullName = function(){
 tw.List.prototype.screenName = function(){
     return this.screenName_;
 };
+
+// ----------------------------------------------------------------------
+// override
+
+tw.List.prototype.setRefreshParams = function(params){
+    params.per_page = tw.settings.refreshCount;
+
+    tw.ServerTimeline.prototype.setRefreshParams.apply(this, arguments);
+};
+
