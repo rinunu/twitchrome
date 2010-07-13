@@ -83,6 +83,13 @@ tw.MultiTimelineView.prototype.setTimeline = function(timeline){
 };
 
 // ----------------------------------------------------------------------
+// 
+
+tw.MultiTimelineView.prototype.subViews = function(){
+    return this.views_;
+};
+
+// ----------------------------------------------------------------------
 // private
 
 /**

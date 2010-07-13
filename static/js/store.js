@@ -217,6 +217,10 @@ tw.Store.prototype.addUser = function(user){
     return user;
 };
 
+tw.Store.prototype.statusesCount = function(){
+    return this.statusesCount_;
+};
+
 /**
  * ローカルの DB へ statuses を追加する
  * 
@@ -263,6 +267,13 @@ tw.Store.prototype.hasTimeline = function(uri){
 };
 
 /**
+ * すべての Timeline を取得する
+ */
+tw.Store.prototype.timelines = function(){
+    return this.timelines_;
+};
+
+/**
  * Timeline を取得する
  * 存在しない場合は作成する
  */
@@ -272,7 +283,7 @@ tw.Store.prototype.timeline = function(uri){
 	return timeline;
     }
 
-    // uri を解析し、適切な TL を取得する
+    // uri を解析し、適切な TL を生成する
     var m = null;
     if(uri == "/statuses/home_timeline"){
 	return this.homeTimeline();

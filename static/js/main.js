@@ -101,17 +101,6 @@ tw.adjustRequest = function(command){
 // ----------------------------------------------------------------------
 // 初期化
 
-tw.addComponents = function(){
-    tw.components.timelineView = new tw.MultiTimelineView();
-    tw.components.statusInput = new tw.StatusInput();
-    tw.components.profileView = new tw.ProfileView();
-    tw.components.background = new tw.Background();
-    tw.components.mainMenu = new tw.MainMenu();
-    tw.components.progressview = new tw.ProgressView();
-    tw.components.autoRefresh = new tw.AutoRefresh();
-    tw.components.popupMenu = new tw.PopupMenu();
-};
-
 /**
  * 通常時・デザイン時共通の初期化処理
  */
@@ -121,12 +110,20 @@ tw.initialize = function(){
     tw.settings = new tw.Settings;
     tw.screenName = $(".system .screen_name").text();
     tw.csrfToken = $("input[name='csrfmiddlewaretoken']").val();
-    
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
     tw.store = new tw.Store;
     tw.lists = new tw.Lists;
     tw.uriManager = new tw.UriManager;
-    tw.addComponents();
+    tw.gc = new tw.Gc;
+
+    tw.components.timelineView = new tw.MultiTimelineView;
+    tw.components.statusInput = new tw.StatusInput;
+    tw.components.profileView = new tw.ProfileView;
+    tw.components.background = new tw.Background;
+    tw.components.mainMenu = new tw.MainMenu;
+    tw.components.progressview = new tw.ProgressView;
+    tw.components.autoRefresh = new tw.AutoRefresh;
+    tw.components.popupMenu = new tw.PopupMenu;
 };
 
 /**
