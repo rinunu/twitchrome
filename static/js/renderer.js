@@ -41,6 +41,8 @@ tw.Renderer.prototype.refreshElement = function(element, status){
     }
 
     element.removeClass("retweet");
+
+    // 必須
     element.find(".profile_image").attr("src", status.user.profile_image_url);
     element.find(".name").text(status.user.screen_name);
 
@@ -48,6 +50,7 @@ tw.Renderer.prototype.refreshElement = function(element, status){
     textElem.empty();
     textElem.html(this.formatText(status.text, status, element));
 
+    // option
     element.find(".source").html(status.source);
     element.find(".created_at").html(this.formatDate(status.created_at));
 
