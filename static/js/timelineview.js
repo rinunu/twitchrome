@@ -17,9 +17,13 @@ tw.TimelineView = function(element, timeline){
     // {"uri" : [element]}
     this.loadingElements_ = {};
 
+    this.scrollState_ = this.scrollState();
+
     util.Event.bind(this.timeline_, this, {refresh: this.onRefresh});
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
     util.Event.bind(tw.uriManager, this, {refresh: this.onUriRefresh});
+
+    element.parent().scroll(util.bind(this, this.onScroll));
 
     element.delegate(".status", "focus", util.bind(this, this.onFocus));
     element.delegate(".status", "blur", util.bind(this, this.onBlur));
@@ -77,6 +81,7 @@ tw.TimelineView.prototype.scrollState = function(){
     var viewport = this.element_.parent();
 
     var children = this.element_[0].getElementsByTagName("li");
+    var visibles = [];
 
     if(children.length == 0){
 	return {};
@@ -89,17 +94,26 @@ tw.TimelineView.prototype.scrollState = function(){
     // ビューポートの最上部の要素を探す
     // child.offsetTop は element_ 内での相対位置
     var scrollTop = viewport.scrollTop();
-    var child = null;
-    for(var i = 0, length = children.length; i < length; i++){
-	child = children[i];
-	if(child.offsetTop >= scrollTop){
+    for(var i = 0, l = children.length; i < l; i++){
+	var top = children[i];
+	if(top.offsetTop >= scrollTop){
 	    break;
 	}
     }
 
-    child = $(child);
-    var scrollState = {status: child[0].status, 
-		       child: child, offset: child[0].offsetTop - scrollTop};
+    // みえているもの
+    visibles.push(top[0]);
+    var scrollBottom = scrollTop + viewport[0].clientHeight;
+    for(; i < l; i++){
+	var child = children[i];
+	if(child.offsetTop + child.offsetHeight >= scrollBottom){
+	    break;
+	}
+	visibles.push(child);
+    }
+
+    top = $(top);
+    var scrollState = {child: top, offset: top[0].offsetTop - scrollTop, visibles: visibles};
     return scrollState;
 };
 
@@ -323,11 +337,11 @@ tw.TimelineView.prototype.refreshView = function(newStatuses, start, end){
     	// console.log("prepend all");
     	// this.prepend(newStatuses);
     // }else{
-	var scrollState = this.scrollState();
+	// var scrollState = this.scrollState();
 	console.log("insert partial", newStatuses.length, start, end);
 	var newElements = this.insert(newStatuses, start, end);
         // var newElements = this.sync();
-	this.setScrollState(scrollState);
+	this.setScrollState(this.scrollState_);
     // }
 
     // var focus = this.timeline_.focus();
@@ -403,6 +417,11 @@ tw.TimelineView.prototype.onUriRefresh = function(source, eventType, uri){
 
 // ----------------------------------------------------------------------
 // 操作イベント
+
+tw.TimelineView.prototype.onScroll = function(event){
+    console.log("scroll", this.scrollState());
+    this.scrollState_ = this.scrollState();
+};
 
 /**
  * ブラウザのフォーカスが変わった際に、内部フォーカスを更新する
