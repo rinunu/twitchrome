@@ -73,9 +73,10 @@ tw.TimelineView.prototype.focus = function(){
  * 本処理は速度を優先する。
  */
 tw.TimelineView.prototype.scrollState = function(){
-    var children = this.element_.children(".status");
     var parent = this.element_;
     var viewport = this.element_.parent();
+
+    var children = this.element_[0].getElementsByTagName("li");
 
     if(children.length == 0){
 	return {};
