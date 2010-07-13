@@ -22,10 +22,10 @@ tw.Settings = function(){
     this.refreshCount = 200;
 
     // 部分更新間隔
-    this.partialInterval = 50;
+    this.partialInterval = 20;
     
     // 一度の部分更新で表示する件数
-    this.partialCount = 2;
+    this.partialCount = 1;
     
     // 再送回数
     // 再送間隔
