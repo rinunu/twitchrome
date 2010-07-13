@@ -115,6 +115,7 @@ tw.initialize = function(){
     tw.lists = new tw.Lists;
     tw.uriManager = new tw.UriManager;
     tw.gc = new tw.Gc;
+    tw.unread = new tw.Unread;
 
     tw.components.timelineView = new tw.MultiTimelineView;
     tw.components.statusInput = new tw.StatusInput;
