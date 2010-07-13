@@ -14,6 +14,10 @@ tw.Renderer = function(){
  */
 tw.Renderer.prototype.render = function(status, element){
     element = element || tw.templates.status.clone();
+    if(!element[0].hasChildNodes()){
+	element.append(tw.templates.status.clone().children());
+    }
+
     this.refreshElement(element, status);
     return element;
 };

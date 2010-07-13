@@ -26,6 +26,23 @@ tw.Timeline = function(store, uri, options){
 
     // 最終 refresh 時間
     this.refreshedAt_ = null;
+
+    // debug
+    // if(uri == "/statuses/mentions"){
+    // 	var statuses = [];
+    // 	for(var i = 0; i < 1000; i++){
+    // 	    statuses.push(
+    // 		{
+    // 		    id: i,
+    // 		    text: "ダミー",
+    // 		    user: {
+    // 			screen_name: "ダミーユーザ",
+    // 			profile_image_url: "http://s.twimg.com/a/1275689140/images/default_profile_1_normal.png"
+    // 		    }
+    // 		});
+    // 	}
+    // 	this.insert(statuses);
+    // }
 };
 
 tw.Timeline.prototype.uri = function(){

@@ -70,11 +70,14 @@ tw.MultiTimelineView.prototype.setTimeline = function(timeline){
 	newView = new tw.TimelineView(element, timeline);
 	util.Event.bind(newView, this, {focus: this.onFocus});
 	this.views_.push(newView);
+    }else{
+	newView.show();
     }
     this.currentView_ = newView;
 
     // 切り替え
     if(oldView){
+	oldView.hide();
 	oldView.element().animate({left:-1000}).fadeOut({queue: false});
     }
     newView.element().animate({top: 0, left:0}).fadeIn({queue: false});

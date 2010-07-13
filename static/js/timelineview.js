@@ -132,6 +132,25 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
     }
 };
 
+/**
+ * 再表示
+ */
+tw.TimelineView.prototype.show = function(){
+    // this.refreshPartial(this.timeline_.statuses(), 0);
+};
+
+/**
+ * 非表示
+ */
+tw.TimelineView.prototype.hide = function(){
+    // var children = this.element_.children(".status");
+    // for(var i = 0, l = children.length; i < l; i++){
+    // 	var element = $(children[i]);
+    // 	element.height(element[0].height_);
+    // 	element.empty().css("border", "solid 1px red");
+    // }
+};
+
 // ----------------------------------------------------------------------
 // private
 
@@ -140,15 +159,26 @@ tw.TimelineView.renderer = new tw.Renderer;
 /**
  * Status の描画を行う
  */
-tw.TimelineView.prototype.render = function(status, element){
-    element = tw.TimelineView.renderer.render(status, element);
-    element[0].status = status;
-    for(var i = 0, l = element.loadingUris.length; i < l; i++){
-	var uri = element.loadingUris[i];
+tw.TimelineView.prototype.render = function(status, $element, parent, before, class_){
+    $element = tw.TimelineView.renderer.render(status, $element);
+    $element[0].status = status;
+    for(var i = 0, l = $element.loadingUris.length; i < l; i++){
+	var uri = $element.loadingUris[i];
 	this.loadingElements_[uri] = this.loadingElements_[uri] || [];
-	this.loadingElements_[uri].push(element);
+	this.loadingElements_[uri].push($element);
     }
-    return element;
+
+    if(class_){
+	$element.addClass(class_);
+    }
+
+    if(parent){
+	parent.insertBefore($element[0], before);
+    }
+
+    $element[0].height_ = $element[0].offsetHeight;
+
+    return $element;
 };
 
 /**
@@ -206,9 +236,8 @@ tw.TimelineView.prototype.getElement = function(status){
  */
 tw.TimelineView.prototype.prepend = function(statuses){
     for(var i = statuses.length - 1; i >= 0; i--){
-	var elem = this.render(statuses[i]);
+	var elem = this.render(statuses[i], null, this.element_[0], this.element_[0].firstChild);
 	elem[0].status = statuses[i];
-	this.element_.prepend(elem);
     }
 };
 
@@ -236,11 +265,7 @@ tw.TimelineView.prototype.sync = function(){
 	var status = statuses[iStatus];
 	var element = elements[iElement];
 	if(!element || status != element.status){
-	    var newElement = this.render(status);
-	    newElement.addClass("new");
-	    // null の時は末尾
-	    parent.insertBefore(newElement[0], element ? element : null);
-	    
+	    var newElement = this.render(status, null, parent, element ? element : null, "new");
 	    newElements.push(newElement);
 	}else{
 	    iElement++;
@@ -271,6 +296,8 @@ tw.TimelineView.prototype.insert = function(statuses, start, end){
 	    var oldStatus = child.status;
 	    if(status.id == oldStatus.id){
 		skip = true;
+		$(child).css("height", "auto");
+		this.render(statuses[i], $(child));
 		break;
 	    }
 	    else if(status.id > oldStatus.id){
@@ -279,10 +306,8 @@ tw.TimelineView.prototype.insert = function(statuses, start, end){
 	    }
 	}
 	if(!skip){
-	    var elem = this.render(statuses[i]);
-	    elem.addClass("new");
+	    var elem = this.render(statuses[i], null, parent, after, "new");
 	    newElements.push(elem);
-	    parent.insertBefore(elem[0], after); // after == null の時は末尾
 	}else{
 	}
     }
@@ -323,6 +348,11 @@ tw.TimelineView.prototype.refreshView = function(newStatuses, start, end){
  */
 tw.TimelineView.prototype.refreshPartial = function(statuses, start){
     if(start >= statuses.length){
+	// debug
+	// for(var i = 0; i < 1000; i++){
+	//     $("<div></div>").height(100).css("border", "solid 1px green").
+	// 	appendTo(this.element_);
+	// }
 	return;
     }
 
