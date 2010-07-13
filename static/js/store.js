@@ -474,7 +474,7 @@ tw.Store.URL_RE = /https?:[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/g;
 tw.Store.USER_RE = /@(\w+)/g;
 tw.Store.HASH_RE = /([^&]|^)#(\w+)/g;
 tw.Store.prototype.addEntities = function(status){
-    if(status.entities){
+    if(!status.text || status.entities){
 	return;
     }
 
