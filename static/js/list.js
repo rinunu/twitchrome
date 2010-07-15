@@ -16,10 +16,10 @@ tw.List = function(store, fullName, options){
 
     options.name = fullName + " リスト";
 
-    tw.ServerTimeline.call(this, store, tw.List.uri(fullName), options);
+    tw.StatusesTimeline.call(this, store, tw.List.uri(fullName), options);
 };
 
-util.extend(tw.List, tw.ServerTimeline);
+util.extend(tw.List, tw.StatusesTimeline);
 
 /**
  * 本 Timeline を表す uri を生成する
@@ -60,9 +60,7 @@ tw.List.prototype.screenName = function(){
 // ----------------------------------------------------------------------
 // override
 
-tw.List.prototype.setRefreshParams = function(params){
+tw.List.prototype.setRefreshParams = function(params, options){
     params.per_page = tw.settings.refreshCount;
-
-    tw.ServerTimeline.prototype.setRefreshParams.apply(this, arguments);
+    tw.StatusesTimeline.prototype.setRefreshParams.apply(this, arguments);
 };
-

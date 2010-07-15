@@ -1,6 +1,6 @@
 
 /**
- * 含まれる Status をサーバが管理する Timeline
+ * Twitter サーバが管理する Timeline
  */
 tw.ServerTimeline = function(store, uri, options){
     tw.Timeline.call(this, store, uri, options);
@@ -23,11 +23,8 @@ tw.ServerTimeline.prototype.refresh = function(options){
     }
 
     var params = {
-	count: options.count,
-	include_entities: true,
-	include_rts: true	
     };
-    this.setRefreshParams(params);
+    this.setRefreshParams(params, options);
 
     var command = {
 	type: "refreshTimeline",
@@ -58,10 +55,6 @@ tw.ServerTimeline.prototype.request = function(command, options){
  * refresh 時のパラメータを調整するために呼び出される
  */
 tw.ServerTimeline.prototype.setRefreshParams = function(params){
-    if(this.refreshedAt_ && this.statuses_.length >=1){
-	// refreshedAt_ も見るのは、一度も refresh されていないときはすべて取得するため
-	params.since_id = this.statuses_[0].id;
-    }
 };
 
 /**
@@ -73,12 +66,15 @@ tw.ServerTimeline.prototype.toStatuses = function(json){
 
 /**
  * refresh 完了時に呼び出される
+ * 
+ * 取得した Status[] を返す
  */
 tw.ServerTimeline.prototype.onRefresh = function(json){
     var newStatuses = this.toStatuses(json);
     this.store_.addStatuses(this, newStatuses);
     this.insert(newStatuses);
     this.refreshedAt_ = new Date;
+    return newStatuses;
 };
 
 // ----------------------------------------------------------------------

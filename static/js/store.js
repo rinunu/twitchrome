@@ -312,13 +312,13 @@ tw.Store.prototype.timeline = function(uri){
 tw.Store.prototype.homeTimeline = function(){
     var uri = "/statuses/home_timeline";
     var options = {name: "ホーム"};
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
+    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
 };
 
 tw.Store.prototype.mentions = function(){
     var uri = "/statuses/mentions";
     var options = {name: "あなた宛"};
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
+    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
 };
 
 /**
@@ -335,7 +335,7 @@ tw.Store.prototype.userTimeline = function(user){
 	    return status.user.screen_name == screenName;
 	}
     };
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
+    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
 };
 
 /**
@@ -346,7 +346,7 @@ tw.Store.prototype.favorites = function(user){
     var screenName = user.screen_name || user;
     var uri = "/favorites/" + screenName;
     var options = {name: screenName + " のお気に入り"};
-    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
+    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
 };
 
 /**
