@@ -6,10 +6,6 @@
  */
 tw.StatusesTimeline = function(store, uri, options){
     tw.Timeline.call(this, store, uri, options);
-
-    // TL を読み込む際に使用するカーソル
-    this.maxId_ = null;
-    this.sinceId_ = null;
 };
 
 util.extend(tw.StatusesTimeline, tw.ServerTimeline);
@@ -17,22 +13,22 @@ util.extend(tw.StatusesTimeline, tw.ServerTimeline);
 // ----------------------------------------------------------------------
 // override
 
-tw.StatusesTimeline.prototype.setRefreshParams = function(params, options){
+tw.StatusesTimeline.prototype.setCommonParams = function(params, options){
     params.count = options.count;
     params.include_entities = true;
     params.include_rts = true;
+};
 
-    if(this.sinceId_){
-	params.since_id = this.sinceId_;
+tw.StatusesTimeline.prototype.setRefreshParams = function(params, options){
+    if(this.refreshedAt_ && this.statuses_.length >= 1){
+	// refreshedAt_ もチェックするのは、初回表示時にも length => 1 になる場合があるため
+	params.since_id = this.statuses_[0].id;
     }
 };
 
-tw.StatusesTimeline.prototype.onRefresh = function(){
-    var statuses = tw.ServerTimeline.prototype.onRefresh.apply(this, arguments);
-    if(statuses.length >= 1){
-	this.sinceId_ = statuses[0].id;
-    }
-    return statuses;
+tw.StatusesTimeline.prototype.setLoadNextParams = function(params, options){
+    console.assert(this.statuses_.length >= 1);
+    params.max_id = this.statuses_[this.statuses_.length - 1].id;
 };
 
 // ----------------------------------------------------------------------

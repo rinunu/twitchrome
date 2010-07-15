@@ -54,13 +54,20 @@ tw.Timeline.prototype.refreshedAt = function(){
 };
 
 /**
- * Timeline を最新の状態に更新する(必要ならサーバと通信する)。
- * サーバと通信し、リストの内容を最新にする
- * 取得する件数は options.count で指定する
+ * Timeline を最新の状態に更新する
+ * 
+ * ソースから取得する件数は options.count で指定する
  * 
  * 前回の呼出から時間を開けずに呼び出した場合、何も行わない
  */
 tw.Timeline.prototype.refresh = function(options){
+};
+
+/**
+ * 次の Status を読み込む
+ */
+tw.Timeline.prototype.loadNext = function(options){
+    
 };
 
 /**

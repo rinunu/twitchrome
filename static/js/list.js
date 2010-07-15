@@ -60,7 +60,7 @@ tw.List.prototype.screenName = function(){
 // ----------------------------------------------------------------------
 // override
 
-tw.List.prototype.setRefreshParams = function(params, options){
+tw.List.prototype.setCommonParams = function(params, options){
     params.per_page = tw.settings.refreshCount;
-    tw.StatusesTimeline.prototype.setRefreshParams.apply(this, arguments);
+    tw.StatusesTimeline.prototype.setCommonParams.apply(this, arguments);
 };
