@@ -19,9 +19,6 @@ tw.SearchResult.uri = function(text){
 // ----------------------------------------------------------------------
 // protected
 
-/**
- * refresh 時のパラメータを調整するために呼び出される
- */
 tw.SearchResult.prototype.setRefreshParams = function(params, options){
     params.rpp = options.count;
     params.q = this.text;
@@ -30,9 +27,6 @@ tw.SearchResult.prototype.setRefreshParams = function(params, options){
     }
 };
 
-/**
- * サーバへリクエストを送信する
- */
 tw.SearchResult.prototype.request = function(command){
     command.url = "http://search.twitter.com/search.json";
     command.dataType = "jsonp";
