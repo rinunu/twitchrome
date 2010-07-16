@@ -20,12 +20,11 @@ tw.YatsResult.uri = function(text){
 // ----------------------------------------------------------------------
 // protected
 
-tw.YatsResult.prototype.request = function(command){
-    command.params.query = this.text;
-    command.jsonp = "json";
-    command.url = "http://pcod.no-ip.org/yats/search";
-    command.dataType = "jsonp";
-    tw.ajax.ajax(command);
+tw.YatsResult.prototype.setCommonParams = function(request, options){
+    request.params.query = this.text;
+    request.jsonp = "json";
+    request.url = "http://pcod.no-ip.org/yats/search";
+    request.dataType = "jsonp";
 };
 
 tw.YatsResult.prototype.toStatuses = function(source){

@@ -102,3 +102,27 @@ tw.AsyncCommand = function(execute, options){
 };
 
 util.extend(tw.AsyncCommand, tw.Command);
+
+// ======================================================================
+
+/**
+ * Ajax Command
+ */
+tw.AjaxCommand = function(request, options){
+    tw.Command.call(this, options);
+
+    var this_ = this;
+    var callback = request.callback;
+    request.callback = function(){
+	callback.apply(this, arguments);
+	this_.onSuccess();
+    };
+
+    this.request_ = request;
+};
+
+util.extend(tw.AjaxCommand, tw.Command);
+
+tw.AjaxCommand.prototype.execute = function(){
+    tw.ajax.ajax(this.request_);
+};

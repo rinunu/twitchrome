@@ -10,10 +10,6 @@ util.extend(tw.Users, tw.ServerTimeline);
 // ----------------------------------------------------------------------
 // override
 
-tw.Users.prototype.setRefreshParams = function(params){
-    // 何もしない
-};
-
 tw.Users.prototype.toStatuses = function(json){
     var result = [];
     for(var i = 0; i < json.length; i++){
@@ -27,7 +23,3 @@ tw.Users.prototype.toStatuses = function(json){
     return result;
 };
 
-tw.Users.prototype.onRefresh = function(json){
-    this.statuses_ = [];
-    return tw.ServerTimeline.prototype.onRefresh.call(this, json);
-};

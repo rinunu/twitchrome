@@ -15,27 +15,26 @@ tw.ServerTimeline.prototype.refresh = function(options){
     if(this.refreshedAt_ && !options.force && 
        (new Date - this.refreshedAt_ < 30 * 1000)){
 	console.log("頻繁なため無視しました", name, this.refreshedAt_);
-	return;
+	return null;
     }
     if(tw.ajax.command(name)){
 	console.log("実行中のため無視しました: " + name);
-	return;
+	return null;
     }
 
-    var params = {
-    };
-    this.setCommonParams(params, options);
-    this.setRefreshParams(params, options);
-
-    var command = {
+    var request = {
 	type: "refreshTimeline",
 	name: name,
 	url: "/twitter_api" + this.uri_ + ".json",
-	params: params, 
+	params: {}, 
 	callback: util.bind(this, this.onRefresh)
     };
+    this.setCommonParams(request, options);
+    this.setRefreshParams(request, options);
 
-    this.request(command);
+    var command = new tw.AjaxCommand(request);
+    tw.commandManager.add(command);
+    return command;
 };
 
 tw.ServerTimeline.prototype.loadNext = function(options){
@@ -44,55 +43,43 @@ tw.ServerTimeline.prototype.loadNext = function(options){
     
     if(tw.ajax.command(name)){
 	console.log("実行中のため無視しました: " + name);
-	return;
+	return null;
     }
 
-    var params = {
-    };
-    this.setCommonParams(params, options);
-    this.setLoadNextParams(params, options);
-
-    var command = {
+    var request = {
 	type: "loadNextTimeline",
 	name: name,
 	url: "/twitter_api" + this.uri_ + ".json",
-	params: params, 
+	params: {},
 	callback: util.bind(this, this.onLoadNext)
     };
+    this.setCommonParams(request, options);
+    this.setLoadNextParams(request, options);
 
-    this.request(command);
-};
-
-tw.ServerTimeline.prototype.newCount = function(){
-    // TODO
+    var command = new tw.AjaxCommand(request);
+    tw.commandManager.add(command);
+    return command;
 };
 
 // ----------------------------------------------------------------------
 // protected
 
 /**
- * サーバへリクエストを送信する
- */
-tw.ServerTimeline.prototype.request = function(command, options){
-    tw.ajax.ajax(command);
-};
-
-/**
  * サーバリクエスト時の共通パラメータを調整するために呼び出される
  */
-tw.ServerTimeline.prototype.setCommonParams = function(params, options){
+tw.ServerTimeline.prototype.setCommonParams = function(request, options){
 };
 
 /**
  * refresh 時のパラメータを調整するために呼び出される
  */
-tw.ServerTimeline.prototype.setRefreshParams = function(params, options){
+tw.ServerTimeline.prototype.setRefreshParams = function(request, options){
 };
 
 /**
  * loadNext 時のパラメータを調整するために呼び出される
  */
-tw.ServerTimeline.prototype.setLoadNextParams = function(params, options){
+tw.ServerTimeline.prototype.setLoadNextParams = function(request, options){
 };
 
 /**
@@ -102,31 +89,25 @@ tw.ServerTimeline.prototype.toStatuses = function(json){
     return json;
 };
 
+// ----------------------------------------------------------------------
+// private
+
 /**
  * refresh 完了時に呼び出される
- * 
- * 取得した Status[] を返す
  */
 tw.ServerTimeline.prototype.onRefresh = function(json){
     var newStatuses = this.toStatuses(json);
     this.store_.addStatuses(this, newStatuses);
     this.insert(newStatuses);
     this.refreshedAt_ = new Date;
-    return newStatuses;
 };
 
 /**
  * loadNext 完了時に呼び出される
- * 
- * 取得した Status[] を返す
  */
 tw.ServerTimeline.prototype.onLoadNext = function(json){
     var newStatuses = this.toStatuses(json);
     this.store_.addStatuses(this, newStatuses);
     this.insert(newStatuses);
-    return newStatuses;
 };
-
-// ----------------------------------------------------------------------
-// private
 

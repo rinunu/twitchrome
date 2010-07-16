@@ -19,18 +19,17 @@ tw.SearchResult.uri = function(text){
 // ----------------------------------------------------------------------
 // protected
 
-tw.SearchResult.prototype.setRefreshParams = function(params, options){
-    params.rpp = options.count;
-    params.q = this.text;
-    if(this.statuses_.length >=1){
-	params.since_id = this.statuses_[0].id;
-    }
+tw.SearchResult.prototype.setCommonParams = function(request, options){
+    request.url = "http://search.twitter.com/search.json";
+    request.dataType = "jsonp";
 };
 
-tw.SearchResult.prototype.request = function(command){
-    command.url = "http://search.twitter.com/search.json";
-    command.dataType = "jsonp";
-    tw.ajax.ajax(command);
+tw.SearchResult.prototype.setRefreshParams = function(request, options){
+    request.params.rpp = options.count;
+    request.params.q = this.text;
+    if(this.statuses_.length >=1){
+	request.params.since_id = this.statuses_[0].id;
+    }
 };
 
 /**
