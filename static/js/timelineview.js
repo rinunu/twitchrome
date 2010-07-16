@@ -23,8 +23,6 @@ tw.TimelineView = function(element, timeline){
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
     util.Event.bind(tw.uriManager, this, {refresh: this.onUriRefresh});
 
-    element.parent().scroll(util.bind(this, this.onScroll));
-
     element.delegate(".status", "focus", util.bind(this, this.onFocus));
     element.delegate(".status", "blur", util.bind(this, this.onBlur));
     
@@ -84,7 +82,7 @@ tw.TimelineView.prototype.scrollState = function(){
     var visibles = [];
 
     if(children.length == 0){
-	return {};
+	return {visibles: []};
     }
 
     // console.log("viewport scroll top", viewport.scrollTop());
@@ -102,7 +100,7 @@ tw.TimelineView.prototype.scrollState = function(){
     }
 
     // みえているもの
-    visibles.push(top[0]);
+    visibles.push(top);
     var scrollBottom = scrollTop + viewport[0].clientHeight;
     for(; i < l; i++){
 	var child = children[i];
@@ -140,7 +138,7 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
 
     var viewport = this.element_.parent();
     if(!child || child.length == 0){
-	console.debug("setScrollState", "スクロール位置が指定されなかった", child);
+	// console.debug("setScrollState", "スクロール位置が指定されなかった", child);
 	viewport.scrollTop(0);
     }else{
 	viewport.scrollTop(child[0].offsetTop - scrollState.offset);
@@ -152,6 +150,8 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
  */
 tw.TimelineView.prototype.show = function(){
     // this.refreshPartial(this.timeline_.statuses(), 0);
+    this.element_.parent().bind("scroll." + this.timeline_.uri(), 
+				util.bind(this, this.onScroll));
 };
 
 /**
@@ -164,6 +164,7 @@ tw.TimelineView.prototype.hide = function(){
     // 	element.height(element[0].height_);
     // 	element.empty().css("border", "solid 1px red");
     // }
+    this.element_.parent().unbind("scroll." + this.timeline_.uri());
 };
 
 // ----------------------------------------------------------------------
@@ -338,7 +339,7 @@ tw.TimelineView.prototype.refreshView = function(newStatuses, start, end){
     	// this.prepend(newStatuses);
     // }else{
 	// var scrollState = this.scrollState();
-	console.log("insert partial", newStatuses.length, start, end);
+	// console.log("insert partial", newStatuses.length, start, end);
 	var newElements = this.insert(newStatuses, start, end);
         // var newElements = this.sync();
 	this.setScrollState(this.scrollState_);
@@ -419,8 +420,16 @@ tw.TimelineView.prototype.onUriRefresh = function(source, eventType, uri){
 // 操作イベント
 
 tw.TimelineView.prototype.onScroll = function(event){
-    console.log("scroll", this.scrollState());
+    // console.log("scroll", this.scrollState());
     this.scrollState_ = this.scrollState();
+    if(!this.scrollState_){
+	return;
+    }
+
+    var visibles = this.scrollState_.visibles;
+    for(var i = 0, l = visibles.length; i < l; i++){
+	tw.unread.read(visibles[i].status);
+    }
 };
 
 /**

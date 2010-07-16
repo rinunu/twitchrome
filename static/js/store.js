@@ -46,7 +46,7 @@ tw.Store.prototype.update = function(text, inReplyTo, file){
 	params.in_reply_to_status_id = inReplyTo.id;
     }
 
-    var command = new tw.Command(
+    var command = new tw.AsyncCommand(
 	function(){
 	    if(file){
 		var upload = tw.Twitpic.upload(file, text);
@@ -239,6 +239,8 @@ tw.Store.prototype.addStatuses = function(timeline, statuses){
 	statuses[i] = status;
 	statusMap[status.id] = status;
     }
+
+    tw.unread.addStatuses(timeline, statuses);
 
     for(i = 0; i < this.timelines_.length; i++){
 	var otherTimeline = this.timelines_[i];

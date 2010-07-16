@@ -3,28 +3,35 @@
  * 未読管理を行う
  * 
  * イベント
- * change
+ * change(timeline)
  */
 tw.Unread = function(){
     // 未読 Status の ID
     this.unreadIds_ = {};
     
     // この ID まではすべて既読とみなす(unreadIds 以外)
-    this.maxReadId_ = "0";
+    // this.maxReadId_ = "0";
 };
+
+// ----------------------------------------------------------------------
 
 /**
- * 未読か判定する
+ * 既読にする
  */
-tw.Unread.prototype.unread = function(status){
+tw.Unread.prototype.read = function(status){
+    if(!this.unreadIds_[status.id]){
+	return;
+    }
+    delete this.unreadIds_[status.id];
+    this.refresh();
 };
+
+// ----------------------------------------------------------------------
+// property
 
 /**
- * 未読・既読を設定する
+ * 
  */
-tw.Unread.prototype.setUnread = function(status, unread){
-};
-
 tw.Unread.prototype.unreadCount = function(timeline){
     var statuses = timeline.statuses();
     var result = 0;
@@ -37,6 +44,15 @@ tw.Unread.prototype.unreadCount = function(timeline){
 };
 
 /**
+ * 未読管理している Timeline を取得する
+ */
+tw.Unread.prototype.managedTimelines = function(){
+    return [tw.store.homeTimeline()];
+};
+
+// ----------------------------------------------------------------------
+
+/**
  * 新規に Status が追加になった際に呼び出す
  */
 tw.Unread.prototype.addStatuses = function(timeline, statuses){
@@ -46,10 +62,26 @@ tw.Unread.prototype.addStatuses = function(timeline, statuses){
 	var status = statuses[i];
 	status.unread = true;
 	this.unreadIds_[status.id] = true;
-	// if(status.id > this.maxReadId_){
-	// }
     }
+
+    this.refresh();
 };
 
 // ----------------------------------------------------------------------
+// private
 
+/**
+ * 未読件数を更新する
+ */
+tw.Unread.prototype.refresh = function(){
+    var type = "unread.refresh";
+    if(tw.commandManager.commands(type).length >= 1){
+	return;
+    }
+    var command = new tw.SyncCommand(util.bind(this, this.refresh_), {type: type});
+    tw.commandManager.add(command);
+};
+
+tw.Unread.prototype.refresh_ = function(){
+    util.Event.trigger(this, "change");
+};

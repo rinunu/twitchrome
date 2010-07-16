@@ -6,7 +6,7 @@ tw.Twitpic = function(){
 };
 
 tw.Twitpic.upload = function(file, message){
-    var command = new tw.Command(
+    var command = new tw.AsyncCommand(
 	function(){
 	    file.upload("/upload",
 			{

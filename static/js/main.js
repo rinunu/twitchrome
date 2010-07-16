@@ -111,6 +111,8 @@ tw.initialize = function(){
     tw.screenName = $(".system .screen_name").text();
     tw.csrfToken = $("input[name='csrfmiddlewaretoken']").val();
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
+    tw.commandManager = new tw.CommandManager;
+
     tw.store = new tw.Store;
     tw.lists = new tw.Lists;
     tw.uriManager = new tw.UriManager;
