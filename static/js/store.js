@@ -233,19 +233,29 @@ tw.Store.prototype.statusesCount = function(){
  * - 指定された timeline 以外の Timeline に statuses を追加する
  */
 tw.Store.prototype.addStatuses = function(timeline, statuses){
-    var statusMap = {};
+    var added = [];
+    var addedMap = {};
     for(var i = 0; i < statuses.length; i++){
-	var status = this.addStatus(statuses[i]);
+	var old = statuses[i];
+	var status = this.addStatus(old);
 	statuses[i] = status;
-	statusMap[status.id] = status;
+	if(old != status){ // 既存なら
+	    continue;
+	}
+	added.push(status);
+	addedMap[status.id] = status;
     }
 
-    tw.unread.addStatuses(timeline, statuses);
+    if(added.length == 0){
+	return;
+    }
+
+    tw.unread.addStatuses(timeline, added);
 
     for(i = 0; i < this.timelines_.length; i++){
 	var otherTimeline = this.timelines_[i];
 	if(otherTimeline != timeline){
-	    otherTimeline.addStatuses(statusMap);
+	    otherTimeline.addStatuses(addedMap);
 	}
     }
 };
