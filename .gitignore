@@ -1,3 +1,4 @@
 *.pyc
 settings.py
 memo.org
+*.bak
