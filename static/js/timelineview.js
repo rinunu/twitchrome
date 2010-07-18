@@ -40,6 +40,8 @@ tw.TimelineView = function(element, timeline){
     element.delegate("a.favorite.on", "click", util.bind(this, this.onFavorite, false));
 
     this.refreshPartial(timeline.statuses(), 0);
+
+    this.suspend_ = true;
 };
 
 /**
@@ -121,7 +123,10 @@ tw.TimelineView.prototype.scrollState = function(){
  * 指定された要素が存在しない場合、復元されない。
  */
 tw.TimelineView.prototype.setScrollState = function(scrollState){
-    // console.log("setScrollState", scrollState);
+    if(this.suspend_){
+	return;
+    }
+
     console.assert(scrollState);
 
     // var old = this.scrollState();
@@ -149,6 +154,7 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
  * 再表示
  */
 tw.TimelineView.prototype.show = function(){
+    this.suspend_ = false;
     // this.refreshPartial(this.timeline_.statuses(), 0);
     this.element_.parent().bind("scroll." + this.timeline_.uri(), 
 				util.bind(this, this.onScroll));
@@ -158,6 +164,7 @@ tw.TimelineView.prototype.show = function(){
  * 非表示
  */
 tw.TimelineView.prototype.hide = function(){
+    this.suspend_ = true;
     // var children = this.element_.children(".status");
     // for(var i = 0, l = children.length; i < l; i++){
     // 	var element = $(children[i]);
