@@ -48,7 +48,7 @@ tw.ConversationTimeline.prototype.onGetOld = function(status){
     }
     else{
 	var userTimeline = tw.store.userTimeline(status.in_reply_to_screen_name);
-	var t = userTimeline.loadNext({statusId: nextId});
+	var t = userTimeline.loadNext({statusId: nextId, count: 50});
 	t.success(util.bind(this, this.onGetOldTimeline, nextId));
     }
 };
