@@ -7,6 +7,10 @@
  * }
  */
 tw.List = function(store, fullName, options){
+    options.hasSinceId = true;
+    options.hasMaxId = true;
+    options.countParam = "per_page";
+
     this.raw_ = options.raw;
 
     var a = tw.List.parseName(fullName);
@@ -16,10 +20,10 @@ tw.List = function(store, fullName, options){
 
     options.name = fullName + " リスト";
 
-    tw.StatusesTimeline.call(this, store, tw.List.uri(fullName), options);
+    tw.ServerTimeline.call(this, store, tw.List.uri(fullName), options);
 };
 
-util.extend(tw.List, tw.StatusesTimeline);
+util.extend(tw.List, tw.ServerTimeline);
 
 /**
  * 本 Timeline を表す uri を生成する
@@ -55,12 +59,4 @@ tw.List.prototype.fullName = function(){
 
 tw.List.prototype.screenName = function(){
     return this.screenName_;
-};
-
-// ----------------------------------------------------------------------
-// override
-
-tw.List.prototype.setCommonParams = function(request, options){
-    request.params.per_page = tw.settings.refreshCount;
-    tw.StatusesTimeline.prototype.setCommonParams.apply(this, arguments);
 };

@@ -323,14 +323,24 @@ tw.Store.prototype.timeline = function(uri){
 
 tw.Store.prototype.homeTimeline = function(){
     var uri = "/statuses/home_timeline";
-    var options = {name: "ホーム"};
-    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
+    var options = {
+	name: "ホーム",
+	hasSinceId: true,
+	hasMaxId: true,
+	countParam: "count"
+    };
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 tw.Store.prototype.mentions = function(){
     var uri = "/statuses/mentions";
-    var options = {name: "あなた宛"};
-    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
+    var options = {
+	name: "あなた宛",
+	hasSinceId: true,
+	hasMaxId: true,
+	countParam: "count"
+    };
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**
@@ -343,11 +353,14 @@ tw.Store.prototype.userTimeline = function(user){
     var uri = "/statuses/user_timeline/" + screenName;
     var options = {
 	name: screenName + "の TL",
+	hasSinceId: true,
+	hasMaxId: true,
+	countParam: "count",
 	filter: function(status){
 	    return status.user.screen_name == screenName;
 	}
     };
-    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**
@@ -357,8 +370,11 @@ tw.Store.prototype.userTimeline = function(user){
 tw.Store.prototype.favorites = function(user){
     var screenName = user.screen_name || user;
     var uri = "/favorites/" + screenName;
-    var options = {name: screenName + " のお気に入り"};
-    return this.getOrCreateTimeline(uri, tw.StatusesTimeline, uri, options);
+    var options = {
+	name: screenName + " のお気に入り",
+	countParam: "count"
+    };
+    return this.getOrCreateTimeline(uri, tw.ServerTimeline, uri, options);
 };
 
 /**

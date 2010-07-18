@@ -2,7 +2,11 @@
  * 検索結果をあらわす Timeline
  */
 tw.SearchResult = function(store, text){
-    var options = {name: text + " の検索結果"};
+    var options = {
+	name: text + " の検索結果",
+	hasSinceId: true,
+	countParam: "rpp"
+    };
     this.text = text;
     tw.ServerTimeline.call(this, store, tw.SearchResult.uri(text), options);
 };
@@ -20,16 +24,10 @@ tw.SearchResult.uri = function(text){
 // protected
 
 tw.SearchResult.prototype.setCommonParams = function(request, options){
+    request.params.q = this.text;
     request.url = "http://search.twitter.com/search.json";
     request.dataType = "jsonp";
-};
-
-tw.SearchResult.prototype.setRefreshParams = function(request, options){
-    request.params.rpp = options.count;
-    request.params.q = this.text;
-    if(this.statuses_.length >=1){
-	request.params.since_id = this.statuses_[0].id;
-    }
+    tw.ServerTimeline.prototype.setCommonParams.apply(this, arguments);
 };
 
 /**

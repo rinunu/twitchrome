@@ -10,6 +10,10 @@
  * refresh(newStatuses):
  *   更新された際に通知する。newStatuses は作成日の降順に並んでいる
  * 
+ * 
+ * 
+ * uri: この Timeline を識別する。 このシステム内で一意になる必要がある。
+ * 
  * options: {
  *   filter: Status をこの Timeline に含めるか判断する関数,
  *   name: この TL の名称
@@ -65,6 +69,8 @@ tw.Timeline.prototype.refresh = function(options){
 
 /**
  * 次の Status を読み込む
+ * 
+ * options.status が指定された場合は、指定された Status の次から読み込む
  */
 tw.Timeline.prototype.loadNext = function(options){
     
