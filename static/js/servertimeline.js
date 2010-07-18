@@ -69,13 +69,12 @@ tw.ServerTimeline.prototype.setRefreshParams = function(request, options){
  * loadNext 時のパラメータを調整するために呼び出される
  */
 tw.ServerTimeline.prototype.setLoadNextParams = function(request, options){
-    console.assert(this.statuses_.length >= 1);
-
     if(this.hasMaxId_){
-	if(options.status){
-	    request.params.max_id = options.status.id;
-	}else{
+	if(options.statusId){
+	    request.params.max_id = options.statusId;
+	}else if(this.statuses_.length >= 1){
 	    request.params.max_id = this.statuses_[this.statuses_.length - 1].id;
+	}else{
 	}
     }
 };

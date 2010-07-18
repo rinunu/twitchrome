@@ -11,7 +11,7 @@
  * 
  * Status の種類
  * - 完全な Status
- * - 検索結果(不完全. 完全な user を持っていない. ただし表示するには十分)
+ * - 検索結果(不完全。 ただし表示するには十分。 可能なら完全データで更新すべき)
  * - ID と replies のみもっている。 言及はされたがデータは持っていないもの。
  * 
  * Status の変更について
@@ -140,10 +140,11 @@ tw.Store.prototype.destroy = function(status){
 
 /**
  * Status が存在しているならそれを取得する
- * 存在しないなら undefined
+ * 存在しないなら false
  */
 tw.Store.prototype.hasStatus = function(id){
-    return this.statuses_[id];
+    var status = this.statuses_[id];
+    return (status && status.user) ? status : null;
 };
 
 /**
@@ -153,8 +154,8 @@ tw.Store.prototype.hasStatus = function(id){
 tw.Store.prototype.getStatus = function(id, callback){
     console.log("getStatus");
 
-    var status = this.statuses_[id];
-    if(status && status.user){
+    var status = this.hasStatus(id);
+    if(status){
 	console.log("use cache");
 	setTimeout(function(){callback(status);}, 10);
     }else{

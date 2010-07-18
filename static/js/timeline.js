@@ -70,7 +70,7 @@ tw.Timeline.prototype.refresh = function(options){
 /**
  * 次の Status を読み込む
  * 
- * options.status が指定された場合は、指定された Status の次から読み込む
+ * options.statusId が指定された場合は、指定された Status の次から読み込む
  */
 tw.Timeline.prototype.loadNext = function(options){
     

@@ -24,20 +24,48 @@ tw.ConversationTimeline.prototype.refresh = function(){
 
 /**
  * 過去方向への言及を遡る
+ * 
+ * status に起点となる Status を指定する。
  */
 tw.ConversationTimeline.prototype.onGetOld = function(status){
     console.log("ConversationTimeline onGetOld");
 
     this.insert([status]);
 
+    if(!status.in_reply_to_status_id){
+	return;
+    }
+
     if(status.retweeted_status){
 	status = status.retweeted_status;
     }
 
-    if(status.in_reply_to_status_id){
-	this.store_.getStatus(status.in_reply_to_status_id,
-			   util.bind(this, this.onGetOld));
+    var nextId = status.in_reply_to_status_id;
+
+    if(tw.store.hasStatus(nextId)){
+	console.debug("ConversationTimeline: use cache");
+	this.store_.getStatus(nextId, util.bind(this, this.onGetOld));
     }
+    else{
+	var userTimeline = tw.store.userTimeline(status.in_reply_to_screen_name);
+	var t = userTimeline.loadNext({statusId: nextId});
+	t.success(util.bind(this, this.onGetOldTimeline, nextId));
+    }
+};
+
+/**
+ * 過去方向への言及を遡るための TL の読み込み完了
+ */
+tw.ConversationTimeline.prototype.onGetOldTimeline = function(statusId){
+    console.log("ConversationTimeline onGetOldTimeline", statusId);
+
+    var status = tw.store.hasStatus(statusId);
+    if(!status){
+	console.error("TL に Status が存在しません");
+	return;
+    }
+
+    this.onGetOld(status);
 };
 
 /**
