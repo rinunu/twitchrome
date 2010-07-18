@@ -22,6 +22,7 @@ tw.components = {};
  */
 tw.showTimeline = function(timeline){
     $.history.load(tw.hash(timeline));
+    tw.Track.transit(timeline.uri());
 };
 
 tw.onHistoryChange = function(state){
@@ -109,6 +110,7 @@ tw.initialize = function(){
 
     tw.settings = new tw.Settings;
     tw.screenName = $(".system .screen_name").text();
+    tw.Track.setVar(tw.screenName);
     tw.csrfToken = $("input[name='csrfmiddlewaretoken']").val();
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
     tw.commandManager = new tw.CommandManager;
@@ -158,6 +160,7 @@ tw.initializeSystem = function(){
     $("a.refresh").click(
 	function(){
 	    tw.components.timelineView.timeline().refresh();
+	    tw.Track.track("timeline", "refresh", "manual");
 	});
 };
 

@@ -48,6 +48,11 @@ tw.ProfileView.prototype.initialize = function(){
 	    this_.addUser(user);
 	}
     );
+
+    this.element_.find("a.twitter").click(
+	function(){
+	    tw.Track.track("twitter", "show", "profile");
+	});
 };
 
 // ユーザのプロフィールを表示する
@@ -120,6 +125,7 @@ tw.ProfileView.prototype.addUser = function(user){
  */
 tw.ProfileView.prototype.onFocus = function(){
     var focus = tw.components.timelineView.focus();
+    console.assert(focus);
     if(focus.retweeted_status && focus.retweeted_status.user){
 	this.setUser(focus.retweeted_status.user);
     }else{
@@ -131,6 +137,8 @@ tw.ProfileView.prototype.onTabClick = function(event){
     var target = $(event.target).closest(".tab");
     var screenName = target.data("user").screen_name;
     tw.store.user(screenName, util.bind(this, this.setUser));
+
+    tw.Track.track("profile", "userTab", screenName);
 };
 
 /**
