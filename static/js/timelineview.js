@@ -19,6 +19,18 @@ tw.TimelineView = function(element, timeline){
 
     this.scrollState_ = this.scrollState();
 
+    this.suspend_ = true;
+
+    // 表示する Status の配列
+    // このリストの順番に表示する
+    this.renderings_ = [];
+    // renderings_ をどこまで処理したか
+    this.iRenderings_ = 0;
+
+    this.timer_ = null;
+
+
+
     util.Event.bind(this.timeline_, this, {refresh: this.onRefresh});
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
     util.Event.bind(tw.uriManager, this, {refresh: this.onUriRefresh});
@@ -40,8 +52,6 @@ tw.TimelineView = function(element, timeline){
     element.delegate("a.favorite.on", "click", util.bind(this, this.onFavorite, false));
 
     this.refreshPartial(timeline.statuses(), 0);
-
-    this.suspend_ = true;
 };
 
 /**
@@ -51,8 +61,27 @@ tw.TimelineView.prototype.timeline = function(){
     return this.timeline_;
 };
 
+tw.TimelineView.prototype.cleanup = function(){
+    this.suspend();
+
+    util.Event.unbind(this);
+
+    if(this.timer_){
+	clearTimeout(this.timer_);
+    }
+    this.element_.remove();
+    delete this.timeline_;
+    delete this.element_;
+};
+
 tw.TimelineView.prototype.element = function(){
     return this.element_;
+};
+
+/**
+ * 指定された status が画面に表示されるように表示位置を調整する
+ */
+tw.TimelineView.show = function(status){
 };
 
 /**
@@ -77,6 +106,7 @@ tw.TimelineView.prototype.focus = function(){
  * 本処理は速度を優先する。
  */
 tw.TimelineView.prototype.scrollState = function(){
+    console.log("scrollState", this.timeline_.uri());
     var parent = this.element_;
     var viewport = this.element_.parent();
 
@@ -153,7 +183,7 @@ tw.TimelineView.prototype.setScrollState = function(scrollState){
 /**
  * 再表示
  */
-tw.TimelineView.prototype.show = function(){
+tw.TimelineView.prototype.resume = function(){
     this.suspend_ = false;
     // this.refreshPartial(this.timeline_.statuses(), 0);
     this.element_.parent().bind("scroll." + this.timeline_.uri(), 
@@ -163,7 +193,7 @@ tw.TimelineView.prototype.show = function(){
 /**
  * 非表示
  */
-tw.TimelineView.prototype.hide = function(){
+tw.TimelineView.prototype.suspend = function(){
     this.suspend_ = true;
     // var children = this.element_.children(".status");
     // for(var i = 0, l = children.length; i < l; i++){
@@ -304,6 +334,7 @@ tw.TimelineView.prototype.sync = function(){
  * 前提
  * - statuses と timeline は status.id の降順になっている
  * 
+ * statuses の start から end までを表示する
  */
 tw.TimelineView.prototype.insert = function(statuses, start, end){
     var children = this.element_.children(".status");
@@ -370,20 +401,16 @@ tw.TimelineView.prototype.refreshView = function(newStatuses, start, end){
  * 少しずつ更新する
  */
 tw.TimelineView.prototype.refreshPartial = function(statuses, start){
+    console.log("refreshPartial");
     if(start >= statuses.length){
-	// debug
-	// for(var i = 0; i < 1000; i++){
-	//     $("<div></div>").height(100).css("border", "solid 1px green").
-	// 	appendTo(this.element_);
-	// }
 	return;
     }
 
     var end = Math.min(start + tw.settings.partialCount, statuses.length);
     this.refreshView(statuses, start, end);
 
-    setTimeout(util.bind(this, this.refreshPartial, statuses, end), 
-	       tw.settings.partialInterval);
+    this.timer_ = setTimeout(util.bind(this, this.refreshPartial, statuses, end), 
+			     tw.settings.partialInterval);
 };
 
 // ----------------------------------------------------------------------

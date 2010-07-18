@@ -71,13 +71,15 @@ tw.MultiTimelineView.prototype.setTimeline = function(timeline){
 	util.Event.bind(newView, this, {focus: this.onFocus});
 	this.views_.push(newView);
     }
-    newView.show();
+    newView.resume();
     this.currentView_ = newView;
 
     // 切り替え
     if(oldView){
-	oldView.hide();
-	oldView.element().animate({left:-1000}).fadeOut({queue: false});
+	oldView.cleanup();
+	this.views_.splice($.inArray(oldView, this.views_), 1);
+	// oldView.suspend();
+	// oldView.element().animate({left:-1000}).fadeOut({queue: false});
     }
     newView.element().animate({top: 0, left:0}).fadeIn({queue: false});
     
