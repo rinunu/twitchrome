@@ -1,3 +1,9 @@
+
+/**
+ * Twitter API を実行する
+ * 
+ * Status 取得 API などは、ここではなく Timeline や Store に定義する。
+ */
 tw.Twitter = function(){
 };
 
@@ -11,6 +17,82 @@ tw.Twitter.prototype.get = function(request){
     var command = new tw.TwitterGetCommand(request);
     tw.commandManager.add(command);
     return command;
+};
+
+// ######################################################################
+// 高レベル API
+
+/**
+ * 自分の status を更新する
+ * inReplyTo は status の先頭に「@対象ユーザ 」という文字が入っている場合のみ有効。
+ * 
+ * file にはアップロードする <input> を指定する
+ */
+tw.Twitter.prototype.update = function(text, inReplyTo, file){
+    console.assert(text);
+
+    var params = {
+	status: text
+    };
+    if(inReplyTo &&
+       text.indexOf("@" + inReplyTo.user.screen_name + " ") == 0){
+	console.log("in_reply_to", inReplyTo);
+	params.in_reply_to_status_id = inReplyTo.id;
+    }
+
+    var command = new tw.AsyncCommand(
+	function(){
+	    if(file){
+		var upload = tw.Twitpic.upload(file, text);
+		upload.success(util.bind(this, this.onUpload));
+		upload.error(util.bind(this, this.onError));
+	    }else{
+		this.update();
+	    }
+	});
+
+    command.update = function(){
+	tw.ajax.ajax(
+	    {
+		type: "update",
+		method: "POST",
+		name: "ツイート", 
+		url: "/twitter_api/statuses/update.json",
+		params: params,
+		callback: util.bind(this, this.onUpdate),
+		error: util.bind(this, this.onError)
+	    });
+    };
+
+    command.onUpload = function(result){
+	console.log("on upload");
+	console.assert(result.url);
+	params.status += " " + result.url;
+	this.update();
+    };
+
+    command.onUpdate = function(result){
+	this.onSuccess(result);
+    };
+
+    command.execute();
+    return command;
+};
+
+/**
+ * 公式 RT を行う
+ */
+tw.Twitter.prototype.retweet = function(status){
+    console.log("retweet", status);
+
+    tw.ajax.ajax(
+	{
+	    type: "retweet",
+	    method: "POST",
+	    name: "リツイート",
+	    url: "/twitter_api/statuses/retweet/" + status.id + ".json",
+	    callback: function(){}
+	});
 };
 
 // ######################################################################

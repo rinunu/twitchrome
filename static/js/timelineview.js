@@ -507,7 +507,7 @@ tw.TimelineView.prototype.onRt = function(event){
 	"コメントを書かずにリツイートする場合は、以下をクリックしてください(公式リツイート)。",
 	[{label: "リツイートする",
 	  callback: function(){
-	      tw.store.retweet(status, function(){});
+	      tw.twitter.retweet(status);
 	      tw.components.statusInput.clear();
 	  }}]);
 };

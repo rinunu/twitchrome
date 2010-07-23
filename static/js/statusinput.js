@@ -41,7 +41,7 @@ tw.StatusInput.prototype.update = function(){
 
     var file = this.file_.val() ? this.file_ : null;
 
-    var command = tw.store.update(text, this.inReplyTo_, file);
+    var command = tw.twitter.update(text, this.inReplyTo_, file);
     command.success(util.bind(this, this.onUpdate));
     command.error(util.bind(this, this.onUpdateError));
 };
