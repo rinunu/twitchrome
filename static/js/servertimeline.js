@@ -16,7 +16,7 @@ tw.ServerTimeline.prototype.refresh = function(options){
     options = $.extend({count: tw.settings.refreshCount, force: false}, options);
     var request = {
 	type: "refreshTimeline",
-	url: "/twitter_api" + this.uri_ + ".json",
+	url: this.uri_ + ".json",
 	params: {}, 
 	callback: util.bind(this, this.onRefresh)
     };
@@ -29,7 +29,7 @@ tw.ServerTimeline.prototype.loadNext = function(options){
     options = $.extend({count: tw.settings.refreshCount, force: true}, options);
     var request = {
 	type: "timeline.loadNext",
-	url: "/twitter_api" + this.uri_ + ".json",
+	url: this.uri_ + ".json",
 	params: {},
 	callback: util.bind(this, this.onLoadNext)
     };
@@ -127,7 +127,6 @@ tw.ServerTimeline.prototype.load = function(request, options){
 
     request.name = name;
 
-    var command = new tw.AjaxCommand(request);
-    tw.commandManager.add(command);
+    var command = tw.twitter.get(request);
     return command;
 };

@@ -115,6 +115,8 @@ tw.initialize = function(){
     tw.ajax = new tw.Ajax({adjustCommand: util.bind(this, this.adjustRequest)});
     tw.commandManager = new tw.CommandManager;
 
+    tw.twitter = new tw.Twitter;
+
     tw.store = new tw.Store;
     tw.lists = new tw.Lists;
     tw.uriManager = new tw.UriManager;
