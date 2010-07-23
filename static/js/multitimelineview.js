@@ -21,6 +21,13 @@ tw.MultiTimelineView.prototype.clear = function(){
 tw.MultiTimelineView.prototype.initialize = function(){
 };
 
+tw.MultiTimelineView.prototype.show = function(status){
+    if(!this.currentView_){
+	return null;
+    }
+    return this.currentView_.show(status);
+};
+
 /**
  * フォーカスの当たっている Status を取得する
  */

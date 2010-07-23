@@ -34,7 +34,7 @@ tw.Settings = function(){
     // オートコンプリート表示Delay
 
     // 検索エンジン
-    // this.searchResult = tw.YatsResult;
-    this.searchResult = tw.SearchResult;
+    this.searchResult = tw.YatsResult;
+    // this.searchResult = tw.SearchResult;
 };
 
