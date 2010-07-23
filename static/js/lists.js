@@ -12,11 +12,11 @@ tw.Lists = function(){
  */
 tw.Lists.prototype.lists = function(user, callback){
     var screenName = user.screen_name || user;
-    tw.ajax.ajax(
+    tw.twitter.get(
 	{
 	    type: "lists",
 	    name: screenName + "の所有リスト取得",
-	    url: "/twitter_api/" + screenName + "/lists.json",
+	    url: "/" + screenName + "/lists.json",
 	    callback: util.bind(this, this.onGetLists, callback)
 	});
 };
@@ -26,11 +26,11 @@ tw.Lists.prototype.lists = function(user, callback){
  */
 tw.Lists.prototype.subscriptions = function(user, callback){
     var screenName = user.screen_name || user;
-    tw.ajax.ajax(
+    tw.twitter.get(
 	{
 	    type: "lists",
 	    name: screenName + "の購読リスト取得",
-	    url: "/twitter_api/" + screenName + "/lists/subscriptions.json",
+	    url: "/" + screenName + "/lists/subscriptions.json",
 	    callback: util.bind(this, this.onGetLists, callback)
 	});
 };

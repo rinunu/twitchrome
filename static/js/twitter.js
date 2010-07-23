@@ -19,6 +19,18 @@ tw.Twitter.prototype.get = function(request){
     return command;
 };
 
+/**
+ * TWitter API へ POST リクエストを行う。
+ */
+tw.Twitter.prototype.post = function(request){
+    request.method = "POST";
+    request.url = "/twitter_api" + request.url;
+
+    var command = new tw.AjaxCommand(request);
+    tw.commandManager.add(command);
+    return command;
+};
+
 // ######################################################################
 // 高レベル API
 
@@ -52,12 +64,11 @@ tw.Twitter.prototype.update = function(text, inReplyTo, file){
 	});
 
     command.update = function(){
-	tw.ajax.ajax(
+	tw.twitter.post(
 	    {
 		type: "update",
-		method: "POST",
 		name: "ツイート", 
-		url: "/twitter_api/statuses/update.json",
+		url: "/statuses/update.json",
 		params: params,
 		callback: util.bind(this, this.onUpdate),
 		error: util.bind(this, this.onError)
@@ -85,12 +96,11 @@ tw.Twitter.prototype.update = function(text, inReplyTo, file){
 tw.Twitter.prototype.retweet = function(status){
     console.log("retweet", status);
 
-    tw.ajax.ajax(
+    tw.twitter.post(
 	{
 	    type: "retweet",
-	    method: "POST",
 	    name: "リツイート",
-	    url: "/twitter_api/statuses/retweet/" + status.id + ".json",
+	    url: "/statuses/retweet/" + status.id + ".json",
 	    callback: function(){}
 	});
 };

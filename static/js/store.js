@@ -30,17 +30,14 @@ tw.Store = function(){
 
 /**
  * お気に入りにする
- * 
  */
 tw.Store.prototype.favorite = function(status){
-    tw.ajax.ajax(
+    return tw.twitter.post(
 	{
 	    type: "favorite",
-	    method: "POST",
 	    name: "お気に入りに追加する",
-	    url: "/twitter_api/favorites/create/" + status.id + ".json",
-	    callback: util.bind(this, this.onStatusRefresh),
-	    target: status
+	    url: "/favorites/create/" + status.id + ".json",
+	    callback: util.bind(this, this.onStatusRefresh)
 	});
 };
 
@@ -48,14 +45,12 @@ tw.Store.prototype.favorite = function(status){
  * お気に入りを解除する
  */
 tw.Store.prototype.unfavorite = function(status){
-    tw.ajax.ajax(
+    return tw.twitter.post(
 	{
 	    type: "unfavorite",
-	    method: "POST",
 	    name: "お気に入りから削除する",
-	    url: "/twitter_api/favorites/destroy/" + status.id + ".json",
-	    callback: util.bind(this, this.onStatusRefresh),
-	    target: status
+	    url: "/favorites/destroy/" + status.id + ".json",
+	    callback: util.bind(this, this.onStatusRefresh)
 	});
 };
 
@@ -86,13 +81,14 @@ tw.Store.prototype.getStatus = function(id, callback){
 	console.log("use cache");
 	setTimeout(function(){callback(status);}, 10);
     }else{
-	tw.ajax.ajax(
-	    {
-		type: "getStatus",
-		name: "ステータスの取得", 
-		url: "/twitter_api" + "/statuses/show/" + id + ".json",
-		callback: util.bind(this, this.onGetStatus, callback)
-	    });
+	var request = {
+	    type: "getStatus",
+	    name: "ステータスの取得", 
+	    url: "/statuses/show/" + id + ".json",
+	    callback: util.bind(this, this.onGetStatus, callback)
+	};
+
+	tw.twitter.get(request);
     }
 };
 
@@ -107,8 +103,6 @@ tw.Store.prototype.hasUser = function(screenName){
 /**
  * User を取得する
  * ローカル DB にある場合は、それを取得する
- * 
- * TODO 現在ローカルに存在する場合にのみ正常に動く
  */
 tw.Store.prototype.user = function(screenName, callback){
     var user = this.users_[screenName];
@@ -116,13 +110,13 @@ tw.Store.prototype.user = function(screenName, callback){
 	console.log("use cache");
 	setTimeout(function(){callback(user);}, 10);
     }else{
-	var command = {
+	var request = {
 	    type: "getUser",
 	    name: screenName + " のユーザ情報取得",
-	    url: "/twitter_api/users/show/" + screenName + ".json",
+	    url: "/users/show/" + screenName + ".json",
 	    callback: util.bind(this, this.onGetUser, callback)
 	};
-	tw.ajax.ajax(command);
+	tw.twitter.get(request);
     }
 };
 
