@@ -107,14 +107,20 @@ tw.Ajax.prototype.execute = function(command){
     };
 
     if(command.dataType == "jsonp"){
-	options.callbackParameter = command.jsonp;
+	if(command.jsonp){
+	    options.callbackParameter = command.jsonp;
+	}
+	if(command.jsonpCallback){
+	    options.callback = command.jsonpCallback;
+	}
+	options.cache = command.cache;
 	$.jsonp(options);
     }else{
 	options.type = command.method;
-	options.jsonp = command.jsonp;
 	options.dataType = command.dataType || "json",
 	$.ajax(options);
     }
+    console.debug("ajax.execute", options);
 
     this.executing = command;
     util.Event.trigger(this, "start", command);
@@ -139,6 +145,7 @@ tw.Ajax.prototype.onInterval = function(){
 
 tw.Ajax.prototype.onSuccess = function(command, result){
     if(!result){ // 失敗なのに onSuccess が呼ばれる場合があるため
+	console.debug("onSuccess: error");
 	this.onError(command);
 	return;
     }
@@ -155,7 +162,7 @@ tw.Ajax.prototype.onError = function(command, xhr){
     command.errors.push(xhr);
     this.executing = null;
     if(command.errors.length >= command.maxTryCount){
-	console.error("ajax error", command.name);
+	console.error("ajax error", command.name, xhr);
 	this.commands_.shift();
 	if(command.error){
 	    command.error();

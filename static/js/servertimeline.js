@@ -127,6 +127,11 @@ tw.ServerTimeline.prototype.load = function(request, options){
 
     request.name = name;
 
-    var command = tw.twitter.get(request);
+    if(request.url.indexOf("http") == 0){
+	// 絶対 URL の場合は REST API ではないので
+	var command = tw.ajax.ajax(request);
+    }else{
+	var command = tw.twitter.get(request);
+    }
     return command;
 };

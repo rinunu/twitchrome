@@ -92,6 +92,34 @@ def authenticated(request):
 
     return HttpResponseRedirect(reverse(main))
 
+# twitter_api を実行するための URL を返す
+# url は http://api.twitter.com/1/ 以降
+def sign(request, url):
+    # return HttpResponse("error", status=404)
+
+    if not settings.DEBUG and not request.is_ajax():
+        return HttpResponseForbidden("error")
+    
+    src_params = request.GET
+
+    params = {}
+    for key, value in src_params.iteritems():
+        params[key] = value.encode('utf-8')
+
+    token = request.session['access_token']
+
+    req = oauth.OAuthRequest.from_consumer_and_token(
+        consumer,
+        token=token,
+        http_method="GET",
+        http_url='http://api.twitter.com/1/' + url,
+        parameters=params
+        )
+    
+    req.sign_request(signature_method, consumer, token)
+
+    return HttpResponse('{"url": "%s"}' % req.to_url())
+
 # twitter_api を実行し、結果を返す
 # url は http://api.twitter.com/1/ 以降
 def twitter_api(request, url):

@@ -11,7 +11,7 @@ tw.Twitter = function(){
 // 低レベル API
 
 /**
- * TWitter API へ GET リクエストを行う。
+ * TWitter REST API へ GET リクエストを行う。
  */
 tw.Twitter.prototype.get = function(request){
     var command = new tw.TwitterGetCommand(request);
@@ -112,21 +112,45 @@ tw.Twitter.prototype.retweet = function(status){
  */
 tw.TwitterGetCommand = function(request, options){
     tw.Command.call(this, options);
-
-    request.url = "/twitter_api" + request.url;
-
-    var this_ = this;
-    var callback = request.callback;
-    request.callback = function(){
-	callback.apply(this, arguments);
-	this_.onSuccess();
-    };
-
+    
+    this.url_ = request.url;
     this.request_ = request;
+    this.callbackName = "twCallback";
 };
 
 util.extend(tw.TwitterGetCommand, tw.Command);
 
 tw.TwitterGetCommand.prototype.execute = function(){
-    tw.ajax.ajax(this.request_);
+    // URI を生成する
+    var request = {
+	name: this.request_.name + " - URL 生成",
+	dataType : "json",
+	url : "/sign" + this.url_,
+	callback : util.bind(this, this.onTwitterApiUrl),
+	params: this.request_.params || {}
+    };
+    request.params.callback = this.callbackName;
+
+    tw.ajax.ajax(request);
+};
+
+tw.TwitterGetCommand.prototype.onTwitterApiUrl = function(result){
+    console.log("success", result);
+
+    var this_ = this;
+    var callback = this.request_.callback;
+    // jsonp を指定せず、 cache を無効にするのは、余計なパラメータを付加させないため
+    var request = {
+	name: this.request_.name,
+	url: result.url,
+	dataType: "jsonp",
+	jsonpCallback: this.callbackName,
+	callback: function(){
+	    callback.apply(this, arguments);
+	    this_.onSuccess();
+	},
+	cache: true
+    };
+
+    tw.ajax.ajax(request);
 };
