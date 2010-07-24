@@ -16,28 +16,16 @@ tw.ProfileView.prototype.initialize = function(){
 
     var this_ = this;
     this.element_.find("a.user_timeline").click(
-	function(event){
-	    event.preventDefault();
-	    tw.showTimeline(tw.store.userTimeline(this_.user_));
-	});
+	util.bind(this, this.onTimelineClick, "userTimeline"));
     
     this.element_.find("a.friends").click(
-	function(event){
-	    event.preventDefault();
-	    tw.showTimeline(tw.store.friends(this_.user_));
-	});
+	util.bind(this, this.onTimelineClick, "friends"));
     
     this.element_.find("a.followers").click(
-	function(event){
-	    event.preventDefault();
-	    tw.showTimeline(tw.store.followers(this_.user_));
-	});
+	util.bind(this, this.onTimelineClick, "followers"));
     
     this.element_.find("a.favorites").click(
-	function(event){
-	    event.preventDefault();
-	    tw.showTimeline(tw.store.favorites(this_.user_));
-	});
+	util.bind(this, this.onTimelineClick, "favorites"));
 
     this.element_.delegate(".users .tab", "click", util.bind(this, this.onTabClick));
 
@@ -51,7 +39,7 @@ tw.ProfileView.prototype.initialize = function(){
 
     this.element_.find("a.twitter").click(
 	function(){
-	    tw.Track.track("twitter", "show", "profile");
+	    tw.Track.track("twitter", "show", "profile", this_.user_);
 	});
 };
 
@@ -127,18 +115,28 @@ tw.ProfileView.prototype.onFocus = function(){
     var focus = tw.components.timelineView.focus();
     console.assert(focus);
     if(focus.retweeted_status && focus.retweeted_status.user){
-	this.setUser(focus.retweeted_status.user);
+	var user = focus.retweeted_status.user;
     }else{
-	this.setUser(focus.user);
+	var user = focus.user;
     }
+    this.setUser(user);
+    tw.Track.track("profile", "show", "focus", user);
 };
 
 tw.ProfileView.prototype.onTabClick = function(event){
     var target = $(event.target).closest(".tab");
-    var screenName = target.data("user").screen_name;
-    tw.store.user(screenName, util.bind(this, this.setUser));
+    var user = target.data("user");
+    tw.store.user(user.screen_name, util.bind(this, this.setUser));
+    tw.Track.track("profile", "show", "userTab", user);
+};
 
-    tw.Track.track("profile", "userTab", screenName);
+tw.ProfileView.prototype.onTimelineClick = function(timelineName, event){
+    event.preventDefault();
+
+    var timeline = tw.store[timelineName](this.user_);
+    tw.showTimeline(timeline);
+
+    tw.Track.track("timeline", timelineName, "profile", this.user_);
 };
 
 /**

@@ -516,18 +516,21 @@ tw.TimelineView.prototype.onShowUser = function(event){
     event.preventDefault();
     var screenName = $(event.target).text();
     tw.showTimeline(tw.store.userTimeline(screenName));
+    tw.Track.track("timeline", "userTimeline", "timelineView", screenName);
 };
 
 tw.TimelineView.prototype.onShowHash = function(event){
     event.preventDefault();
     var hash = $(event.target).text();
     tw.showTimeline(tw.store.search(hash));
+    tw.Track.track("timeline", "hash", "timelineView");
 };
 
 tw.TimelineView.prototype.onShowConversation = function(event){
     event.preventDefault();
     var status = this.getStatus($(event.target));
     tw.showTimeline(tw.store.conversation(status));
+    tw.Track.track("timeline", "conversation", "timelineView");
 };
 
 // ----------------------------------------------------------------------
