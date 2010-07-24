@@ -330,21 +330,10 @@ h1{
 /* つぶやき */
 
 .status{
+    position: relative;
     font-size: 13px;
     -webkit-transition: opacity 0.2s ease-in;
     margin: 5px 10px;
-}
-
-.status.new{
-    opacity: 0.01;
-}
-
-.status .text a{
-    color: #33b;
-}
-
-.status .text a:hover{
-    text-decoration: underline;
 }
 
 .status .profile_image{
@@ -354,19 +343,6 @@ h1{
     height: 48px;
     /* border-radius: 5px; */
     border: 2px solid #fff;
-}
-
-.status:not(.retweet) .profile_image_rt{
-    display: none;
-}
-
-.status.retweet img.profile_image_rt{
-    float: left;
-    width: 24px;
-    height: 24px;
-    margin-top: 26px;
-    margin-left: -26px;
-    border: 1px solid #000;
 }
 
 .status .body{
@@ -381,9 +357,26 @@ h1{
     margin-left: 60px;
 }
 
-.status:focus{
-    outline: none;
+.status .actions{
+    position: absolute;
+    bottom: 5px;
+    right: 0px;
+    font-size: 11px;
 }
+
+.status .footer{
+    margin-top: 5px;
+    font-size: 10px;
+    color: #999;
+}
+
+.status .footer:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+
+/* ---------- */
 
 .status .name{
     font-weight: bold;
@@ -394,37 +387,57 @@ h1{
     cursor: pointer;
 }
 
-.status .user.in_reply_to:after{
+.status .text{
+    font-size: 14px;
+}
+
+.status .text *{
+    line-height: 24px;
+}
+
+.status .text a{
+    color: #33b;
+}
+
+.status .text a:hover{
+    text-decoration: underline;
+}
+
+.status .text img{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+.status .text .user.in_reply_to:after{
     content: url(../images/conversation.png);
     cursor: pointer;
 }
 
-.status .footer{
-    margin-top: 5px;
+/* ---------- */
+/* rt */
+
+.status span.rt{
+    display: block;
 }
 
-.status .info{
-    float: left;
-    font-size: 10px;
-    color: #999;
+.status:not(.retweet) span.rt{
+    display: none;
 }
 
-.status .actions{
-    font-size: 11px;
-    float: right;
+.status span.rt img{
+    width: 24px;
+    height: 24px;
 }
+
+/* ---------- */
 
 .status .actions a{
     color: #000;
 }
+
 .status .actions a:hover{
     text-decoration: underline;
-}
-
-.status .footer:after{
-    content: "";
-    display: block;
-    clear: both;
 }
 
 .status a.favorite{
@@ -446,20 +459,6 @@ h1{
 .status a.favorite.wait{
     background-image: url(../images/wait.gif);
 }
-
-/* .a{ */
-/*     -webkit-transition: opacity 0.3s ease-in; */
-/*     visibility: hidden; */
-/*     display: block; */
-/*     margin: 0px 2px; */
-/*     font-size: 12px; */
-/*     opacity: 0; */
-/* } */
-
-/* .status:hover .status_actions a{ */
-/*     visibility: visible; */
-/*     opacity: 1; */
-/* } */
 
 /* ---------- */
 /* hover */
@@ -493,10 +492,12 @@ h1{
     opacity: 1;
 }
 
-.status .text img{
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
+.status.new{
+    opacity: 0.01;
+}
+
+.status:focus{
+    outline: none;
 }
 
 /* ---------------------------------------------------------------------- */

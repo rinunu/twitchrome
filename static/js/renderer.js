@@ -40,7 +40,8 @@ tw.Renderer.prototype.refreshElement = function(element, status){
 	// RT 情報はあるが user が入っていない場合は通常通り表示する(friends etc.)
 	this.refreshElement(element, status.retweeted_status);
 	element.addClass("retweet");
-	element.find(".profile_image_rt").attr("src", status.user.profile_image_url);
+	element.find("span.rt img").attr("src", status.user.profile_image_url);
+	element.find("span.rt span").text(status.user.screen_name);
 	return;
     }
 
