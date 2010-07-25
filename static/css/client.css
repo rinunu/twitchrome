@@ -12,11 +12,11 @@ body{
     height: 100%;
 }
 
-.root.menu{
+body > .header{
     height: 30px;
 }
 
-.header{
+.status_input{
     position: absolute;
     height: 90px;
     top: 35px;
@@ -70,15 +70,22 @@ body > .footer{
 
 .frame{
     color: #fff;
-    background-color: rgba(0,0,0,0.6);
+    background: url(../images/black60.png) repeat;
+    /* background-color: rgba(0,0,0,0.6); */
     border-radius: 5px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border: solid 1px #333;
 }
 
-.header.frame, .sidebar .frame{
-    background-color: rgba(0,0,0,0.2);
+body > .header{
+    color: #fff;
+    background: url(../images/black60.png) repeat;
+}
+
+.status_input.frame, .sidebar .frame{
+    /* background-color: rgba(0,0,0,0.2); */
+    background: url(../images/black20.png) repeat;
 
     -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
     -moz-box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
@@ -137,6 +144,7 @@ img{
  */
 .button{
     color: #000;
+    background-color: rgb(255,255,255);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(255,255,255)), color-stop(1, rgb(240, 240, 240)));
     background-image: -moz-linear-gradient(-90deg,rgb(255,255,255) 0%,rgb(240,240,240) 100%);
 
@@ -144,6 +152,7 @@ img{
 }
 
 .button:hover{
+    background-color: rgb(220,220,220);
     background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0, rgb(220,220,220)),color-stop(1, rgb(200, 200, 200)));
     background-image: -moz-linear-gradient(-90deg,rgb(220,220,220) 0%,rgb(200,200,200) 100%);
 }
@@ -154,7 +163,6 @@ img{
 
 .float{
     position: absolute;
-    
     -webkit-box-shadow: 0px 7px 7px #777;
 }
 
@@ -169,32 +177,27 @@ body{
 }
 
 /* ---------------------------------------------------------------------- */
-/* root menu */
+/* header */
 
-.root.menu{
+body > .header{
     font-size: 11px;
     padding: 0 5px;
-    color: #fff;
-    background-color: rgba(0,0,0,0.5);
 }
 
 h1{
-    display: inline;
     font-size: 12px;
-    line-height: 30px;
-    vertical-align: middle;
 }
 
-.root.menu div:nth-child(1){
+body > .header h1{
     float: left;
 }
 
-.root.menu div:nth-child(2){
+body > .header div{
     text-align: right;
     height: 100%;
 }
 
-.root.menu div:nth-child(2) a{
+body > .header div a{
     line-height: 30px;
     vertical-align: middle;
 }
@@ -202,9 +205,8 @@ h1{
 /* ---------------------------------------------------------------------- */
 /* status input */
 
-.header{
+.status_input{
     padding: 5px;
-    overflow: hidden;
 }
 
 .status_input > .text{
@@ -417,12 +419,13 @@ h1{
 /* ---------- */
 /* rt */
 
+
 .status span.rt{
-    display: block;
+    display: none;
 }
 
-.status:not(.retweet) span.rt{
-    display: none;
+.status.retweet span.rt{
+    display: block;
 }
 
 .status span.rt img{
@@ -550,6 +553,7 @@ h1{
     text-align: center;
 
     color: #000;
+    background-color: rgb(255,255,255);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(255,255,255)), color-stop(1, rgb(240, 240, 240)));
     background-image: -moz-linear-gradient(-90deg,rgb(255,255,255) 0%,rgb(240,240,240) 100%);
 
@@ -557,7 +561,7 @@ h1{
 }
 
 .tab .count{
-[    border-radius: 3px;
+    border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
 
@@ -796,7 +800,7 @@ h1{
 /* ---------------------------------------------------------------------- */
 /* context menu */
 
-.popup.menu{
+.popup{
     display: none;
     position: absolute;
     width: 200px;
