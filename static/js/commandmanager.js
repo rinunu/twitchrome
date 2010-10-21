@@ -2,9 +2,9 @@
 /**
  * Command の管理を行う
  * 
- * - 指定時間後に実行する
- * - 定期的に実行する
- * - アイドル時に実行する
+ * - todo 指定時間後に実行する
+ * - todo 定期的に実行する
+ * - todo アイドル時に実行する
  */
 tw.CommandManager = function(){
     // 万が一処理が JavaScript エラーが起きたとしても処理を継続するために、
@@ -51,6 +51,18 @@ tw.CommandManager.prototype.onSuccess = function(command){
 
 tw.CommandManager.prototype.onError = function(command){
     // console.debug("CommandManager onError", command.type);
+    command.errors.push({});
+    this.executing = null;
+    if(command.errors.length >= command.maxTryCount){
+	console.error("command error", command.name, xhr);
+	this.commands_.shift();
+	if(command.error){
+	    command.error();
+	}
+	util.Event.trigger(this, "error", command);
+    }else{
+	console.error("command error retry", command.name, command);
+    }
 };
 
 /*
