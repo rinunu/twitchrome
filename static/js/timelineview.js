@@ -21,15 +21,13 @@ tw.TimelineView = function(element, timeline){
 
     this.suspend_ = true;
 
-    // 表示する Status の配列
-    // このリストの順番に表示する
-    this.renderings_ = [];
-    // renderings_ をどこまで処理したか
-    this.iRenderings_ = 0;
+    // // 表示する Status の配列
+    // // このリストの順番に表示する
+    // this.renderings_ = [];
+    // // renderings_ をどこまで処理したか
+    // this.iRenderings_ = 0;
 
     this.timer_ = null;
-
-
 
     util.Event.bind(this.timeline_, this, {refresh: this.onRefresh});
     util.Event.bind(tw.store, this, {statusRefresh: this.onStatusRefresh});
@@ -61,6 +59,9 @@ tw.TimelineView.prototype.timeline = function(){
     return this.timeline_;
 };
 
+/**
+ * 開放する
+ */
 tw.TimelineView.prototype.cleanup = function(){
     this.suspend();
 
