@@ -1,59 +1,10 @@
 {% extends "base.html" %}
 
+{% load media %}
+
 {% block head %}
-<script type="text/javascript" src="/static/jgrowl/jquery.jgrowl_compressed.js"></script>
-<link href="/static/jgrowl/jquery.jgrowl.css" rel="stylesheet" type="text/css">
-
-<script type="text/javascript" src="/static/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
-<link href="/static/fancybox/jquery.fancybox-1.3.1.css" rel="stylesheet" type="text/css">
-
-<script type="text/javascript" src="/static/js/jquery.history.js"></script>
-<script type="text/javascript" src="/static/js/jquery.upload-1.0.2.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.jsonp-2.1.2.min.js"></script>
-
-<link href="static/css/client.css" rel="stylesheet" type="text/css">
-
-<script type="text/javascript" src="/static/js/console.js"></script>
-<script type="text/javascript" src="/static/js/util.js"></script>
-<script type="text/javascript" src="/static/js/stopwatch.js"></script>
-<script type="text/javascript" src="/static/js/event.js"></script>
-
-<script type="text/javascript" src="/static/js/tw.js"></script>
-<script type="text/javascript" src="/static/js/track.js"></script>
-<script type="text/javascript" src="/static/js/settings.js"></script>
-<script type="text/javascript" src="/static/js/gc.js"></script>
-<script type="text/javascript" src="/static/js/ajax.js"></script>
-<script type="text/javascript" src="/static/js/command.js"></script>
-<script type="text/javascript" src="/static/js/commandmanager.js"></script>
-
-<script type="text/javascript" src="/static/js/twitter.js"></script>
-<script type="text/javascript" src="/static/js/twitpic.js"></script>
-
-<script type="text/javascript" src="/static/js/store.js"></script>
-<script type="text/javascript" src="/static/js/lists.js"></script>
-<script type="text/javascript" src="/static/js/timeline.js"></script>
-<script type="text/javascript" src="/static/js/servertimeline.js"></script>
-<script type="text/javascript" src="/static/js/list.js"></script>
-<script type="text/javascript" src="/static/js/searchresult.js"></script>
-<script type="text/javascript" src="/static/js/yatsresult.js"></script>
-<script type="text/javascript" src="/static/js/conversationtimeline.js"></script>
-<script type="text/javascript" src="/static/js/users.js"></script>
-<script type="text/javascript" src="/static/js/unread.js"></script>
-
-<script type="text/javascript" src="/static/js/urimanager.js"></script>
-<script type="text/javascript" src="/static/js/renderer.js"></script>
-<script type="text/javascript" src="/static/js/statusinput.js"></script>
-<script type="text/javascript" src="/static/js/mainmenu.js"></script>
-<script type="text/javascript" src="/static/js/profileview.js"></script>
-<script type="text/javascript" src="/static/js/timelineview.js"></script>
-<script type="text/javascript" src="/static/js/multitimelineview.js"></script>
-<script type="text/javascript" src="/static/js/background.js"></script>
-<script type="text/javascript" src="/static/js/progressview.js"></script>
-<script type="text/javascript" src="/static/js/autorefresh.js"></script>
-<script type="text/javascript" src="/static/js/popupmenu.js"></script>
-<script type="text/javascript" src="/static/js/main.js"></script>
-
-<script type="text/javascript" src="/static/js/debug.js"></script>
+{% include_media 'main.js' %}
+{% include_media 'main.css' %}
 
 {% endblock %}
 
@@ -258,8 +209,8 @@
 
 
 <div class="hidden system">
-  <img src="/static/images/wait.gif">
-  <img src="/static/images/conversation.png">
+  <img src="{% media_url 'images/wait.gif' %}">
+  <img src="{% media_url 'images/conversation.png' %}">
   <span class="screen_name">{{ screen_name }}</span>
   {% csrf_token %}
 </div>
