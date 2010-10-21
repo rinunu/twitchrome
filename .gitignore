@@ -1,4 +1,6 @@
 *.pyc
 settings.py
-memo.org
+/memo.org
 *.bak
+/_generated_media/
+/_generated_media_names.py
