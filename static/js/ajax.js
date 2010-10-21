@@ -41,7 +41,7 @@ tw.Ajax = function(options){
  *   url : 必須,
  *   params: ,
  *   callback:,
- *   maxTryCount: 最大リトライ回数。 デフォルトは 1,
+ *   maxTryCount: 最大トライ回数。 デフォルトは 1,
  *   priority: 0 が最も高い。 デフォルトは 1
  * }
  * 
