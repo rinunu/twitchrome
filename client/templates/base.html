@@ -1,3 +1,4 @@
+{% load media %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -5,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+    {% include_media 'common.css' %}
     {% block head %}
     {% endblock %}
 

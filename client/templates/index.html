@@ -1,37 +1,43 @@
 {% extends "base.html" %}
 
+{% load media %}
+
 {% block body %}
-<h1>ねこふんじゃったα ver.</h1>
+<h1>ツイッタークライアント 開発 ver.</h1>
 <p>
-  ねこふんじゃったはブラウザ上で動く Twitter クライアントです。
-  
+  本アプリは Chrome ブラウザ上で動く Twitter クライアントです。
+  「使っていて楽しい」をコンセプトに開発中です！
 </p>
 <p>
-  「<s>作ってて</s>使ってて楽しい」アプリを目指して現在作成中です(＊ノ)つ
-  <a href="{% url client.views.login %}">ログイン</a>
+  <a href="{% url client.views.login %}">ログインページ</a>
+</p>
+
+<ul>
+  <li>連絡先: <a href="http://twitter.com/#!/rinunu">twitter</a>
+  <li>ソース: <a href="http://github.com/rinunu/twitchrome">github</a>
+</ul>
+
 </p>
 
 <h2>対応ブラウザ</h2>
 <ul>
-  <li>Chrome5(アニメーションとかするよ！ そのうち通知機能も付くよ！)
-  <li>Safari4(アニメーションとかするよ！)
-  <li>Firefox3(動くみたい！？)
-  <li>IE8(動くみたい！？)
-  <li>Opera(う、動かなかった・・だと・・)
+  <li>Chrome7(対応済み)
+  <li>Safari4(対応済み)
+  <li><span class="yet">Firefox4(対応予定)</span>
+  <li><span class="yet">IE9(対応予定)</span>
 </ul>
 
-<h2>特徴</h2>
-使ってて楽しい機能を優先して追加する予定だよ！
+<h2>主な特徴</h2>
 <ul>
-  <li>画像をサムネイル表示するよ！(今は Twitpic だけ)
-  <li>友達のタイムラインを表示すると、友達の背景が表示されるよ！
+  <li>よく話すユーザへのショートカットを表示します
+  <li>「戻る/進む」にて直前/直後のタイムラインへ移動できます
+  <li>リプライチェーンを表示します
+  <li>返信の付いたツイートをアイコンで識別できます
+  <li>画像をインラインで表示します(現在 Twitpic のみ対応)
+  <li>他のユーザのタイムラインを表示すると、そのユーザの背景画像を表示します
 </ul>
-<ul>
-  <li>デザインテーマを切り替えられるように・・したい・・(願望)
-  <li>み、見た目かわいくしたいな・・(願望)
-</ul>
-<ul>
-  <li>その他、一般的な機能はちゃんと付けたい・・(願望)
-</ul>
+
+<h2>画面イメージ</h2>
+<img src="{% media_url 'images/screenshot.png' %}">
 
 {% endblock %}
