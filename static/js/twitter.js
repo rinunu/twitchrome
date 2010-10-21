@@ -14,7 +14,7 @@ tw.Twitter = function(){
  * TWitter REST API へ GET リクエストを行う。
  */
 tw.Twitter.prototype.get = function(request){
-    var command = new tw.TwitterGetCommand(request);
+    var command = new tw.TwitterGetCommand2(request);
     tw.commandManager.add(command);
     return command;
 };
@@ -109,6 +109,7 @@ tw.Twitter.prototype.retweet = function(status){
 
 /**
  * Twitter への GET リクエストを行うコマンド
+ * (サーバでは URL の生成のみ行ない、ツイートデータは JSONP で取得する)
  */
 tw.TwitterGetCommand = function(request, options){
     tw.Command.call(this, options);
@@ -153,4 +154,28 @@ tw.TwitterGetCommand.prototype.onTwitterApiUrl = function(result){
     };
 
     tw.ajax.ajax(request);
+};
+
+
+// ######################################################################
+
+/**
+ * Twitter への GET リクエストを行うコマンド(サーバ経由)
+ */
+tw.TwitterGetCommand2 = function(request, options){
+    tw.Command.call(this, options);
+    request.url = "/twitter_api" + request.url;
+    var this_ = this;
+    var callback = request.callback;
+    request.callback = function(){
+	callback.apply(this, arguments);
+	this_.onSuccess();
+    };
+
+    this.request_ = request;
+};
+util.extend(tw.TwitterGetCommand2, tw.Command);
+
+tw.TwitterGetCommand2.prototype.execute = function(){
+    tw.ajax.ajax(this.request_);
 };
