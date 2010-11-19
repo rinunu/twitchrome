@@ -3,41 +3,38 @@
 {% load media %}
 
 {% block body %}
-<h1>ツイッタークライアント 開発 ver.</h1>
-<p>
-  本アプリは Chrome ブラウザ上で動く Twitter クライアントです。
-  「使っていて楽しい」をコンセプトに開発中です！
-</p>
-<p>
-  <a href="{% url client.views.login %}">ログインページ</a>
-</p>
+<div class="root">
+  <h1>ツイッタークライアント 開発 ver.</h1>
+  <p>
+    本アプリは Chrome ブラウザ上で動く Twitter クライアントです。
+    「使っていて楽しい」をコンセプトに開発中です。
+  </p>
+  <ul>
+    <li>連絡先: <a href="http://twitter.com/#!/rinunu">twitter</a>
+    <li>ソース: <a href="http://github.com/rinunu/twitchrome">github</a>
+  </ul>
 
-<ul>
-  <li>連絡先: <a href="http://twitter.com/#!/rinunu">twitter</a>
-  <li>ソース: <a href="http://github.com/rinunu/twitchrome">github</a>
-</ul>
+  <a class="login" href="{% url client.views.login %}">ログインページ</a>
 
-</p>
+  <h2>対応ブラウザ</h2>
+  <ul>
+    <li>Chrome7(対応済み)
+    <li>Safari4(対応済み)
+    <li><span class="yet">Firefox4(対応予定)</span>
+    <li><span class="yet">IE9(対応予定)</span>
+  </ul>
 
-<h2>対応ブラウザ</h2>
-<ul>
-  <li>Chrome7(対応済み)
-  <li>Safari4(対応済み)
-  <li><span class="yet">Firefox4(対応予定)</span>
-  <li><span class="yet">IE9(対応予定)</span>
-</ul>
+  <img src="{% media_url 'images/screenshot2.png' %}">
 
-<h2>主な特徴</h2>
-<ul>
-  <li>よく話すユーザへのショートカットを表示します
-  <li>「戻る/進む」にて直前/直後のタイムラインへ移動できます
-  <li>リプライチェーンを表示します
-  <li>返信の付いたツイートをアイコンで識別できます
-  <li>画像をインラインで表示します(現在 Twitpic のみ対応)
-  <li>他のユーザのタイムラインを表示すると、そのユーザの背景画像を表示します
-</ul>
-
-<h2>画面イメージ</h2>
-<img src="{% media_url 'images/screenshot.png' %}">
+  <h2>主な特徴</h2>
+  <ul>
+    <li>よく話すユーザへのショートカットを表示します
+    <li>「戻る/進む」にて直前/直後のタイムラインへ移動できます
+    <li>リプライチェーンを表示します
+    <li>返信の付いたツイートをアイコンで識別できます
+    <li>画像をインラインで表示します(現在 Twitpic のみ対応)
+    <li>他のユーザのタイムラインを表示すると、そのユーザの背景画像を表示します
+  </ul>
+</div>
 
 {% endblock %}
